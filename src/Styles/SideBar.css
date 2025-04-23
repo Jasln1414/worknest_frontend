@@ -1,0 +1,770 @@
+/* SideBar.css */
+
+/* Unique class name for the sidebar */
+.employer-sidebar {
+  width: 250px; /* Fixed width for the sidebar */
+  height: calc(100vh - 50vh); /* Adjust height to account for header */
+  position: fixed; /* Fixed position to keep it in place */
+  
+  left: 0; /* Align to the left corner */
+  background-color: #5c6bc0; /* Prominent color (blue) */
+  padding: 20px; /* Padding inside the sidebar */
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  z-index: 100; /* Ensure it's above other content */
+  transition: width 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+  color: #e6ebf0; /* Text color */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+  border-radius: 5px;
+  display:flex;
+  flex-direction:column
+}
+
+/* Sidebar hover effect */
+.employer-sidebar:hover {
+  background-color: #3f4a8a; /* Darker shade on hover */
+  width: 270px; /* Slightly expand width on hover */
+}
+
+/* Sidebar list styles */
+.employer-sidebar-list {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+}
+
+/* Sidebar link styles */
+.employer-sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: #f9f3f3; /* Text color */
+  text-decoration: none; /* Remove underline */
+  font-size: 16px;
+  border-radius: 4px;
+  margin-bottom: 0px;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.employer-sidebar-link:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+  color: #100808; /* Dark text color on hover */
+}
+
+.employer-sidebar-link .icon {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+/* Active link styles */
+.employer-sidebar-link.active {
+  background-color: #5c6bc0; /* Highlight color */
+  color: white; /* Text color */
+}
+
+/* Logout button styles */
+.employer-sidebar-link.logout.active {
+  background-color: #e74c3c; /* Red color for logout */
+  color: white; /* Text color */
+}
+
+/* Post job button styles */
+.employer-post-job-button-sidebar {
+  width: 150px; /* Increased width for better appearance */
+  padding: 15px;
+  background-color: #e6ebf0; /* Light background color */
+  display:flex;
+  color: #100808; /* Dark text color */
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(235, 230, 230, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  
+  
+}
+
+.employer-post-job-button:hover {
+  background-color: #e7eaee; /* Slightly darker on hover */
+  box-shadow: 0 6px 12px rgba(223, 219, 219, 0.15);
+  margin-top: 10px;
+  width: 50vh;
+ 
+
+}
+
+.employer-post-job-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.7);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .employer-sidebar {
+    width: 100%; /* Full width on small screens */
+    height: auto; /* Adjust height to fit content */
+    position: relative; /* Remove fixed position */
+    top: 0; /* Reset top position for mobile */
+  }
+
+  .employer-post-job-button {
+    font-size: 14px; /* Smaller font size for mobile */
+  }
+}
+
+/* Additional styles for icons */
+.icon {
+  color: #100808; /* Dark color for icons */
+  margin-right:10px;
+  margin-top:3px;
+  
+}
+
+.icon-1 {
+  color: #100808; /* Dark color for specific icons */
+}
+
+/* Styles for the logout button */
+.signout {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  color: #f9f3f3; /* Text color */
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.signout:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+  color: #100808; /* Dark text color on hover */
+}
+
+.signout .icon-1 {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+/* Sidebar Styles */
+
+
+/* Content Area */
+.main-content {
+  margin-left: 270px; /* Should be slightly larger than sidebar width */
+  flex: 1;
+  padding: 20px;
+  min-height: 100vh; /* Full height */
+  background-color: #f4f7fc;
+  overflow-y: auto; /* Allow content to scroll */
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  left: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Reduce sidebar width */
+  }
+
+  .main-content {
+    margin-left: 220px;
+  }
+
+  /* Adjust for smaller screens */
+  @media (max-width: 600px) {
+    .sidebar {
+      width: 100px; /* Make sidebar narrower */
+    }
+    
+    .main-content {
+      margin-left: 120px;
+    }
+
+    .footer {
+      position: relative;
+      width: 100%;
+    }
+  }
+}
+/* SideBar.css */
+
+/* Unique class name for the sidebar */
+.employer-sidebar {
+  width: 250px; /* Fixed width for the sidebar */
+  height: calc(100vh - 50vh); /* Adjust height to account for header */
+  position: fixed; /* Fixed position to keep it in place */
+  top: 14vh; /* Position below the header */
+  left: 0; /* Align to the left corner */
+  background-color: #5c6bc0; /* Prominent color (blue) */
+  padding: 20px; /* Padding inside the sidebar */
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  z-index: 100; /* Ensure it's above other content */
+  transition: width 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
+  color: #e6ebf0; /* Text color */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+  border-radius: 5px;
+}
+
+/* Sidebar hover effect */
+.employer-sidebar:hover {
+  background-color: #3f4a8a; /* Darker shade on hover */
+  width: 270px; /* Slightly expand width on hover */
+}
+
+/* Sidebar list styles */
+.employer-sidebar-list {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+}
+
+/* Sidebar link styles */
+.employer-sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: #f9f3f3; /* Text color */
+  text-decoration: none; /* Remove underline */
+  font-size: 16px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.employer-sidebar-link:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+  color: #100808; /* Dark text color on hover */
+}
+
+.employer-sidebar-link .icon {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+/* Active link styles */
+.employer-sidebar-link.active {
+  background-color: #5c6bc0; /* Highlight color */
+  color: white; /* Text color */
+}
+
+/* Logout button styles */
+.employer-sidebar-link.logout.active {
+  background-color: #e74c3c; /* Red color for logout */
+  color: white; /* Text color */
+}
+
+/* Post job button styles */
+.employer-post-job-button {
+  width: 150px; /* Increased width for better appearance */
+  padding: 15px;
+  background-color: #e6ebf0; /* Light background color */
+  color: #100808; /* Dark text color */
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(235, 230, 230, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.employer-post-job-button:hover {
+  background-color: #e7eaee; /* Slightly darker on hover */
+  box-shadow: 0 6px 12px rgba(223, 219, 219, 0.15);
+  margin-top: 10px;
+  width: 50vh;
+ 
+
+}
+
+.employer-post-job-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.7);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .employer-sidebar {
+    width: 100%; /* Full width on small screens */
+    height: auto; /* Adjust height to fit content */
+    position: relative; /* Remove fixed position */
+    top: 0; /* Reset top position for mobile */
+  }
+
+  .employer-post-job-button {
+    font-size: 14px; /* Smaller font size for mobile */
+  }
+}
+
+/* Additional styles for icons */
+.icon {
+  color: #100808; /* Dark color for icons */
+}
+
+.icon-1 {
+  color: #100808; /* Dark color for specific icons */
+}
+
+/* Styles for the logout button */
+.signout {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  color: #f9f3f3; /* Text color */
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.signout:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+  color: #100808; /* Dark text color on hover */
+}
+
+.signout .icon-1 {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+/* Sidebar Styles */
+
+
+/* Content Area */
+.main-content {
+  margin-left: 270px; /* Should be slightly larger than sidebar width */
+  flex: 1;
+  padding: 20px;
+  min-height: 100vh; /* Full height */
+  background-color: #f4f7fc;
+  overflow-y: auto; /* Allow content to scroll */
+}
+
+/* Footer */
+.footer {
+  width: 100%;
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  left: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Reduce sidebar width */
+  }
+
+  .main-content {
+    margin-left: 220px;
+  }
+
+  /* Adjust for smaller screens */
+  @media (max-width: 600px) {
+    .sidebar {
+      width: 100px; /* Make sidebar narrower */
+    }
+    
+    .main-content {
+      margin-left: 120px;
+    }
+
+    .footer {
+      position: relative;
+      width: 100%;
+    }
+  }
+}
+
+/*employ header
+/* Dropdown menu styling */
+.ant-dropdown-menu {
+  width: 200px; /* Adjust the width as needed */
+  padding: 8px 0; /* Add some padding for better spacing */
+}
+
+/* Align items to the left */
+.dropdown-item-left {
+  text-align: left;
+  padding: 8px 16px; /* Add padding for better spacing */
+}
+
+/* Align items to the center */
+.dropdown-item-center {
+  text-align: center;
+  padding: 8px 16px; /* Add padding for better spacing */
+}
+
+/* Align items to the right */
+.dropdown-item-right {
+  text-align: right;
+  padding: 8px 16px; /* Add padding for better spacing */
+}
+
+/* Hover effect for dropdown items */
+.ant-dropdown-menu-item:hover {
+  background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+/* Profile image styling */
+.profile-image {
+  width: 40px; /* Adjust the size of the profile image */
+  height: 40px;
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover; /* Ensure the image fits well */
+}
+
+/* Header container styling */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #ffffff; /* White background */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+/* Logo container styling */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between logo and text */
+}
+
+.logo-image img {
+  width: 40px; /* Adjust the logo size */
+  height: 40px;
+}
+
+.logo-text {
+  font-size: 20px; /* Adjust the font size */
+  font-weight: bold;
+  color: #333; /* Dark gray text color */
+}
+
+/* Header right section styling */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Space between elements */
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: #e0e0e0; /* Light gray divider */
+}
+
+/* Profile dropdown styling */
+.profile-dropdown {
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
+
+.sidebar-container {
+  position: fixed;
+  top: 10vh; /* Changed from 11vh to 0 */
+  left: 0;
+  z-index: 40;
+  width: 64px;
+  height: 100vh;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  padding-top: 11vh; /* Add padding equal to header height */
+  box-sizing: border-box; /* Ensure padding is included in the height */
+}
+
+@media (min-width: 640px) {
+  .sidebar-container {
+    transform: translateX(0);
+    width: 256px;
+  }
+}
+
+.sidebar-inner {
+  height: 100%;
+  padding: 16px 12px;
+  overflow-y: auto;
+  background-color: #1966b3;
+}
+
+
+
+
+/* Sidebar Container */
+.ccl-sidebar {
+  width: 240px;
+  background-color: #fff;
+  border-right: 1px solid #dee2e6;
+  padding: 20px 0;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.ccl-sidebar .MuiListItem-root {
+  padding: 10px 20px;
+}
+
+.ccl-sidebar .MuiListItem-root:hover {
+  background-color: #f1f3f5;
+}
+
+.ccl-sidebar .MuiListItemIcon-root {
+  min-width: 40px;
+  color: #1976d2;
+}
+
+.ccl-sidebar .MuiListItemText-primary {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Main Content */
+.ccl-content-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.ccl-main-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f5f5f5;
+  margin-left: 240px; /* Match sidebar width */
+}
+
+.ccl-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ccl-search-container {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.ccl-search-icon {
+  margin-right: 8px;
+  color: #666;
+}
+
+.ccl-search-input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+}
+
+.ccl-table-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.ccl-candidate-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ccl-table-header {
+  background-color: #f8f9fa;
+}
+
+.ccl-header-cell {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.ccl-table-row:hover {
+  background-color: #f1f3f5;
+}
+
+.ccl-table-cell {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.ccl-link-wrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.ccl-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ccl-status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ccl-status-active {
+  background-color: #e6ffed;
+  color: #28a745;
+}
+
+.ccl-status-inactive {
+  background-color: #ffe6e6;
+  color: #dc3545;
+}
+
+/* AdminHome Styles */
+.ccl-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.ccl-card:hover {
+  transform: translateY(-2px);
+}
+
+.ccl-card-title {
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.ccl-card-value {
+  color: #1976d2;
+  font-weight: 700;
+}
+
+.ccl-section-title {
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.ccl-export-button {
+  background-color: #1976d2;
+  color: #fff;
+  text-transform: none;
+  font-size: 14px;
+  padding: 6px 16px;
+}
+
+.ccl-export-button:hover {
+  background-color: #1565c0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ccl-sidebar {
+    width: 200px;
+  }
+
+  .ccl-main-content {
+    margin-left: 200px;
+    padding: 10px;
+  }
+
+  .ccl-search-container {
+    width: 100%;
+  }
+
+  .ccl-table-container {
+    padding: 10px;
+  }
+
+  .ccl-header-cell,
+  .ccl-table-cell {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .ccl-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ccl-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .ccl-main-content {
+    margin-left: 0;
+  }
+}
+
+
+.sidebar-container {
+  width: 240px;
+  background-color: #fff;
+  border-right: 1px solid #dee2e6;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar-inner {
+  padding: 20px 0;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  padding: 10px 20px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sidebar-link:hover {
+  background-color: #f1f3f5;
+}
+
+.sidebar-text {
+  margin-left: 10px;
+}

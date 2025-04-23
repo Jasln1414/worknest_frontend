@@ -1,0 +1,513 @@
+/* Container and Layout */
+.eh-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0;
+}
+
+.ep-sidebar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.eh-main-content {
+  padding: 20px;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+  margin-left: 0; /* Removed the 30vh margin */
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .eh-container {
+    flex-direction: row;
+  }
+  
+  .eh-main-content {
+    margin-left: 0; /* Removed the 30vh margin */
+    width: 100%; /* Using full width */
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .eh-main-content {
+    margin-left: 0; /* Removed the 220px margin */
+    width: 100%; /* Using full width */
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .ep-sidebar-fixed {
+    transform: translateX(-100%);
+  }
+  
+  .ep-sidebar-fixed.active {
+    transform: translateX(0);
+  }
+  
+  .eh-main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .eh-mobile-content {
+    margin-left: 0;
+  }
+}
+
+/* User Details */
+.eh-user-details h2 {
+  color: #333;
+  font-size: 1.8rem;
+}
+
+@media (max-width: 767px) {
+  .eh-user-details h2 {
+    font-size: 1.4rem;
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+
+/* Simplified Job Usage Dashboard */
+.job-usage-simple {
+  background-color: #f8f9fa;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.job-usage-simple h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.usage-stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.usage-stat {
+  padding: 10px 15px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  flex: 1;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+}
+
+/* Detailed Job Usage Dashboard */
+.job-usage-dashboard {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.usage-header h2 {
+  color: #333;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.subscription-badge {
+  background-color: #4b5563;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.usage-stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.usage-stat-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  flex: 1 1 200px;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+@media (max-width: 767px) {
+  .usage-stat-card {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+}
+
+.usage-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+}
+
+.stat-icon {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.jobs-icon {
+  background-color: #4b5563;
+}
+
+.remaining-icon {
+  background-color: #10b981;
+}
+
+.expiry-icon {
+  background-color: #f59e0b;
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 5px 0 0;
+  color: #111827;
+}
+
+.subscription-cta {
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.post-job-cta {
+  background-color: #e0f2fe;
+}
+
+.cta-message h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #374151;
+}
+
+.cta-message p {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.cta-button {
+  background-color: #4b5563;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .subscription-cta {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .cta-button {
+    width: 100%;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+}
+
+.cta-button:hover {
+  background-color: #374151;
+}
+
+.post-button {
+  background-color: #0369a1;
+}
+
+.post-button:hover {
+  background-color: #0284c7;
+}
+
+/* Job Listings */
+.jobs-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jobs-heading h2 {
+  font-size: 1.3rem;
+  color: #374151;
+  margin: 0;
+}
+
+.post-new-job-button {
+  background-color: #4b5563;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.post-new-job-button:hover {
+  background-color: #374151;
+}
+
+.eh-loading-message,
+.eh-error-message {
+  text-align: center;
+  padding: 20px;
+}
+
+.eh-job-grid {
+  display: grid;
+  gap: 20px;
+}
+
+/* Responsive grid for job listings */
+@media (min-width: 1200px) {
+  .eh-job-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .eh-job-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .eh-job-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eh-job-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.eh-job-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+}
+
+.eh-job-card-inner {
+  padding: 15px;
+}
+
+.eh-job-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0369a1;
+}
+
+.eh-job-detail {
+  margin: 5px 0;
+  color: #6b7280;
+}
+
+.eh-job-status-active {
+  color: #10b981;
+}
+
+.eh-job-status-inactive {
+  color: #ef4444;
+}
+
+.eh-pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.eh-pagination-button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4b5563;
+  color: white;
+  cursor: pointer;
+}
+
+.eh-pagination-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.eh-pagination-numbers {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.eh-pagination-number {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e5e7eb;
+  cursor: pointer;
+}
+
+.eh-pagination-number.eh-active {
+  background-color: #4b5563;
+  color: white;
+}
+
+.eh-no-jobs-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.eh-no-jobs-title {
+  font-size: 1.5rem;
+  color: #374151;
+}
+
+.eh-no-jobs-text {
+  color: #6b7280;
+  margin: 10px 0;
+}
+
+.eh-post-job-button {
+  background-color: #4b5563;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.eh-post-job-button:hover {
+  background-color: #374151;
+}
+
+/* Mobile Responsiveness Additional fixes */
+@media (max-width: 767px) {
+  .usage-stats {
+    flex-direction: column;
+  }
+  
+  .eh-pagination-button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .eh-pagination-number {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  /* Mobile menu button */
+  .mobile-menu-toggle {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 101;
+    background-color: #4b5563;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+  }
+}
+
+/* Add this to your React component */
+.warning-cta {
+  background-color: #fff0f0;
+  border: 1px solid #fee2e2;
+}
+
+.upgrade-button {
+  background-color: #4b5563;
+  margin-right: 10px;
+}
+
+.pay-button {
+  background-color: #0369a1;
+}
+
+@media (max-width: 767px) {
+  .cta-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+  
+  .upgrade-button, .pay-button {
+    margin-right: 0;
+    width: 100%;
+  }
+}

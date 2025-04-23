@@ -1,0 +1,269 @@
+/* PostJob.css */
+.post-job-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .post-job-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .post-job-form-wrapper {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  .post-job-form-wrapper h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .post-job-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 inputs per line */
+    gap: 20px;
+  }
+  
+  .input-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-group label {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+  
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .input-group input:focus,
+  .input-group select:focus,
+  .input-group textarea:focus {
+    border-color: #2196f3;
+  }
+  
+  .input-group input:not(:placeholder-shown) + label,
+  .input-group textarea:not(:placeholder-shown) + label,
+  .input-group select:not(:placeholder-shown) + label {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    background: #fff;
+    padding: 0 4px;
+    color: #2196f3;
+  }
+  
+  .text-area-group {
+    width:430px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 textareas per line */
+    gap: 20px;
+  }
+  
+  .input-group textarea {
+    resize: vertical;
+    min-height: 120px; /* Increased height for better usability */
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .questions-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .add-questions-button {
+    background-color: #2196f3;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+    max-width: 200px; /* Limit the width */
+  }
+  
+  .add-questions-button:hover {
+    background-color: #1976d2;
+  }
+  
+  .questions-count {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .submit-button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+    align-self: center;
+    max-width: 200px; /* Limit the width */
+  }
+  
+  .submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .submit-button:hover:not(:disabled) {
+    background-color: #218838;
+  }
+  
+  /* Drawer Toggle Button */
+  .drawer-toggle-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    padding: 0;
+  }
+  
+  .drawer-toggle-button svg {
+    fill: #2196f3;
+  }
+  
+  /* Drawer Styling */
+  .drawer {
+    background-color: #fff;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    width: 250px !important;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .post-job-container {
+      flex-direction: column;
+    }
+  
+    .post-job-content {
+      padding: 60px 15px 20px;
+    }
+  
+    .form-grid {
+      grid-template-columns: 1fr; /* 1 column on smaller screens */
+    }
+  
+    .text-area-group {
+      grid-template-columns: 1fr; /* 1 column for textareas on smaller screens */
+    }
+  
+    .post-job-form-wrapper {
+      padding: 20px;
+    }
+  
+    .post-job-form-wrapper h1 {
+      font-size: 24px;
+    }
+  
+    .drawer-toggle-button {
+      display: block;
+    }
+  
+    .submit-button,
+    .add-questions-button {
+      max-width: 100%; /* Full width on smaller screens */
+      width: 100%; /* Ensure it takes full width */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .input-group input,
+    .input-group select,
+    .input-group textarea {
+      font-size: 14px;
+      padding: 10px;
+    }
+    .input-textarea{
+        width:220px;
+    }
+    .submit-button {
+      padding: 12px;
+    }
+  
+    .add-questions-button {
+      padding: 10px;
+      text-align: center;
+    }
+  
+    .post-job-form-wrapper h1 {
+      font-size: 20px;
+    }
+  }
+
+
+
+  .text-area-group {
+    width: 100%;
+    max-width: 450px; /* Maximum width for larger screens */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0 15px; /* Add some padding on mobile */
+    margin: 0 auto; /* Center the container */
+  }
+  
+  @media (max-width: 768px) {
+    .text-area-group {
+      grid-template-columns: 1fr; /* Switch to single column on mobile */
+      gap: 15px; /* Reduce gap for mobile */
+      max-width: 100%; /* Take full width on mobile */
+      padding: 0 10px;
+    }
+  }
+  
+  /* Optional: Add media query for very small screens */
+  @media (max-width: 480px) {
+    .text-area-group {
+      gap: 10px;
+      padding: 0;
+    }
+  }

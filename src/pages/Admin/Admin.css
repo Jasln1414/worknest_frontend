@@ -1,0 +1,278 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+}
+
+/* Container */
+.container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+/* Main Content */
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #f4f6f9;
+    overflow-y: auto;
+}
+
+/* Loading Container */
+.loading-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Error Message */
+.error-message {
+    background-color: #fee2e2;
+    border: 1px solid #f87171;
+    color: #b91c1c;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Card */
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Profile Card Specific */
+.profile-card {
+    padding-top: 60px; /* Space for the button */
+}
+
+/* Button Container */
+.button-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+.btn-success {
+    background-color: #16a34a;
+    color: #ffffff;
+}
+
+.btn-success:hover {
+    background-color: #15803d;
+}
+
+/* Profile Details */
+.profile-details {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.info-section {
+    flex: 1;
+    min-width: 200px;
+}
+
+.candidate-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+
+.label {
+    font-weight: 600;
+    color: #374151;
+    margin-right: 5px;
+}
+
+p {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.link {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Date Section */
+.date-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #1f2937;
+}
+
+.section-content {
+    color: #4b5563;
+}
+
+/* Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.table td {
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table tr:hover {
+    background-color: #f9fafb;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    padding: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .profile-details {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .info-section {
+        min-width: 100%;
+    }
+
+    .date-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .button-container {
+        position: static;
+        margin-bottom: 15px;
+    }
+
+    .profile-card {
+        padding-top: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .candidate-name {
+        font-size: 20px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+    }
+}

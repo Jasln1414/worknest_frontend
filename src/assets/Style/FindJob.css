@@ -1,0 +1,432 @@
+/* Base Styles */
+.enhanced-filter-container {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.filter-dropdowns-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.filter-dropdown {
+  position: relative;
+  min-width: 160px;
+}
+
+.dropdown-button {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem; /* Default font size */
+  padding: 12px; /* Default padding */
+  border-radius: 8px; /* Rounded corners */
+  transition: all 0.3s ease;
+}
+
+.dropdown-label {
+  flex-grow: 1;
+}
+
+.dropdown-arrow {
+  margin-left: 8px;
+}
+
+.filter-reset-icon {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  padding: 8px 0;
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  font-weight: 500;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dropdown-close-button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.dropdown-options {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #374151;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+}
+
+.dropdown-item.selected {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.selected-icon {
+  margin-left: auto;
+}
+
+.salary-dropdown {
+  width: 240px;
+}
+
+.salary-slider-container {
+  padding: 12px;
+}
+
+.salary-type-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.toggle-button {
+  flex: 1;
+  padding: 6px;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #4b5563;
+}
+
+.toggle-button.active {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.salary-value {
+  text-align: center;
+  font-size: 1rem;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.salary-value.dragging {
+  font-weight: 600;
+}
+
+.salary-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  background: #d1d5db;
+  border-radius: 3px;
+  outline: none;
+}
+
+.salary-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.salary-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #3b82f6;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.salary-range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .filter-dropdowns-container.mobile {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-dropdown {
+    min-width: 100%;
+  }
+
+  .dropdown-button {
+    font-size: 0.875rem; /* Reduced font size for small screens */
+    padding: 8px; /* Reduced padding for compact buttons */
+    border-radius: 6px; /* Slightly smaller rounded corners */
+  }
+
+  .salary-dropdown {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    padding: 8px; /* Reduced padding */
+  }
+
+  .dropdown-item {
+    padding: 6px 8px; /* Reduced padding for compact items */
+  }
+
+  .salary-slider-container {
+    padding: 8px; /* Reduced padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-button {
+    font-size: 0.75rem; /* Further reduced font size for very small screens */
+    padding: 6px; /* Minimal padding */
+    border-radius: 4px; /* Smaller rounded corners */
+  }
+
+  .dropdown-menu {
+    padding: 6px; /* Minimal padding */
+  }
+
+  .dropdown-item {
+    padding: 4px 6px; /* Minimal padding */
+  }
+
+  .salary-slider-container {
+    padding: 6px; /* Minimal padding */
+  }
+
+  .salary-range-labels {
+    font-size: 0.65rem; /* Reduced font size for labels */
+  }
+}
+
+
+/* Add these styles to your CSS file */
+
+/* Card-like backgrounds for filter buttons */
+.filter-btn {
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background-color: #3b82f6; /* Blue background for active filters */
+  box-shadow: 0 3px 6px rgba(59, 130, 246, 0.3);
+}
+
+/* Card-like background for dropdown menu */
+.dropdown-menu {
+  background-color: white;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+/* Header styling */
+.dropdown-header {
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Salary type buttons */
+.salary-type-btn {
+  background-color: #f1f5f9;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.salary-type-btn.active {
+  background-color: #3b82f6;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Option styling */
+.dropdown-option {
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-option:hover {
+  background-color: #f1f5f9;
+}
+
+.dropdown-option.selected {
+  background-color: #e0f2fe;
+}
+
+/* Slider background */
+.salary-slider {
+  background-color: #e2e8f0;
+}
+
+
+/* Add these styles to your FindJob.css file */
+
+.job-card-image-container {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+}
+
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.job-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.job-card-image.loaded {
+  opacity: 1;
+}
+/* Add these styles to your FindJob.css file */
+
+.job-card-image {
+  /* Base styles */
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px; /* Slightly rounded corners */
+  border: 2px solid #fff; /* Optional: adds a nice border */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+  
+  /* Responsive behavior */
+  max-width: 100%;
+  height: auto;
+  
+  /* Mobile-first approach */
+  @media (max-width: 768px) {
+    width: 80px;
+    height: 80px;
+  }
+  
+  @media (max-width: 480px) {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+  }
+  
+  /* For circular images (if preferred) */
+  /* Uncomment these lines for circular profile pics */
+  /*
+  border-radius: 50%;
+  border: 3px solid #fff;
+  */
+}
+
+.job-card-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  
+  @media (max-width: 480px) {
+    gap: 15px;
+  }
+}
+
+/* Optional: Add hover effect */
+.job-card-image:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Fallback container for image */
+.image-container {
+  flex-shrink: 0;
+  position: relative;
+  line-height: 0; /* Removes space under image */
+}
+
+.job-card-image {
+  background-color: #f5f5f5;
+  transition: opacity 0.3s ease;
+}
+
+
+.image-loading-container {
+  position: relative;
+  width: 100px; /* Adjust based on your design */
+  height: 100px; /* Adjust based on your design */
+}
+
+.image-loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.job-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.job-card-image.loading {
+  opacity: 0;
+}
+
+.job-card-image.loaded {
+  opacity: 1;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

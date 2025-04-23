@@ -1,0 +1,721 @@
+/* src/pages/Employer/utilities/MobileToggle.css */
+.mobile-menu-toggle {
+  display: none; /* Hidden by default, shown on mobile */
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background-color: #1E3A8A; /* Match WorkNest primary blue */
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-menu-toggle svg {
+  color: #FFFFFF;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: #1E40AF;
+}
+
+.mobile-menu-toggle.active {
+  background-color: #F97316; /* Orange when sidebar is open */
+}
+
+/* Show toggle button on mobile */
+@media (max-width: 767px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
+/* src/Components/Subscription/Subcription.css */
+:root {
+  --primary-blue: #1E3A8A;
+  --accent-teal: #2DD4BF;
+  --light-gray: #F3F4F6;
+  --dark-gray: #1F2937;
+  --white: #FFFFFF;
+  --error-red: #EF4444;
+  --success-green: #DCFCE7;
+  --warning-yellow: #FCD34D;
+}
+
+.subscription-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--light-gray);
+  position: relative;
+}
+
+.subscription-container {
+  flex: 1;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: var(--white);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  z-index: 999;
+}
+
+.sidebar-container.active {
+  left: 0;
+}
+
+/* Rest of the styles remain unchanged */
+.subscription-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--primary-blue);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.error-message {
+  color: var(--white);
+  background-color: var(--error-red);
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--primary-blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-plans-message {
+  text-align: center;
+  padding: 30px;
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.no-plans-message p {
+  font-size: 1.125rem;
+  color: var(--dark-gray);
+}
+
+.job-usage-dashboard {
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.usage-header h3 {
+  color: var(--dark-gray);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.subscription-badge {
+  background-color: var(--accent-teal);
+  color: var(--white);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.usage-stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.usage-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background-color: var(--light-gray);
+  border-radius: 8px;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--white);
+}
+
+.jobs-icon { background-color: var(--primary-blue); }
+.remaining-icon { background-color: var(--accent-teal); }
+.expiry-icon { background-color: #F97316; }
+
+.stat-content h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--dark-gray);
+  font-weight: 500;
+}
+
+.stat-value {
+  margin: 5px 0 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--primary-blue);
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+.plan-card {
+  position: relative;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 25px;
+  background-color: var(--white);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card h3 {
+  margin: 0 0 15px;
+  color: var(--dark-gray);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.plan-description {
+  margin: 0 0 20px;
+  color: #6B7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.popular-badge {
+  position: absolute;
+  top: 12px;
+  right: -30px;
+  background-color: var(--warning-yellow);
+  color: #7C2D12;
+  transform: rotate(45deg);
+  padding: 5px 30px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.plan-pricing {
+  margin: 20px 0;
+  padding: 10px 0;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.plan-price {
+  margin: 0 0 5px;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--dark-gray);
+}
+
+.plan-price span {
+  font-size: 1rem;
+  font-weight: normal;
+  color: #6B7280;
+}
+
+.plan-feature {
+  margin: 10px 0;
+  color: var(--dark-gray);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.875rem;
+}
+
+.feature-check {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--success-green);
+  color: #166534;
+  text-align: center;
+  line-height: 18px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.subscribe-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.subscribe-button:hover:not(:disabled) {
+  background-color: #1E40AF;
+}
+
+.subscribe-button:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+  .subscription-container {
+    padding: 15px;
+    margin-left: 0;
+  }
+
+  .subscription-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .job-usage-dashboard {
+    padding: 15px;
+  }
+
+  .usage-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .usage-stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-card {
+    padding: 20px;
+  }
+
+  .plan-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .plan-price {
+    font-size: 1.25rem;
+  }
+
+  .subscribe-button {
+    font-size: 0.875rem;
+    padding: 10px;
+  }
+
+  .sidebar-container {
+    width: 200px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .subscription-container {
+    padding: 20px;
+    margin-left: 260px;
+  }
+
+  .sidebar-container {
+    left: 0;
+    width: 250px;
+  }
+
+  .usage-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .plans-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .plan-card {
+    padding: 22px;
+  }
+
+  .subscription-container h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .subscription-container {
+    padding: 30px;
+    margin-left: 280px;
+  }
+
+  .sidebar-container {
+    left: 0;
+    width: 250px;
+  }
+
+  .usage-stats-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .plans-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* Add these styles to your Subscription.css file */
+
+.add-jobs-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.add-jobs-button {
+  background-color: #1E3A8A;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-jobs-button:hover {
+  background-color: #1e40af;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.jobs-modal {
+  background-color: white;
+  border-radius: 10px;
+  padding: 25px;
+  width: 90%;
+}
+
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Container */
+.jobs-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 500px;
+  padding: 24px;
+  position: relative;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.modal-close-button:hover {
+  color: #1e3a8a;
+}
+
+/* Modal Content */
+.jobs-modal p {
+  font-size: 1rem;
+  color: #4b5563;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Job Count Selector */
+.job-count-selector {
+  margin-bottom: 20px;
+}
+
+.job-count-selector label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1e3a8a;
+  margin-bottom: 8px;
+}
+
+.job-count-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.job-count-controls button {
+  background: #e5e7eb;
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.25rem;
+  color: #1e3a8a;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.job-count-controls button:hover:not(:disabled) {
+  background: #d1d5db;
+  transform: scale(1.05);
+}
+
+.job-count-controls button:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.job-count-controls input {
+  width: 80px;
+  height: 40px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1rem;
+  color: #1e3a8a;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.job-count-controls input:focus {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+/* Cost Summary */
+.job-cost-summary {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.job-cost-summary p {
+  font-size: 1rem;
+  color: #4b5563;
+  margin: 0 0 8px;
+}
+
+.job-cost-summary .total-cost {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancel-button {
+  background: #e5e7eb;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.cancel-button:hover {
+  background: #d1d5db;
+  transform: scale(1.02);
+}
+
+.confirm-button {
+  background: #1e3a8a;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background: #1e40af;
+  transform: scale(1.02);
+}
+
+.confirm-button:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .jobs-modal {
+    width: 95%;
+    padding: 16px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .jobs-modal p {
+    font-size: 0.9rem;
+  }
+
+  .job-count-controls {
+    gap: 8px;
+  }
+
+  .job-count-controls button {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .job-count-controls input {
+    width: 70px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .job-cost-summary {
+    padding: 12px;
+  }
+
+  .job-cost-summary p {
+    font-size: 0.9rem;
+  }
+
+  .job-cost-summary .total-cost {
+    font-size: 1rem;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cancel-button,
+  .confirm-button {
+    width: 100%;
+    padding: 12px;
+  }
+}

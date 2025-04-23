@@ -1,0 +1,397 @@
+/* status.css */
+
+/* Global Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+    line-height: 1.6;
+  } */
+  
+  /* Status Job Container */
+  .status-job-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  
+  /* Status Job Content */
+  .status-job-content {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-height: calc(100vh - 60px); /* Limit height to viewport minus margins */
+    overflow-y: auto; /* Enable right-side scrolling */
+  }
+  
+  /* Thin Scrollbar for Status Job Content on Small Screens */
+  @media (max-width: 767px) {
+    .status-job-content::-webkit-scrollbar {
+      width: 4px; /* Thin scrollbar */
+    }
+  
+    .status-job-content::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 2px;
+    }
+  
+    .status-job-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+  }
+  
+  /* Job Header Mobile */
+  .job-header-mobile {
+    display: none;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .job-header-mobile h2 {
+    font-size: 1.5rem;
+    color: #1e3a8a;
+  }
+  
+  .job-header-mobile p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Chat Icon */
+  .chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #1e3a8a;
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s;
+    z-index: 1000;
+  }
+  
+  .chat-icon:hover {
+    background: #3b82f6;
+  }
+  
+  /* Card Header */
+  .card-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .card-header h1 {
+    font-size: 1.8rem;
+    color: #1e3a8a;
+  }
+  
+  .card-header span {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* Status Tracker */
+  .status-tracker {
+    margin-bottom: 30px;
+  }
+  
+  .status-tracker h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Status Steps */
+  .status-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    background: #f9fafb; /* Light background color */
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  @media (min-width: 1200px) {
+    .status-steps {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 10px;
+    }
+  }
+  
+  /* Status Step */
+  .status-step {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: all 0.3s;
+  }
+  
+  @media (min-width: 1200px) {
+    .status-step {
+      flex-direction: column;
+      width: auto;
+      max-width: 200px;
+      text-align: center;
+    }
+  }
+  
+  /* Step Circle */
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  
+  .step-circle svg {
+    width: 16px;
+    height: 16px;
+    stroke: #fff;
+  }
+  
+  /* Step Label */
+  .step-label {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Status Classes */
+  .status-step.completed .step-circle {
+    background: #2ecc71;
+    border-color: #2ecc71;
+  }
+  
+  .status-step.pending .step-circle {
+    background: #f1c40f;
+    border-color: #f1c40f;
+  }
+  
+  .status-step.interview-scheduled .step-circle {
+    background: #1e3a8a;
+    border-color: #1e3a8a;
+  }
+  
+  .status-step.accepted .step-circle {
+    background: #2ecc71;
+    border-color: #2ecc71;
+  }
+  
+  .status-step.rejected .step-circle {
+    background: #e74c3c;
+    border-color: #e74c3c;
+  }
+  
+  /* Job Details Card */
+  .job-details-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  /* Job Details Content with Scrollbar on Small Screens */
+  .job-details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 400px; /* Limit height for mobile to enable scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 5px; /* Space for scrollbar */
+  }
+  
+  @media (min-width: 768px) {
+    .job-details-content {
+      max-height: none; /* Remove height limit for larger screens */
+      overflow-y: visible; /* No scrolling needed */
+      padding-right: 0;
+    }
+  }
+  
+  /* Thin Scrollbar for Job Details on Small Screens */
+  @media (max-width: 767px) {
+    .job-details-content::-webkit-scrollbar {
+      width: 4px; /* Thin scrollbar */
+    }
+  
+    .job-details-content::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 2px;
+    }
+  
+    .job-details-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+  }
+  
+  .job-details-card h3 {
+    font-size: 1.3rem;
+    color: #1e3a8a;
+    margin-bottom: 15px;
+  }
+  
+  .job-description,
+  .responsibilities {
+    flex: 1;
+  }
+  
+  .job-description h4,
+  .responsibilities h4,
+  .job-type h4,
+  .job-mode h4 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .job-description p,
+  .responsibilities p,
+  .job-type p,
+  .job-mode p {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Job Type and Mode */
+  .job-attributes-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .job-type-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  @media (min-width: 768px) {
+    .job-type-mode {
+      flex-direction: row;
+      gap: 20px;
+    }
+  
+    .job-type,
+    .job-mode {
+      flex: 1;
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 767px) {
+    .status-job-container {
+      margin: 10px;
+      padding: 0 10px;
+    }
+  
+    .status-job-content {
+      padding: 15px;
+    }
+  
+    .job-header-mobile {
+      display: block;
+    }
+  
+    .card-header {
+      display: none;
+    }
+  
+    .status-tracker h2 {
+      font-size: 1.3rem;
+    }
+  
+    .status-step {
+      max-width: 100%;
+    }
+  
+    .step-label {
+      font-size: 0.85rem;
+    }
+  
+    .job-details-card {
+      padding: 15px;
+    }
+  
+    .job-details-card h3 {
+      font-size: 1.2rem;
+    }
+  
+    .chat-icon {
+      width: 40px;
+      height: 40px;
+      bottom: 15px;
+      right: 15px;
+    }
+  
+    .chat-icon svg {
+      font-size: 20px;
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 991px) {
+    .status-job-container {
+      max-width: 700px;
+    }
+  
+    .status-step {
+      max-width: 250px;
+    }
+  
+    .job-details-content {
+      gap: 15px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .status-job-container {
+      max-width: 1400px;
+    }
+  
+    .status-steps {
+      padding: 15px 20px;
+    }
+  }
+  
+  /* Accessibility */
+  :focus {
+    outline: 2px solid #1e3a8a;
+    outline-offset: 2px;
+  }
+  
+  .chat-icon:focus {
+    outline: 2px solid #3b82f6;
+  }
+  
+  
+  
+  .chat-status.approved {
+    background-color: green;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
