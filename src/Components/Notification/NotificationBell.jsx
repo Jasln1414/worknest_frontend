@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { IoClose } from 'react-icons/io5';
 import './Notification.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openInterviewModal, setInterviewDetails } from '../../Redux/Interview/interviewCallSlice';
+import axios from 'axios';
 
 const notificationSound = 'data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU';
 
@@ -74,11 +75,17 @@ const NotificationBell = ({ userId, senderName }) => {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [user , setUser]= useState(null)
   const audioRef = useRef(null);
   const serviceRef = useRef(null);
   const containerRef = useRef(null);
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
+  const authentication = useSelector((state) => state.authentication_user);
+  const baseURL = 'http://127.0.0.1:8000';
+  const token = localStorage.getItem('access');
+
+  
 
   useEffect(() => {
     audioRef.current = new Audio(notificationSound);
@@ -87,6 +94,7 @@ const NotificationBell = ({ userId, senderName }) => {
     serviceRef.current = new NotificationService(userId, dispatch);
     serviceRef.current.connect();
 
+    
     const handleNotification = (data) => {
       if (data.type === 'notification') {
         // Skip notifications from the current user
@@ -104,8 +112,18 @@ const NotificationBell = ({ userId, senderName }) => {
         }, ...prev.slice(0, 9)]);
         
         audioRef.current.play().catch(e => console.log('Audio play failed:', e));
-      } else if (data.type === 'initial_count') {
+      } else if (data.type === 'initial_data') {
         setUnreadCount(data.unread_count);
+        // Transform and set initial notifications
+        const initialNotifications = data.notifications.map(notif => ({
+            id: Date.now() + Math.random(),
+            text: notif.message,
+            timestamp: notif.created_at,
+            chat_id: null,
+            read: false,
+            mediaUrl: extractMediaUrl(notif.message)
+        }));
+        setNotifications(initialNotifications);
       }
     };
 
@@ -115,6 +133,35 @@ const NotificationBell = ({ userId, senderName }) => {
       serviceRef.current.disconnect();
     };
   }, [userId, senderName]);
+
+  useEffect(() => {
+    const changeNotificationStatus = async () => {
+      try {
+        if (showDropdown && userId) { // Add null check for userId
+          const response = await axios.post(
+            `${baseURL}/chat/notificationStatus/`,
+            {},
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
+            }
+          );
+          
+          if (response.status === 200) {
+            console.log("Notification status changed successfully", response.data);
+          }
+        }
+      } catch (error) {
+        console.log("Error in changing notification status", error);
+      }
+    };
+  
+    if (showDropdown) {
+      changeNotificationStatus();
+    }
+  }, [showDropdown]);
+ 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -157,6 +204,33 @@ const NotificationBell = ({ userId, senderName }) => {
     window.location.href = `/chat/${chatId}`;
     setShowDropdown(false);
   };
+
+
+
+
+
+
+
+
+  // Add this useEffect to handle viewport positioning
+useEffect(() => {
+  if (showDropdown && dropdownRef.current) {
+    const dropdown = dropdownRef.current;
+    const viewportHeight = window.innerHeight;
+    const dropdownBottom = dropdown.getBoundingClientRect().bottom;
+
+    // If dropdown goes below viewport
+    if (dropdownBottom > viewportHeight) {
+      dropdown.style.maxHeight = `${viewportHeight - 100}px`;
+      dropdown.style.overflowY = 'auto';
+    }
+  }
+}, [showDropdown, notifications]);
+
+
+  useEffect(()=>{
+    console.log('Notifications updated:', notifications);
+  },[notifications])
 
   return (
     <div className="notification-bell-container" ref={containerRef}>
@@ -201,7 +275,7 @@ const NotificationBell = ({ userId, senderName }) => {
         >
           <div className="notification-header">
             <h3>Notifications</h3>
- UNUSED CODE
+ 
             {notifications.length > 0 && (
               <button className="clear-all-btn" onClick={clearAllNotifications}>
                 Clear All
@@ -209,27 +283,26 @@ const NotificationBell = ({ userId, senderName }) => {
             )}
           </div>
           <div className="notification-list">
-            {notifications.length > 0 ? (
-              notifications.map(notif => (
-                <div
-                  key={notif.id}
-                  className={`notification-item ${notif.read ? 'read' : 'unread'}`}
-                  onClick={() => navigateToChat(notif.chat_id)}
-                >
-                  <div className="notification-content">
-                    <div className="notification-text">
-                      {notif.text.replace(/(https?:\/\/[^\s]+)/, '')}
-                    </div>
-                    {notif.mediaUrl && renderMediaPreview(notif.mediaUrl)}
-                    <div className="notification-time">
-                      {new Date(notif.timestamp).toLocaleTimeString()}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="no-notifications">No notifications</div>
-            )}
+              {notifications.length > 0 ? (
+                  notifications.map(notif => (
+                      <div
+                          key={notif.id}
+                          className={`notification-item ${notif.read ? 'read' : 'unread'}`}
+                          onClick={() => navigateToChat(notif.chat_id)}
+                      >
+                          <div className="notification-content">
+                              <div className="notification-text">
+                                  {notif.text}
+                              </div>
+                              <div className="notification-time">
+                                  {new Date(notif.timestamp).toLocaleString()}
+                              </div>
+                          </div>
+                      </div>
+                  ))
+              ) : (
+                  <div className="no-notifications">No notifications</div>
+              )}
           </div>
         </div>
       )}

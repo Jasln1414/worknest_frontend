@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { GrSearch, GoLocation, API_CONFIG, debounce, AuthService, CacheService } from './utilssearch';
-import '../../../assets/component/Findjob.css';
+//import '../../../assets/component/Findjob.css';
+import './SearchBox.css';
 
 
 function SearchBox({ searchParams, handleSearchInputChange, handleSearch, isSearching }) {
@@ -176,7 +177,7 @@ function SearchBox({ searchParams, handleSearchInputChange, handleSearch, isSear
           </div>
         </div>
 
-        <button type="submit" className="search-button" disabled={isSearching}>
+        <button type="submit" className="search-button-search" disabled={isSearching}>
           {isSearching ? 'Searching...' : 'Find jobs'}
         </button>
       </div>

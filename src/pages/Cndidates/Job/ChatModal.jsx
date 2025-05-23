@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { IoSend, IoAttach, IoClose } from 'react-icons/io5';
 import axios from 'axios';
@@ -13,6 +14,7 @@ function ChatModal({
   employer_id,
   senderName,
   currentUserId,
+  reciverId,
 }) {
   const modalRef = useRef();
   const chatMessagesRef = useRef(null);
@@ -26,16 +28,72 @@ function ChatModal({
   const [isUploading, setIsUploading] = useState(false);
   const baseURL = 'http://127.0.0.1:8000';
   const token = localStorage.getItem('access');
+  const [chattApprove, setChatApprove] = useState(false);
+  const [chatisRequested, setChatRequested] = useState(false);
+  const [chatisRejected, setChatRejected] = useState(false);
+  const [requestMessage, setRequestMessage] = useState('');
+  const [approvalId, setApprovalId] = useState(null);
 
   // Resolve user_id
   const storedUserId = localStorage.getItem('user_id');
   const user_id = currentUserId || (storedUserId && storedUserId !== 'null' && storedUserId !== 'undefined' ? storedUserId : employer_id);
+
+  const user_Idd = useSelector((state) => state.authentication_user.userid);
 
   // Role determination
   const isEmployer = String(user_id) === String(employer_id);
   const otherUserId = isEmployer ? candidate_id : employer_id;
   const actualSenderName = senderName || (isEmployer ? emp_name : userName);
   const otherUserName = isEmployer ? userName : emp_name;
+
+  useEffect(() => {
+    if (!chattApprove) {
+      fetchChatApprove();
+    }
+  }, []);
+
+  const fetchChatApprove = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/api/empjob/getApproval/${candidate_id}/${employer_id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data) {
+        setChatApprove(response.data.is_approved);
+        setChatRequested(response.data.is_requested);
+        setChatRejected(response.data.is_rejected);
+        setApprovalId(response.data.id);
+      } else {
+        setChatApprove(false);
+      }
+    } catch (error) {
+      // Error handling without console.log
+    }
+  };
+
+  const handleChatRequest = async () => {
+    if (!requestMessage.trim()) {
+      alert('Please enter a message');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${baseURL}/api/empjob/approveChat/${approvalId}/`,
+        {
+          action: "requested",
+          message: requestMessage
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setChatRequested(true);
+      setRequestMessage('');
+      fetchChatApprove();
+    } catch (error) {
+      // Error handling without console.log
+    }
+  };
 
   const formatTimestamp = (isoString) => {
     if (!isoString) return '';
@@ -80,7 +138,6 @@ function ChatModal({
       setIsUploading(false);
       return response.data.file_url;
     } catch (error) {
-      console.error(`[${user_id}] File upload failed:`, error);
       setIsUploading(false);
       return null;
     }
@@ -112,7 +169,6 @@ function ChatModal({
   useEffect(() => {
     const connectToWebSocket = () => {
       if (!candidate_id || !employer_id) {
-        console.error(`[${user_id}] Missing candidate_id or employer_id. Aborting WebSocket connection.`);
         return;
       }
       setWebsocketStatus('connecting');
@@ -121,7 +177,6 @@ function ChatModal({
       clientRef.current = newClient;
 
       newClient.onopen = () => {
-        console.log(`[${user_id}] WebSocket connection established`);
         setWebsocketStatus('connected');
         loadChatHistory();
         requestActiveUsersList();
@@ -129,7 +184,6 @@ function ChatModal({
 
       newClient.onmessage = (message) => {
         const data = JSON.parse(message.data);
-        console.log(`[${user_id}] Received message from server:`, data);
 
         if (data.type === 'active_users') {
           handleActiveUsersUpdate(data.users);
@@ -164,13 +218,11 @@ function ChatModal({
       };
 
       newClient.onclose = () => {
-        console.log(`[${user_id}] WebSocket connection closed`);
         setWebsocketStatus('disconnected');
         setOtherUserOnline(false);
       };
 
       newClient.onerror = (error) => {
-        console.error(`[${user_id}] WebSocket error:`, error);
         setWebsocketStatus('error');
       };
     };
@@ -188,7 +240,7 @@ function ChatModal({
           setChatMessages(processedMessages);
         }
       } catch (error) {
-        console.error(`[${user_id}] Error loading chat history:`, error.response?.data || error.message);
+        // Error handling without console.log
       }
     };
 
@@ -240,7 +292,9 @@ function ChatModal({
       is_read: otherUserOnline,
       status: 'sending',
       file_url: fileUrl || null,
-      sender_id: user_id, // Use user_id
+      sender_id: user_id,
+      reciverId: reciverId,
+      se_id: user_Idd
     };
 
     setChatMessages((prev) => [...prev, messageData]);
@@ -253,13 +307,14 @@ function ChatModal({
       sendername: actualSenderName,
       timestamp,
       file_url: fileUrl || null,
-      sender_id: user_id, // Use user_id
+      sender_id: user_id,
+      reciverId: reciverId,
+      se_id: user_Idd
     };
 
     try {
       clientRef.current.send(JSON.stringify(serverMessageData));
     } catch (error) {
-      console.error(`[${user_id}] Failed to send message:`, error);
       setChatMessages((prev) =>
         prev.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg))
       );
@@ -310,7 +365,7 @@ function ChatModal({
           </div>
         </div>
         <div className="chat-messages" ref={chatMessagesRef}>
-          {websocketStatus === 'connecting' && <div className="loading-message">Connecting to chat...</div>}
+          {websocketStatus === 'connecting' && chattApprove === true && (<div className="loading-message">Connecting to chat...</div>)}
           {websocketStatus === 'error' && (
             <div className="connection-error-message">Unable to connect to chat server. Please try again later.</div>
           )}
@@ -321,7 +376,7 @@ function ChatModal({
               const isCurrentUser = String(msg.sender_id) === String(user_id);
               return (
                 <div key={msg.id || generateMessageId()}>
-                  <div className={`chat-message-${isCurrentUser ? 'right' : 'left'}`}>
+                  <div className={`chat-message-${msg.se_id===user_Idd ? 'right' : 'left'}`}>
                     <div className={`chat-message-bubble ${msg.status === 'failed' ? 'failed' : ''}`}>
                       <strong>{msg.sendername}</strong>
                       {msg.message && <p>{displayMessageText(msg.message)}</p>}
@@ -338,49 +393,109 @@ function ChatModal({
             })
           )}
         </div>
-        <div className="chat-input-container">
-          {selectedFile && renderFilePreview()}
-          <div className="chat-input-wrapper">
-            <button
-              className="file-attach-button"
-              onClick={() => fileInputRef.current.click()}
-              disabled={isUploading || websocketStatus !== 'connected'}
-            >
-              <IoAttach size={20} />
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                style={{ display: 'none' }}
-                accept="image/*,video/*"
+        {chattApprove && 
+          <div className="chat-input-container">
+            {selectedFile && renderFilePreview()}
+            <div className="chat-input-wrapper">
+              <button
+                className="file-attach-button"
+                onClick={() => fileInputRef.current.click()}
                 disabled={isUploading || websocketStatus !== 'connected'}
+              >
+                <IoAttach size={20} />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                  accept="image/*,video/*"
+                  disabled={isUploading || websocketStatus !== 'connected'}
+                />
+              </button>
+              <textarea
+                placeholder="Type your message..."
+                name="message"
+                id="message"
+                rows={1}
+                onChange={handleTextareaChange}
+                value={message}
+                className="chat-input"
+                disabled={websocketStatus !== 'connected' || isUploading}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
               />
-            </button>
-            <textarea
-              placeholder="Type your message..."
-              name="message"
-              id="message"
-              rows={1}
-              onChange={handleTextareaChange}
-              value={message}
-              className="chat-input"
-              disabled={websocketStatus !== 'connected' || isUploading}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
-            />
-            <button
-              className="chat-send-button"
-              onClick={sendMessage}
-              disabled={websocketStatus !== 'connected' || (!message.trim() && !selectedFile) || isUploading}
-            >
-              {isUploading ? <div className="loading-spinner"></div> : <IoSend size={20} />}
-            </button>
+              <button
+                className="chat-send-button"
+                onClick={sendMessage}
+                disabled={websocketStatus !== 'connected' || (!message.trim() && !selectedFile) || isUploading}
+              >
+                {isUploading ? <div className="loading-spinner"></div> : <IoSend size={20} />}
+              </button>
+            </div>
           </div>
-        </div>
+        }
+        {!chattApprove && (
+          <div style={{ 
+            padding: '20px', 
+            backgroundColor: '#f8f9fa', 
+            borderRadius: '8px', 
+            margin: '15px 0', 
+          }}>
+            {!chatisRequested ? (
+              <>
+                <div style={{ 
+                  color: '#dc3545', 
+                  marginBottom: '15px', 
+                  fontSize: '1rem' 
+                }}>
+                  Chat is not approved yet. Please request approval to continue.
+                </div>
+                <textarea
+                  style={{ 
+                    width: '100%', 
+                    padding: '10px', 
+                    border: '1px solid #ced4da', 
+                    borderRadius: '4px', 
+                    marginBottom: '10px', 
+                    minHeight: '100px', 
+                    resize: 'vertical' 
+                  }}
+                  value={requestMessage}
+                  onChange={(e) => setRequestMessage(e.target.value)}
+                  placeholder="Type your request message..."
+                />
+                <button 
+                  style={{ 
+                    backgroundColor: '#007bff', 
+                    color: 'white', 
+                    padding: '8px 16px', 
+                    border: 'none', 
+                    borderRadius: '4px', 
+                    cursor: 'pointer', 
+                    transition: 'background-color 0.3s' 
+                  }}
+                  onClick={handleChatRequest}
+                >
+                  Send Request
+                </button>
+              </>
+            ) : (
+              <div style={{ 
+                color: '#07a333', 
+                padding: '10px', 
+                backgroundColor: '#cdf7d9', 
+                borderRadius: '4px', 
+                border: '1px solid #ffeeba' 
+              }}>
+                Your chat request is pending approval. You'll be notified once approved.
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

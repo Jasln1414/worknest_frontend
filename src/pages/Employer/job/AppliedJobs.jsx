@@ -39,6 +39,7 @@ function ApplicationsManagement() {
     const [selectedJob, setSelectedJob] = useState(null);
     const [change, setChange] = useState(true);
     const [current, setCurrent] = useState(null);
+    const [fetchJob, setFetchJob] = useState(false);
     const [status, setStatus] = useState('');
     const [questions, setQuestions] = useState([]);
     const baseURL = 'http://127.0.0.1:8000';
@@ -62,30 +63,31 @@ function ApplicationsManagement() {
     }, []);
 
     useEffect(() => {
-        const fetchJobDetails = async () => {
-            try {
-                const response = await axios.get(`${baseURL}/api/empjob/getApplicationjobs/`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                if (response.status === 200) {
-                    setJobData(response.data.data);
-                    setSelectedJob(response.data.data[0]);
-                    if (response.data.data[0]?.questions !== null) {
-                        setQuestions(response.data.data[0].questions);
-                    } else {
-                        setQuestions([]);
-                    }
-                }
-            } catch (error) {
-                console.error("Something went wrong", error);
-            }
-        };
         fetchJobDetails();
-    }, [token]);
+    }, [token, fetchJob]);
+
+const fetchJobDetails = async () => {
+        try {
+            const response = await axios.get(`${baseURL}/api/empjob/getApplicationjobs/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                setJobData(response.data.data);
+                setSelectedJob(response.data.data[0]);
+                if (response.data.data[0]?.questions !== null) {
+                    setQuestions(response.data.data[0].questions);
+                } else {
+                    setQuestions([]);
+                }
+            }
+        } catch (error) {
+            console.error("Something went wrong", error);
+        }
+    };
 
     const handleJobClick = (job) => {
         setSelectedJob(job);
@@ -97,9 +99,9 @@ function ApplicationsManagement() {
     return (
         <div className="app-mgmt-container">
             {!isSmallScreen && (
-                <div className="app-mgmt-sidebar-container">
+                
                     <SideBar />
-                </div>
+               
             )}
 
             <div className="app-mgmt-content-wrapper">
@@ -229,6 +231,9 @@ function ApplicationsManagement() {
                                     setChange={setChange} 
                                     current={current} 
                                     questions={questions} 
+                                    setFetchJob ={setFetchJob}
+                                    fetchJob={fetchJob}
+                                    fetchJobDetails={fetchJobDetails}
                                 />
                             </div>
                         </div>

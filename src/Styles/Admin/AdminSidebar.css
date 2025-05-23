@@ -1105,3 +1105,26 @@
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 }
+
+.admin-tables-row {
+  margin-top: 30px; /* Adjust this value as needed */
+  display: flex;
+  gap: 20px; /* Space between the two table cards */
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+.admin-table-card {
+  flex: 1;
+  min-width: 300px; /* Minimum width before wrapping */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+/* If you want to add margin specifically to the container */
+.admin-section {
+  margin-top: 30px;
+}
+
+

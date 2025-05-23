@@ -10,9 +10,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import ProfilepicModal from '../Employer/ProfilepicModal';
 import { ProfileDataSchema, initialValues } from "../../validation/CandidateProfileValidation";
-//import "../../Styles/Candidate/ProfileCreation.css";
-//import "../../Styles/Login.css";
-import '../../assets/component/profile.css';
+import '../../assets/component/profilecreation.css';
 
 function CandidateProfileCreation() {
   const baseURL = "http://127.0.0.1:8000/";

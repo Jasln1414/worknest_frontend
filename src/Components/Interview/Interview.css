@@ -1293,3 +1293,168 @@
     height: 36px;
   }
 }
+
+
+/* Interview.css */
+.interview-room-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f7fa;
+}
+
+.interview-room-container header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.interview-room-container button {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 20px;
+  transition: background-color 0.3s;
+}
+
+.interview-room-container button:hover {
+  background-color: #45a049;
+}
+
+.interview-room-container h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.myCallContainer {
+  flex: 1;
+  width: 100%;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #d32f2f;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .interview-room-container header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .interview-room-container button {
+    margin-bottom: 10px;
+    margin-right: 0;
+  }
+
+  .interview-room-container h1 {
+    font-size: 20px;
+  }
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.modal-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-label {
+  font-size: 1em;
+  margin-bottom: 5px;
+}
+
+.modal-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.date-validation-error {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.modal-button.schedule {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-button.schedule.disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.modal-button.cancel {
+  background-color: #dc3545;
+  color: white;
+}

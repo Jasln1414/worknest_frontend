@@ -29,6 +29,7 @@ function CandidateLogin({ isOpen, onClose, switchToSignup }) {
     try {
       const response = await axios.post(`${baseURL}/api/account/candidatelogin/`, formData);
       console.log("Login Response:", response);
+      console.log("user id.............", response.data.user_id);
 
       if (response.status === 200) {
         // Save tokens to localStorage
@@ -43,6 +44,7 @@ function CandidateLogin({ isOpen, onClose, switchToSignup }) {
           set_Authentication({
             name: decodedToken.name,
             email: response.data.email,
+            userid: response.data.user_id,
             isAuthenticated: true,
             isAdmin: response.data.isAdmin,
             usertype: response.data.usertype,
@@ -126,6 +128,7 @@ function CandidateLogin({ isOpen, onClose, switchToSignup }) {
           set_Authentication({
             name: jwtDecode(response.data.access_token).name,
             email: response.data.email,
+            userid: response.data.user_id,
             isAuthenticated: true,
             isAdmin: response.data.isAdmin,
             usertype: response.data.usertype,

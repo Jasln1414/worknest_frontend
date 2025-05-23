@@ -152,7 +152,7 @@ function PostJob() {
 
   return (
     <div className="post-job-container">
-      {!isSmallScreen && <SideBar />}
+      <SideBar />
 
       <div className="post-job-content">
         {showQuestionModal && (

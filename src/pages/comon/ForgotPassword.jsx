@@ -1,9 +1,11 @@
+// ForgotPasswordModal.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import OtpModal from './OTP'; // Adjust this path if needed
-import ResetPasswordModal from './ResetPassword'; // Import the ResetPasswordModal component
+import OtpModal from './OTP';
+import ResetPasswordModal from './ResetPassword';
 import '../../Styles/Candidate/CandidateLogin.css';
+import './common.css';
 
 function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }) {
   const [localEmail, setLocalEmail] = useState('');
@@ -21,13 +23,12 @@ function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }) {
     console.log("Sending payload:", payload);
     
     try {
-      // Determine API endpoint based on user type (candidate or employer)
-      const endpoint = "/api/account/forgot_pass/"; // Default to candidate endpoint
+      const endpoint = "/api/account/forgot_pass/";
       const response = await axios.post(`${baseURL}${endpoint}`, payload);
       
       if (response.status === 200) {
         toast.success('OTP has been sent to your email.', { position: 'top-center' });
-        setIsOtpModalOpen(true); // Show OTP modal
+        setIsOtpModalOpen(true);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -39,8 +40,8 @@ function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }) {
   
   const handleOtpSuccess = () => {
     console.log("OTP verified successfully!");
-    setIsOtpModalOpen(false); // Close the OTP modal
-    setIsResetModalOpen(true); // Show the reset password modal
+    setIsOtpModalOpen(false);
+    setIsResetModalOpen(true);
   };
   
   const closeOtpModal = () => {
@@ -54,57 +55,60 @@ function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }) {
   const handlePasswordResetSuccess = () => {
     toast.success("Password reset successful! Please log in with your new password.");
     setIsResetModalOpen(false);
-    // Return to login form
     if (typeof onBackToLogin === 'function') {
       onBackToLogin();
     } else {
-      onClose(); // Fallback to just closing if onBackToLogin isn't provided
+      onClose();
     }
   };
   
   const handleBackgroundClick = (e) => {
-    if (e.target.className === "modal-overlay") {
+    if (e.target.className === "forgot-password-overlay") {
       onClose();
     }
   };
   
   if (!isOpen) return null;
-  
+
   return (
-    <div className="modal-overlay" onClick={handleBackgroundClick}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="close-icon" onClick={onClose}>×</button>
-        <h2>Forgot Password</h2>
-        <p>Enter your email address and we'll send you an OTP to reset your password.</p>
+    <div className="forgot-password-overlay" onClick={handleBackgroundClick}>
+      <div className="forgot-password-content" onClick={(e) => e.stopPropagation()}>
+        <button className="forgot-password-close" onClick={onClose}>×</button>
+        <h2 className="forgot-password-title">Forgot Password</h2>
         
-        <form onSubmit={handleResetRequest}>
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              value={localEmail}
-              onChange={(e) => setLocalEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-          
-          <button type="submit" disabled={isSubmitting} className="submit-button">
-            {isSubmitting ? "Processing..." : "Send OTP"}
-          </button>
-        </form>
-        
-        {/* OTP Modal */}
+        {!isOtpModalOpen && !isResetModalOpen && (
+          <>
+            <p className="forgot-password-description">Enter your email address and we'll send you an OTP to reset your password.</p>
+            
+            <form onSubmit={handleResetRequest} className="forgot-password-form">
+              <div className="forgot-password-form-group">
+                <label htmlFor="email" className="forgot-password-label">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={localEmail}
+                  onChange={(e) => setLocalEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  disabled={isSubmitting}
+                  className="forgot-password-input"
+                />
+              </div>
+              
+              <button type="submit" disabled={isSubmitting} className="forgot-password-submit">
+                {isSubmitting ? "Processing..." : "Send OTP"}
+              </button>
+            </form>
+          </>
+        )}
+
         <OtpModal
           isOpen={isOtpModalOpen}
           closeModal={closeOtpModal}
           email={localEmail}
           onOtpSuccess={handleOtpSuccess}
         />
-        
-        {/* Reset Password Modal */}
+
         <ResetPasswordModal
           isOpen={isResetModalOpen}
           closeModal={closeResetModal}

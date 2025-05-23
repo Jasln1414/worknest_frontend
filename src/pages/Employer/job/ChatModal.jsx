@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { IoSend, IoAttach, IoClose } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
-import '../../Employer/job/chat.css';
 
 function ChatModal({
   setChat,
@@ -13,6 +13,7 @@ function ChatModal({
   employer_id,
   senderName,
   currentUserId,
+  reciverId
 }) {
   const modalRef = useRef();
   const chatMessagesRef = useRef(null);
@@ -27,6 +28,8 @@ function ChatModal({
   const baseURL = 'http://127.0.0.1:8000';
   const token = localStorage.getItem('access');
 
+  const user_Id = useSelector((state) => state.authentication_user.userid);
+
   // Resolve user_id
   const storedUserId = localStorage.getItem('user_id');
   const user_id = currentUserId || (storedUserId && storedUserId !== 'null' && storedUserId !== 'undefined' ? storedUserId : employer_id);
@@ -36,6 +39,57 @@ function ChatModal({
   const otherUserId = isEmployer ? candidate_id : employer_id;
   const actualSenderName = senderName || (isEmployer ? emp_name : userName);
   const otherUserName = isEmployer ? userName : emp_name;
+
+  const [chattApprove, setChatApprove] = useState(false);
+  const [chatisRequested, setChatRequested] = useState(false);
+  const [chatisRejected, setChatRejected] = useState(false);
+  const [requestMessage, setRequestMessage] = useState('');
+  const [approvalId, setApprovalId] = useState(null);
+
+  useEffect(() => {
+    if (!chattApprove) {
+      fetchChatApprove();
+    }
+  }, []);
+
+  const fetchChatApprove = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/api/empjob/getApproval/${candidate_id}/${employer_id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data) {
+        setChatApprove(response.data.is_approved);
+        setChatRequested(response.data.is_requested);
+        setChatRejected(response.data.is_rejected);
+        setApprovalId(response.data.id);
+        setRequestMessage(response.data.message);
+      } else {
+        setChatApprove(false);
+      }
+    } catch (error) {
+      // Error handling without console.log
+    }
+  };
+
+  const handleChatRequest = async (action) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/empjob/approveChat/${approvalId}/`,
+        {
+          action: action,
+          message: ''
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.status === 200) {
+        fetchChatApprove();
+      }
+    } catch (error) {
+      // Error handling without console.log
+    }
+  };
 
   const formatTimestamp = (isoString) => {
     if (!isoString) return '';
@@ -80,7 +134,6 @@ function ChatModal({
       setIsUploading(false);
       return response.data.file_url;
     } catch (error) {
-      console.error(`[${user_id}] File upload failed:`, error);
       setIsUploading(false);
       return null;
     }
@@ -112,7 +165,6 @@ function ChatModal({
   useEffect(() => {
     const connectToWebSocket = () => {
       if (!candidate_id || !employer_id) {
-        console.error(`[${user_id}] Missing candidate_id or employer_id. Aborting WebSocket connection.`);
         return;
       }
       setWebsocketStatus('connecting');
@@ -121,7 +173,6 @@ function ChatModal({
       clientRef.current = newClient;
 
       newClient.onopen = () => {
-        console.log(`[${user_id}] WebSocket connection established`);
         setWebsocketStatus('connected');
         loadChatHistory();
         requestActiveUsersList();
@@ -129,7 +180,6 @@ function ChatModal({
 
       newClient.onmessage = (message) => {
         const data = JSON.parse(message.data);
-        console.log(`[${user_id}] Received message from server:`, data);
 
         if (data.type === 'active_users') {
           handleActiveUsersUpdate(data.users);
@@ -164,16 +214,16 @@ function ChatModal({
       };
 
       newClient.onclose = () => {
-        console.log(`[${user_id}] WebSocket connection closed`);
         setWebsocketStatus('disconnected');
         setOtherUserOnline(false);
       };
 
       newClient.onerror = (error) => {
-        console.error(`[${user_id}] WebSocket error:`, error);
         setWebsocketStatus('error');
       };
     };
+
+    connectToWebSocket();
 
     const loadChatHistory = async () => {
       try {
@@ -188,11 +238,9 @@ function ChatModal({
           setChatMessages(processedMessages);
         }
       } catch (error) {
-        console.error(`[${user_id}] Error loading chat history:`, error.response?.data || error.message);
+        // Error handling without console.log
       }
     };
-
-    connectToWebSocket();
 
     const heartbeatInterval = setInterval(() => {
       if (clientRef.current && clientRef.current.readyState === WebSocket.OPEN) {
@@ -240,7 +288,9 @@ function ChatModal({
       is_read: otherUserOnline,
       status: 'sending',
       file_url: fileUrl || null,
-      sender_id: user_id, // Use user_id
+      sender_id: user_id,
+      reciverId: reciverId,
+      se_id: user_Id
     };
 
     setChatMessages((prev) => [...prev, messageData]);
@@ -253,13 +303,14 @@ function ChatModal({
       sendername: actualSenderName,
       timestamp,
       file_url: fileUrl || null,
-      sender_id: user_id, // Use user_id
+      sender_id: user_id,
+      reciverId: reciverId,
+      se_id: user_Id
     };
 
     try {
       clientRef.current.send(JSON.stringify(serverMessageData));
     } catch (error) {
-      console.error(`[${user_id}] Failed to send message:`, error);
       setChatMessages((prev) =>
         prev.map((msg) => (msg.id === messageId ? { ...msg, status: 'failed' } : msg))
       );
@@ -295,6 +346,15 @@ function ChatModal({
     }
   }, [chatMessages]);
 
+
+
+
+
+
+
+
+
+  
   return (
     <div ref={modalRef} onClick={closeModal} className="chat-modal-overlay">
       <div className="chat-modal-container">
@@ -310,7 +370,7 @@ function ChatModal({
           </div>
         </div>
         <div className="chat-messages" ref={chatMessagesRef}>
-          {websocketStatus === 'connecting' && <div className="loading-message">Connecting to chat...</div>}
+          {websocketStatus === 'connecting' && chattApprove === true && <div className="loading-message">Connecting to chat...</div>}
           {websocketStatus === 'error' && (
             <div className="connection-error-message">Unable to connect to chat server. Please try again later.</div>
           )}
@@ -321,7 +381,7 @@ function ChatModal({
               const isCurrentUser = String(msg.sender_id) === String(user_id);
               return (
                 <div key={msg.id || generateMessageId()}>
-                  <div className={`chat-message-${isCurrentUser ? 'right' : 'left'}`}>
+                  <div className={`chat-message-${msg.se_id===user_Id ? 'right' : 'left'}`}>
                     <div className={`chat-message-bubble ${msg.status === 'failed' ? 'failed' : ''}`}>
                       <strong>{msg.sendername}</strong>
                       {msg.message && <p>{displayMessageText(msg.message)}</p>}
@@ -338,6 +398,50 @@ function ChatModal({
             })
           )}
         </div>
+        {chatisRequested &&
+          <div style={{
+            padding: '10px',
+            backgroundColor: '#cdf7d9',
+            borderRadius: '8px',
+            margin: '2px 4px',
+          }}>
+            <p style={{
+              color: '#07a333',
+              padding: '0 10px',
+            }}>User is request to send message with a message.</p>
+            <p style={{
+              color: '#07a333',
+              padding: '0 10px',
+              fontSize: '1.3rem',
+              fontWeight: 'bold',
+            }}>{requestMessage}</p>
+            <button
+              style={{
+                backgroundColor: '#007bff',
+                color: 'white',
+                padding: '8px 16px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s'
+              }}
+              onClick={() => handleChatRequest("approved")}
+            >Approve</button>
+            <button
+              style={{
+                backgroundColor: '#ed1405',
+                color: 'white',
+                padding: '8px 16px',
+                marginLeft: '10px',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s'
+              }}
+              onClick={() => handleChatRequest("rejected")}
+            >Reject</button>
+          </div>
+        }
         <div className="chat-input-container">
           {selectedFile && renderFilePreview()}
           <div className="chat-input-wrapper">

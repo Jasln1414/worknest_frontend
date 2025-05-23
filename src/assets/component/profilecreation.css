@@ -1,0 +1,421 @@
+/* :root {
+  --primary-blue: #1e3a8a;
+  --error-red: #ef4444;
+  --text-gray: #374151;
+  --bg-light: #f9fafb;
+  --white: #ffffff;
+  --border-gray: #e5e7eb;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+} */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-gray);
+} */
+
+.profile-creation-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.profile-creation-wrapper {
+  display: flex;
+  flex-direction: row;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.left-panel {
+  flex: 1;
+  background-color: var(--primary-blue);
+  color: var(--white);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.left-panel h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.left-panel p,
+.left-panel li {
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.left-panel ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.right-panel {
+  flex: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.step {
+  width: 38px;
+  height: 38px;
+  background: var(--border-gray);
+  color: var(--text-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.step.completed {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.step-content h4 {
+  font-size: 1.4rem;
+  color: var(--primary-blue);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 6px;
+  background: var(--white);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary-blue);
+  outline: none;
+}
+
+.error-message {
+  color: var(--error-red);
+  font-size: 0.85rem;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+.skill-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-input input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.skill-input button {
+  padding: 10px 16px;
+  background: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.skill-input button:hover {
+  background: #2a4db3;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-item {
+  background: var(--bg-light);
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.skill-item span:last-child {
+  color: var(--error-red);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.prev-button,
+.next-button,
+.submit-button {
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.prev-button {
+  background: #d1d5db;
+  color: #111827;
+}
+
+.next-button,
+.submit-button {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.prev-button:hover {
+  background: #b0b7c3;
+}
+
+.next-button:hover,
+.submit-button:hover {
+  background: #2a4db3;
+}
+
+.submit-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.spinner-inner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid white;
+  border-top: 5px solid var(--primary-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+  .profile-creation-wrapper {
+    flex-direction: column;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    padding: 30px;
+  }
+
+  .step {
+    width: 34px;
+    height: 34px;
+  }
+
+  .step-content h4 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-creation-container {
+    padding: 20px;
+  }
+
+  .skill-input {
+    flex-direction: column;
+  }
+
+  .navigation-buttons {
+    flex-direction: column;
+  }
+
+  .prev-button,
+  .next-button,
+  .submit-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .left-panel h3 {
+    font-size: 1.4rem;
+  }
+
+  .left-panel p,
+  .left-panel li {
+    font-size: 0.85rem;
+  }
+
+  .step {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 10px;
+  }
+
+  .profile-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .spinner-inner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* src/styles/CandidateProfileCreation.css */
+/* :root {
+  --primary-blue: #1e3a8a;
+  --error-red: #ef4444;
+  --text-gray: #4b5563;
+  --bg-light: #f3f4f6;
+  --white: #ffffff;
+  --border-gray: #d1d5db;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+} */
+
+/* ... Other existing styles (profile-creation-container, left-panel, etc.) ... */
+
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.step {
+  width: 48px;
+  height: 48px;
+  background: var(--border-gray);
+  color: var(--text-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.step.completed {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.step:hover {
+  box-shadow: var(--shadow);
+}
+
+/* ... Other existing styles (form-group, skill-input, etc.) ... */
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  /* ... Other tablet styles ... */
+  .step-indicator {
+    gap: 18px;
+  }
+
+  .step {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* ... Other mobile styles ... */
+  .step-indicator {
+    gap: 14px;
+    margin-bottom: 15px;
+  }
+
+  .step {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* ... Other small mobile styles ... */
+  .step-indicator {
+    gap: 10px;
+    padding: 0 8px;
+  }
+
+  .step {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+}

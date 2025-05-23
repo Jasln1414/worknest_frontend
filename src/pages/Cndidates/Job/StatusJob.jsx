@@ -4,8 +4,9 @@ import ChatModal from "./ChatModal";
 // import '../../../Styles/Candidate/Jobdetail.css';
 
 function StatusJob({ selectedJob }) {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState();
   const [chat, setChat] = useState(false);
+  const [recevierId, setReceiverId] = useState(null);
   const baseURL = "http://127.0.0.1:8000";
   const currentUserId = localStorage.getItem('user_id');
 
@@ -21,9 +22,15 @@ function StatusJob({ selectedJob }) {
         "Accepted": 5,
         "Rejected": 6,
       };
+      setReceiverId(selectedJob.job.employer.user_id);
+      console.log("selected job.......................", selectedJob);
       setStep(statusSteps[selectedJob.status] || 0);
     }
   }, [selectedJob]);
+
+  useEffect(()=>{
+    console.log("receiver id.......................", recevierId);
+  },[recevierId])
 
   if (!selectedJob) return null;
 
@@ -37,10 +44,11 @@ function StatusJob({ selectedJob }) {
             candidate_id={selectedJob.candidate}
             employer_id={selectedJob.job.employer.id}
             setChat={setChat}
-            profile_pic={`${baseURL}${selectedJob.job.employer.profile_pic}`}
+            profile_pic={`${selectedJob.job.employer.profile_pic}`}
             userName={selectedJob.job.employer.user_full_name}
             currentUserId={currentUserId}
             senderName={selectedJob.candidate_name}
+            reciverId={recevierId}
           />
         )}
         <div className="chat-icon" onClick={handleChat}>
@@ -135,7 +143,6 @@ function StatusJob({ selectedJob }) {
 }
 
 export default StatusJob;
-
 
 
 

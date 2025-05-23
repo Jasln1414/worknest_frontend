@@ -20,18 +20,24 @@ function AdminJobDetail() {
   const token = localStorage.getItem('access');
   const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/';
 
-  // Fetch job details
+  
+
+
+
+// Fetch job details
   const fetchJobDetails = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`${baseURL}dashboard/admin/jobs/${id}/`, {
+      const response = await axios.get(`${baseURL}dashboard/admin/job/${id}/`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // ✅ correct
+
         },
       });
 
       if (response.status === 200) {
+        console.log('Job data:', response.data); // Log the job data
         setJobData(response.data);
       }
     } catch (error) {
@@ -45,7 +51,6 @@ function AdminJobDetail() {
       setLoading(false);
     }
   };
-
   // Handle job moderation
   const handleModeration = async () => {
     if (!action) {

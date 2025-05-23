@@ -7,9 +7,7 @@ import Swal from 'sweetalert2';
 import 'react-modern-drawer/dist/index.css';
 import StatusJob from './StatusJob';
 import { useMediaQuery } from 'react-responsive';
-// import '../../../Styles/Candidate/Jobdetail.css';
-// import '../../../Styles/LandingPage.css';
-// import '../../../Styles/Findjob.css';
+
 
 // Import the Pagination component
 function Pagination({ currentPage, totalPages, onPageChange }) {
@@ -206,8 +204,9 @@ function ApplyedJob() {
               >
                 <div className="job-item-content">
                   <div className="job-item-image">
+                    
                     <img
-                      src={`${baseURL}${job.job.employer.profile_pic}`}
+                      src={`${job.job.employer.profile_pic}`}
                       alt={job.job.employer.user_full_name}
                       onError={(e) => {
                         e.target.onerror = null;

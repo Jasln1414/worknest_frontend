@@ -16,6 +16,7 @@ const authenticationSlice = createSlice({
   reducers: {
     set_Authentication: (state, action) => {
       state.name = action.payload.name;
+      state.userid = action.payload.userid;
       state.email = action.payload.email;
       state.companyName = action.payload.companyName;  // Store company name
       state.isAuthenticated = action.payload.isAuthenticated;
@@ -25,6 +26,7 @@ const authenticationSlice = createSlice({
     clear_Authentication: (state) => {
       state.name = null;
       state.email = null;
+      state.userid = null;
       state.companyName = null;  // Clear company name
       state.isAuthenticated = false;
       state.isAdmin = false;

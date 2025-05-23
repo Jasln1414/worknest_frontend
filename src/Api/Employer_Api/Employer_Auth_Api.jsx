@@ -73,11 +73,6 @@ import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetails
 
 
 
-
-
-
-
-
 export const EmployerLoginApi = async (formData, dispatch, set_Authentication, navigate) => {
   const baseURL = 'http://127.0.0.1:8000';
   try {
@@ -114,6 +109,7 @@ export const EmployerLoginApi = async (formData, dispatch, set_Authentication, n
       const authPayload = {
         name: decodedToken.name || 'Unknown',
         email: user_data.email,
+        userid: response.data.user_data.user_id,
         isAuthenticated: true,
         isAdmin: false,
         usertype: 'employer',
@@ -139,7 +135,7 @@ export const EmployerLoginApi = async (formData, dispatch, set_Authentication, n
         localStorage.setItem('profilePic', profilePic);
       }
 
-      // Fetch updated user details
+      
       try {
         const userResponse = await axios.get(`${baseURL}/api/account/user/details`, {
           headers: { Authorization: `Bearer ${access_token}` },

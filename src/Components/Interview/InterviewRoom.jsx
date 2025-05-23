@@ -43,8 +43,8 @@ const InterviewRoom =() => {
     }, [id, roomID, baseURL]);
 
   const myMeeting = async (element) => {
-    const appID = 1507808672;
-    const serverSecret = "d94bbed8bb4ead40be5c107dac49783f";
+    const appID = 223232856;
+    const serverSecret = "15878ba5977a690019bcf7a287e24bca"
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
 
     const zp = ZegoUIKitPrebuilt.create(kitToken);

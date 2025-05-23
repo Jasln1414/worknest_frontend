@@ -1,383 +1,256 @@
-/* SearchBox.css */
-.search-box-container {
-  width: 100%;
-  margin-bottom: 24px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-}
-
-.search-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-@media (min-width: 768px) {
-  .search-form {
-    flex-direction: row;
-    align-items: center;
-  }
-}
-
-.search-inputs-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  flex: 1;
-}
-
-@media (min-width: 768px) {
-  .search-inputs-wrapper {
-    flex-direction: row;
-  }
-}
-
-.search-input-container {
-  position: relative;
-  flex: 1;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.2s ease;
-}
-
-.search-input-container:focus-within {
-  border-color: #43618b;
-  box-shadow: 0 0 0 3px rgba(67, 97, 139, 0.1);
-}
-
-.search-input-container.keyword-container {
-  border-color: #43618b;
-}
-
-.input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6b7280;
-}
-
-.search-input {
-  width: 100%;
-  padding: 14px 12px 14px 40px;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  color: #1f2937;
-  background: transparent;
-}
-
-.search-input::placeholder {
-  color: #9ca3af;
-}
-
-.clear-input-button {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-}
-
-.clear-input-button:hover {
-  background-color: #f3f4f6;
-}
-
-.search-button {
-  background: linear-gradient(to right, #43618b, #2d4d76);
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 140px;
-}
-
-.search-button:hover {
-  transform: translateY(-1px);
-}
-
-.search-button:active {
-  transform: translateY(0);
-}
-
-.search-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-
-/* SuggestionFixes.css - Add this to your project */
-
-/* Ensure suggestions are visible */
-.suggestions-container {
-  position: absolute !important;
-  z-index: 9999 !important;
-  background-color: white !important;
-  border: 2px solid #0056b3 !important;
-  border-radius: 4px !important;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
-  width: 100% !important;
-  max-height: 300px !important;
-  overflow-y: auto !important;
-  top: 100% !important;
-  left: 0 !important;
-  margin-top: 5px !important;
-  padding: 0 !important;
-}
-
-/* Style each suggestion item */
-.suggestion-item {
-  display: block !important;
-  padding: 10px 15px !important;
-  cursor: pointer !important;
-  border-bottom: 1px solid #eee !important;
-  list-style: none !important;
-  background-color: white !important;
-  margin: 0 !important;
-}
-
-.suggestion-item:hover {
-  background-color: #f5f5f5 !important;
-}
-
-/* Make sure the container is positioned correctly */
-.autocomplete-wrapper {
-  position: relative !important;
-  width: 100% !important;
-}
-
-/* Make sure the suggestions list is visible */
-.suggestions-list {
-  list-style-type: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  max-height: 300px !important;
-  overflow-y: auto !important;
-}
-
-/* For debugging - add this class to see element boundaries */
-.debug-border {
-  border: 2px dashed red !important;
-}
-
-/* Fix for search container */
-.search-input-container {
-  position: relative !important;
-  z-index: 100 !important;
-}
-
-/* Ensure input fields are visible and styled properly */
-.search-input {
-  padding: 10px !important;
-  border: 1px solid #ccc !important;
-  border-radius: 4px !important;
-  width: 100% !important;
-  font-size: 16px !important;
-}
-
-/* Override any conflicting styles */
-.suggestions-list {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Sometimes transforms can cause issues with absolute positioning */
-.search-form * {
-  transform: none !important;
-}
-
-/* Fix z-index stacking for any parent containers */
-.find-job-page-h1233,
-.find-job-header-h1233,
-.search-form {
-  position: relative !important;
-  z-index: auto !important;
-}
-
-/* Ensure suggestions are not hidden by overflow */
-body, 
-#root, 
-.app-container,
-main,
-section {
-  overflow: visible !important;
-}
-/* SearchBox.css */
-.search-form {
-  width: 100%;
-  max-width: 800px;
+/* Find Job Page */
+.find-job-page-h1233 {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 16px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+/* Header */
+.find-job-header-h1233 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.find-job-header-h1233 h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #3e71b5; /* Matches inline style */
+  margin-bottom: 0.5rem;
+}
+
+.find-job-header-h1233 p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Loading Container */
+.loading-container-h1233 {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.search-input-container {
-  display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  background-color: #f5f7fa;
-  border: 1px solid #e0e4e8;
-  border-radius: 6px;
-  padding: 8px;
+  justify-content: center;
+  min-height: 50vh;
 }
 
-.search-input-group {
-  flex: 1;
-  min-width: 200px;
-  position: relative;
-  display: flex;
-  align-items: center;
+.spinner-h1233 {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3e71b5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-.icon-wrapper {
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  color: #6b7280;
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-.search-icon,
-.location-icon {
-  font-size: 18px;
+.loading-container-h1233 p {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #333;
 }
 
-.search-input-group input {
-  width: 100%;
+/* Error Container */
+.error-container-h1233 {
+  text-align: center;
+  padding: 1.5rem;
+  background: #ffe6e6;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+.error-text-h1233 {
+  color: #d32f2f;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.reset-filters-button {
+  padding: 0.5rem 1rem;
+  background: #3e71b5;
+  color: #fff;
   border: none;
-  background: transparent;
-  padding: 12px 8px;
-  font-size: 16px;
-  color: #1f2937;
-  outline: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-.search-input-group input::placeholder {
-  color: #9ca3af;
+.reset-filters-button:hover {
+  background: #2a4d8a;
 }
 
-.search-divider {
-  width: 1px;
-  height: 32px;
-  background-color: #e0e4e8;
-  margin: 0 8px;
+/* Search Status */
+.search-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
 }
 
-.search-button {
-  background-color: #2563eb;
-  color: #ffffff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 16px;
+.activejobs {
+  font-size: 1rem;
+  color: #333;
   font-weight: 500;
+}
+
+.view-all-jobs-button {
+  padding: 0.5rem 1rem;
+  background: #3e71b5;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.3s ease;
 }
 
-.search-button:hover {
-  background-color: #1d4ed8;
+.view-all-jobs-button:hover {
+  background: #2a4d8a;
 }
 
-.search-button:disabled {
-  background-color: #9ca3af;
+/* Job Cards Container */
+.job-cards-container-h1233 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two cards per row */
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+/* No Jobs Message */
+.no-jobs-message-h1233 {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-jobs-message-h1233 p {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+/* Pagination (Assuming Pagination component uses these classes) */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.pagination-container button {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.pagination-container button:hover {
+  background: #3e71b5;
+  color: #fff;
+  border-color: #3e71b5;
+}
+
+.pagination-container button:disabled {
+  background: #f0f0f0;
+  color: #999;
   cursor: not-allowed;
-}
-
-/* Suggestions Dropdown (if applicable) */
-.suggestions-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background-color: #ffffff;
-  border: 1px solid #e0e4e8;
-  border-radius: 6px;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-top: 4px;
-}
-
-.suggestions-list li {
-  padding: 12px 16px;
-  font-size: 14px;
-  color: #1f2937;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.suggestions-list li:hover {
-  background-color: #f5f7fa;
+  border-color: #ddd;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .search-input-container {
+  .find-job-page-h1233 {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .find-job-header-h1233 h1 {
+    font-size: 2rem;
+  }
+
+  .find-job-header-h1233 p {
+    font-size: 1rem;
+  }
+
+  .job-cards-container-h1233 {
+    grid-template-columns: 1fr; /* Single column for tablets */
+    gap: 1rem;
+  }
+
+  .search-status {
     flex-direction: column;
-    align-items: stretch;
+    gap: 0.5rem;
+    text-align: center;
   }
 
-  .search-input-group {
-    min-width: 100%;
+  .activejobs {
+    font-size: 0.95rem;
   }
 
-  .search-divider {
-    display: none;
+  .view-all-jobs-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
 
-  .search-button {
-    width: 100%;
-    padding: 14px;
+  .reset-filters-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .no-jobs-message-h1233 {
+    padding: 2rem 0.75rem;
+  }
+
+  .no-jobs-message-h1233 p {
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .search-form {
-    padding: 12px;
+  .find-job-page-h1233 {
+    padding: 1rem 0.5rem;
   }
 
-  .search-input-group input {
-    font-size: 14px;
+  .find-job-header-h1233 h1 {
+    font-size: 1.8rem;
   }
 
-  .search-button {
-    font-size: 14px;
+  .find-job-header-h1233 p {
+    font-size: 0.9rem;
   }
-}
 
+  .job-cards-container-h1233 {
+    grid-template-columns: 1fr;
+  }
 
-.job-card-image {
-  opacity: 0;
-  transition: opacity 0.3s;
-}
+  .spinner-h1233 {
+    width: 30px;
+    height: 30px;
+  }
 
-.job-card-image.loaded {
-  opacity: 1;
+  .loading-container-h1233 p {
+    font-size: 0.9rem;
+  }
+
+  .error-container-h1233 {
+    padding: 1rem;
+  }
+
+  .error-text-h1233 {
+    font-size: 0.9rem;
+  }
+
+  .pagination-container button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
 }

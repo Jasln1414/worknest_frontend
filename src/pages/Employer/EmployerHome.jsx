@@ -263,9 +263,9 @@ function EmpHome() {
   return (
     <div className="eh-container">
       {!isSmallScreen && (
-        <div className="ep-sidebar-fixed">
+        
           <SideBar />
-        </div>
+       
       )}
 
       <div className={`eh-main-content ${isSmallScreen ? 'eh-mobile-content' : ''}`}>

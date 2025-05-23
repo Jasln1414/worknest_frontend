@@ -13,16 +13,16 @@ import AdminWrapper from "./Components/admin/AdminWrapper";
 import CandidateWrapper from './pages/Cndidates/CandidateWrapper';
 import ResetPasswordModal from "./pages/comon/ResetPassword";
 import ForgotPasswordModal from "./pages/comon/ForgotPassword";
-// import './validation/App.css';
-// import './index.css';
 import InterviewRoom from "./Components/Interview/InterviewRoom";
+import "react-toastify/dist/ReactToastify.css"; // Base toast styles
+import './assets/Style/Toast.css';
 
 // Custom Toast Container Component
 const CustomToastContainer = () => {
   return (
     <ToastContainer
       position="top-center"
-      autoClose={2000}
+      autoClose={3000} // Increased for readability
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick
@@ -31,10 +31,10 @@ const CustomToastContainer = () => {
       draggable
       pauseOnHover
       theme="light"
+      limit={1} // Prevent multiple toasts
       style={{ 
         width: '400px',
-        '--toastify-toast-min-height': '80px',
-        '--toastify-toast-width': '400px'
+        '--toastify-toast-min-height': '80px'
       }}
       closeButton={({ closeToast }) => (
         <button 
@@ -45,7 +45,7 @@ const CustomToastContainer = () => {
             padding: '4px',
             cursor: 'pointer',
             fontSize: '14px',
-            marginLeft: '30vh'
+            marginLeft: 'auto' // Responsive alignment
           }}
         >
           ✕
@@ -169,7 +169,7 @@ const router = createBrowserRouter([
       { path: "/admin/*", element: <AdminWrapper /> },
       { path: "/candidate/*", element: <CandidateWrapper /> },
       { path: "/reset_password/:id", element: <ResetPasswordModal /> },
-      {path: "/interview/:id", element:<InterviewRoom/>},
+      { path: "/interview/:id", element: <InterviewRoom /> },
       { path: "*", element: <div>Page Not Found</div> }
     ]
   }

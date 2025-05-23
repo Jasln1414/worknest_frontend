@@ -1,3 +1,147 @@
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import { Formik, Form, Field, ErrorMessage } from "formik";
+// import { SignupSchema, initialValues } from "../../validation/SignupValidation";
+// import OtpModal from "../Employer/OtpModal";
+// import "../../Styles/Login.css";
+
+// const CandidateSignupModal = ({ isOpen, onClose, switchToLogin }) => {
+//   const baseURL = "http://127.0.0.1:8000/";
+//   const [formError, setFormError] = useState("");
+//   const [showOtpModal, setShowOtpModal] = useState(false);
+//   const [email, setEmail] = useState("");
+
+//   // If neither modal is open, return null
+//   if (!isOpen && !showOtpModal) return null;
+
+//   // Callback function for OTP success
+//   const handleOtpSuccess = () => {
+//     setShowOtpModal(false); // Close the OTP modal
+//     onClose(); // Close the signup modal
+//     switchToLogin(); // Switch to the login modal
+//   };
+
+//   const handleOnSubmit = async (values, { setSubmitting }) => {
+//     const formData = new FormData();
+//     formData.append("full_name", values.username);
+//     formData.append("email", values.email);
+//     formData.append("password", values.password);
+
+//     try {
+//       const response = await axios.post(`${baseURL}api/account/cand_register/`, formData);
+
+//       if (response.status === 200) {
+//         toast.success("Registered successfully!", { position: "top-center" });
+//         setEmail(values.email); // Save the email for OTP verification
+//         setShowOtpModal(true); // Show the OTP modal
+//       } else {
+//         setFormError(response.data.message);
+//       }
+//     } catch (error) {
+//       if (error.response) {
+//         setFormError(error.response.data.message || "An error occurred during registration.");
+//       } else {
+//         setFormError("An error occurred during registration.");
+//       }
+//     } finally {
+//       setSubmitting(false);
+//     }
+//   };
+
+//   // If OTP modal is open, render OTP modal
+//   if (showOtpModal) {
+//     return (
+//       <OtpModal
+//         isOpen={showOtpModal}
+//         closeModal={() => setShowOtpModal(false)}
+//         email={email}
+//         onOtpSuccess={handleOtpSuccess}
+//       />
+//     );
+//   }
+
+//   // Otherwise, render signup modal
+//   return (
+//     <div className="modal-overlay" onClick={onClose}>
+//       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+//         <button className="close-icon" onClick={onClose}>
+//           ×
+//         </button>
+//         <h2>Candidate Sign Up</h2>
+//         <Formik 
+//           initialValues={initialValues} 
+//           validationSchema={SignupSchema} 
+//           onSubmit={handleOnSubmit}
+//         >
+//           {({ errors, touched, isSubmitting }) => (
+//             <Form>
+//               <div className="input-group">
+//                 <Field name="username" type="text" placeholder="Enter Your Name" />
+//                 <ErrorMessage name="username" component="div" className="error-message" />
+//               </div>
+
+//               <div className="input-group">
+//                 <Field name="email" type="email" placeholder="example@gmail.com" />
+//                 <ErrorMessage name="email" component="div" className="error-message" />
+//               </div>
+
+//               <div className="input-group">
+//                 <Field name="password" type="password" placeholder="Enter a password" />
+//                 <ErrorMessage name="password" component="div" className="error-message" />
+//               </div>
+
+//               <div className="input-group">
+//                 <Field name="confirm_password" type="password" placeholder="Confirm Password" />
+//                 <ErrorMessage name="confirm_password" component="div" className="error-message" />
+//               </div>
+
+//               {formError && <div className="error-message">{formError}</div>}
+
+//               <div className="button-group">
+//                 <button type="submit" disabled={isSubmitting} className="submit-btn">
+//                   Send OTP
+//                 </button>
+//               </div>
+
+//               <div className="text-gray-700">
+//                 <button type="button" onClick={switchToLogin}>
+//                   BACK TO LOGIN
+//                 </button>
+//               </div>
+//             </Form>
+//           )}
+//         </Formik>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CandidateSignupModal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -34,17 +178,30 @@ const CandidateSignupModal = ({ isOpen, onClose, switchToLogin }) => {
       const response = await axios.post(`${baseURL}api/account/cand_register/`, formData);
 
       if (response.status === 200) {
-        toast.success("Registered successfully!", { position: "top-center" });
+        // Show success toast notification
+        toast.success("Registration successful! Please verify with OTP.", {
+          position: "top-center",
+          autoClose: 2000, // Display for 2 seconds before OTP modal opens
+        });
+
+        // Store email in localStorage and proceed to OTP modal after a brief delay
         setEmail(values.email); // Save the email for OTP verification
-        setShowOtpModal(true); // Show the OTP modal
+        setTimeout(() => {
+          setShowOtpModal(true); // Show the OTP modal after toast
+        }, 2100); // Slight delay to ensure toast is visible
       } else {
-        setFormError(response.data.message);
+        setFormError(response.data.message || "Registration failed.");
       }
     } catch (error) {
+      console.error("Signup error:", error);
       if (error.response) {
-        setFormError(error.response.data.message || "An error occurred during registration.");
+        setFormError(
+          error.response.data.message ||
+          error.response.data.detail ||
+          "An error occurred during registration."
+        );
       } else {
-        setFormError("An error occurred during registration.");
+        setFormError("Network error or server issue. Please try again.");
       }
     } finally {
       setSubmitting(false);
@@ -71,9 +228,9 @@ const CandidateSignupModal = ({ isOpen, onClose, switchToLogin }) => {
           ×
         </button>
         <h2>Candidate Sign Up</h2>
-        <Formik 
-          initialValues={initialValues} 
-          validationSchema={SignupSchema} 
+        <Formik
+          initialValues={initialValues}
+          validationSchema={SignupSchema}
           onSubmit={handleOnSubmit}
         >
           {({ errors, touched, isSubmitting }) => (

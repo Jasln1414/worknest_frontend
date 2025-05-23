@@ -74,7 +74,14 @@ export const EducationSchema = Yup.object().shape({
         .matches(/^[^\d]+$/, 'College should not contain numbers')
         .required('College is required'),
     completed: Yup.string()
-        .required('Completion status is required'),
+        .matches(/^(19|20)\d{2}$/, 'Please enter a valid year between 1900 and 2099')
+        .test('year-range', 'Year must be between 1900 and 2099', (value) => {
+            if (!value) return false;
+            const year = parseInt(value, 10);
+            return year >= 1900 && year <= 2099;
+        })
+        .required('Completion year is required'),
+    
     //mark: Yup.string()
         //.matches(/^\d{1,2}$/, 'Marks should be a number between 1 and 99')
         //.required('Marks are required'),

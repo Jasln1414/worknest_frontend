@@ -1,36 +1,35 @@
-export const extractDate = (datetimeString) => {
-    const dateObject = new Date(datetimeString);
-    const datePart = dateObject.toISOString().split('T')[0]; 
-    return datePart;
+// DateTime.jsx
+import { isAfter, parseISO, addMinutes } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
+
+const timeZone = 'America/New_York';
+
+// Check if the interview time has been reached
+export const isInterviewTimeReached = (dateString) => {
+  if (!dateString) return false;
+  const interviewDate = parseISO(dateString); // Assume dateString is in UTC
+  const currentDate = new Date(); // Current time in UTC
+  return isAfter(currentDate, interviewDate);
 };
 
-export const extractTime = (datetimeString) => {
-    const dateObject = new Date(datetimeString);
-    let hours = dateObject.getUTCHours();
-    const minutes = String(dateObject.getUTCMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; 
-    const timePart = `${hours}:${minutes} ${ampm}`;
-    return timePart;
+// Check if the interview is within the start window (e.g., 30 minutes before to 15 minutes after)
+export const isInterviewStartable = (dateString) => {
+  if (!dateString) return false;
+  const interviewDate = parseISO(dateString); // Assume dateString is in UTC
+  const currentDate = new Date(); // Current time in UTC
+  const startWindowStart = addMinutes(interviewDate, -30); // 30 minutes before
+  const startWindowEnd = addMinutes(interviewDate, 15); // 15 minutes after
+  return isAfter(currentDate, startWindowStart) && !isAfter(currentDate, startWindowEnd);
 };
 
-export  const isInterviewTimeReached = (datetimeString, id) => {
-    const interviewDate = extractDate(datetimeString); 
-    const interviewTime = extractTime(datetimeString);
-    const interviewDateTime = new Date(`${interviewDate} ${interviewTime}`);
-    const n = new Date();
-    
-    console.log(n);
-    const date = n.toLocaleDateString();
-    const time = n.toLocaleTimeString();
-    // console.log("date time ...............ayooo", date, time);
-    const currentDateTime = new Date(`${date} ${time}`);
-    if (interviewDateTime >= currentDateTime) {
-        console.log(true);
-    } else {
-        console.log(false);
-    }
-    console.log("xe5cr6vtby8nimx6rc7vyb8uxr6cvybn",interviewDateTime <= currentDateTime)
-    return interviewDateTime <= currentDateTime
-  };
+// Extract date in a readable format
+export const extractDate = (dateString) => {
+  if (!dateString) return 'Not available';
+  return formatInTimeZone(parseISO(dateString), timeZone, 'EEE, d MMM yyyy');
+};
+
+// Extract time in a readable format
+export const extractTime = (dateString) => {
+  if (!dateString) return 'Not available';
+  return formatInTimeZone(parseISO(dateString), timeZone, 'h:mm a');
+};

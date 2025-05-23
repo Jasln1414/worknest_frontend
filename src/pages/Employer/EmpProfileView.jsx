@@ -152,9 +152,9 @@ function EmployerProfileView() {
 
   return (
     <div className="ep-main-container">
-      <div className="ep-sidebar-fixed">
+     
         <SideBar />
-      </div>
+      
       <div className="ep-content-wrapper">
         <div className="ep-header-section">
           <div className="ep-avatar-wrapper">

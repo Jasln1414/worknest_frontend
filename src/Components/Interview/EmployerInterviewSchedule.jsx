@@ -181,7 +181,7 @@ function Schedules() {
                   <tr className="table-header">
                     <th>Job Title</th>
                     <th>Candidate</th>
-                    <th>Applied Date</th>
+                    
                     <th>Interview Date</th>
                     <th>Interview Time</th>
                     <th>Status</th>
@@ -193,11 +193,7 @@ function Schedules() {
                     <tr key={item.id || `interview-${index}`} className="table-row">
                       <td>{item.job_title || 'Unknown Job'}</td>
                       <td>{item.candidate_name || 'Unknown Candidate'}</td>
-                      <td>
-                        {item.applyDate ? 
-                         extractDate(item.applyDate) : 
-                         'Not available'}
-                      </td>
+                     
                       <td>
                         {item.date ? 
                          extractDate(item.date) : 
@@ -210,16 +206,18 @@ function Schedules() {
                       </td>
                       <td className={`status-cell ${(item.status || 'upcoming').toLowerCase()}`}>
                         {item.date && isInterviewTimeReached(item.date) && 
-                        (item.status === "Upcoming" || !item.status) ? (
+                        (item.status === "Upcoming") ? (
                           <Link to={`/interview/${item.id}`}>
                             <button className="start-button">Start</button>
                           </Link>
                         ) : (
                           // item.status || 'Upcoming'
-                          <Link to={`/interview/${item.id}`}>
-                          <button className="start-button">Start</button>
-                        </Link>
-                        )}
+                        //   <Link to={`/interview/${item.id}`}>
+                        //   <button className="start-button">Starttttt</button>
+                        // </Link>
+                        <p>{item.status}</p>
+                        )
+                        }
                       </td>
                       <td>
                         <button 

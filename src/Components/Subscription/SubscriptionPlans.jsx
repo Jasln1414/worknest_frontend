@@ -5,74 +5,189 @@ import SideBar from '../../pages/Employer/SideBar';
 import MobileMenuToggle from '../../pages/Employer/utilities/MobileToggle';
 import './Subcription.css'; 
 
+// SubscriptionPlans component for managing and displaying subscription plans
 const SubscriptionPlans = () => {
-  const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [usageData, setUsageData] = useState(null);
-  const [usageLoading, setUsageLoading] = useState(true);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-  const [additionalJobsCount, setAdditionalJobsCount] = useState(1);
-  const [showAdditionalJobsModal, setShowAdditionalJobsModal] = useState(false);
-  const baseURL = 'http://127.0.0.1:8000/api';
-  const token = localStorage.getItem('access');
-
+  // State management
+  const [plans, setPlans] = useState([]); // Store subscription plans
+  const [loading, setLoading] = useState(false); // Loading state for API calls
+  const [error, setError] = useState(null); // Error messages
+  const [usageData, setUsageData] = useState(null); // User's subscription usage data
+  const [isPlanExpired, setIsPlanExpired] = useState(false); // Track if plan is expired
+  const [existingSubscriptionId, setExistingSubscriptionId] = useState(null); // Store existing subscription ID
+  const [subscriptionStatus , setSubscriptionStatus] = useState('')
+  const [usageLoading, setUsageLoading] = useState(true); // Loading state for usage data
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Sidebar visibility for mobile
+  const baseURL = 'http://127.0.0.1:8000/api'; // API base URL
+  const token = localStorage.getItem('access'); // Authentication token
+  
+  // Toggle sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarVisible((prev) => !prev);
   };
 
-  useEffect(() => {
-    const fetchPlans = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        console.log('Fetching subscription plans...');
-        const response = await axios.get(`${baseURL}/payment/subscription/plans/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log('Plans API Response:', response.data);
-        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-          setPlans(response.data);
-        } else {
-          setError('No subscription plans found.');
-        }
-      } catch (err) {
-        console.error('Error fetching plans:', err.response?.data || err);
-        setError('Failed to load subscription plans.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Normalize plan names for consistent comparison
+  const normalizePlanName = (name) => {
+    return name?.trim().toLowerCase();
+  };
 
-    const fetchUsageData = async () => {
-      setUsageLoading(true);
-      try {
-        const response = await axios.get(`${baseURL}/empjob/job-usage/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log('Job usage response:', response.data);
-        if (response.status === 200) {
-          setUsageData(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching job usage data:', error.response?.data || error);
-        if (error.response?.status === 404) {
-          console.warn('Job usage endpoint not found. Using fallback data.');
-          setUsageData({ job_count: 0, has_active_subscription: false });
-        }
-      } finally {
-        setUsageLoading(false);
-      }
-    };
+  // Check if a plan is the user's current active subscription
+  const isPlanActive = (planName) => {
+    const isActive = usageData?.has_active_subscription && 
+      normalizePlanName(usageData?.subscription_plan) === normalizePlanName(planName);
+    console.log(`Checking if plan "${planName}" is active:`, {
+      usageDataPlan: usageData?.subscription_plan,
+      normalizedUsageDataPlan: normalizePlanName(usageData?.subscription_plan),
+      normalizedPlanName: normalizePlanName(planName),
+      isActive,
+    });
+    return isActive;
+  };
 
-    if (token) {
-      fetchPlans();
-      fetchUsageData();
-    } else {
+  // Format date for display
+  const formatDate = (dateString) =>
+    dateString
+      ? new Date(dateString).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+      : 'N/A';
+
+  // Fetch subscription plans from API
+  const fetchPlans = async () => {
+    if (!token) {
       setError('Please log in to view subscription plans.');
+      setLoading(false);
+      return;
     }
-  }, [token]);
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('Fetching subscription plans...');
+      const response = await axios.get(`${baseURL}/payment/subscription/plans/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('Plans API Response:', response.data);
+      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        setPlans(response.data);
+      } else {
+        setError('No subscription plans found.');
+      }
+    } catch (err) {
+      console.error('Error fetching plans:', err.response?.data || err);
+      setError(err.response?.data?.message || 'Failed to load subscription plans.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Fetch user's subscription usage data
+  const fetchUsageData = async () => {
+    if (!token) {
+      setUsageLoading(false);
+      return;
+    }
+    setUsageLoading(true);
+    try {
+      const response = await axios.get(`${baseURL}/empjob/job-usage/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('Job usage response:', response.data);
+      if (response.status === 200) {
+        setUsageData(response.data);
+        setIsPlanExpired(!response.data.has_active_subscription); // Set to true if no active subscription
+        setExistingSubscriptionId(response.data.existing_subscription_id);
+        setSubscriptionStatus(response.data.subscription_status);
+        console.log('Normalized subscription plan:', normalizePlanName(response.data.subscription_plan));
+        console.log(".............................statussssssssssssssssssssssssss",response.data)
+      }
+
+
+     
+    } catch (error) {
+      console.error('Error fetching job usage data:', error.response?.data || error);
+      if (error.response?.status === 404) {
+        console.warn('Job usage endpoint not found. Using fallback data.');
+        setUsageData({ job_count: 0, has_active_subscription: false });
+        setIsPlanExpired(true);
+      } else {
+        setError('Failed to load usage data.');
+      }
+    } finally {
+      setUsageLoading(false);
+    }
+  };
+
+  // Initiate Razorpay payment
+  const initiatePayment = (orderId, amount, keyId, planId, subscriptionType) => {
+    const planDetails = plans.find((p) => p.id === planId);
+    console.log('Initiating payment for:', { orderId, amount, keyId, plan: planDetails, type: subscriptionType });
+
+    const options = {
+      key: keyId,
+      amount,
+      currency: 'INR',
+      name: 'WorkNest',
+      description: subscriptionType === 'extension'
+        ? `Extending ${planDetails?.name || 'Plan'} subscription`
+        : `Subscription to ${planDetails?.name || 'Plan'}`,
+      order_id: orderId,
+      handler: async (response) => {
+        console.log('Payment success:', response);
+        try {
+          const verifyResponse = await axios.post(
+            `${baseURL}/payment/subscription/verify/`,
+            {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            },
+            { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+          );
+          console.log('Verification response:', verifyResponse.data);
+          Swal.fire({
+            icon: 'success',
+            title: subscriptionType === 'extension' ? 'Subscription Extended!' : 'Subscription Activated!',
+            text: subscriptionType === 'extension'
+              ? 'Your subscription has been successfully extended.'
+              : 'Your subscription has been successfully activated.',
+            confirmButtonColor: '#1E3A8A',
+          });
+          fetchUsageData();
+        } catch (verifyErr) {
+          console.error('Verification error:', verifyErr.response?.data || verifyErr);
+          Swal.fire({
+            icon: 'error',
+            title: 'Verification Failed',
+            text: verifyErr.response?.data?.message || 'Payment verification failed.',
+            confirmButtonColor: '#1E3A8A',
+          });
+          setError(verifyErr.response?.data?.message || 'Payment verification failed.');
+        } finally {
+          setLoading(false);
+        }
+      },
+      prefill: { email: localStorage.getItem('user_email') || '', contact: localStorage.getItem('user_phone') || '' },
+      theme: { color: '#1E3A8A' },
+      modal: { confirm_close: true, escape: false, animation: true },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', (response) => {
+      console.error('Payment failed:', response.error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Payment Failed',
+        text: response.error.description,
+        confirmButtonColor: '#1E3A8A',
+      });
+      setError(`Payment failed: ${response.error.description}`);
+      setLoading(false);
+    });
+    rzp.open();
+  };
+
+  // Handle subscription to a plan
   const handleSubscribe = async (planId) => {
     setLoading(true);
     setError(null);
@@ -112,210 +227,55 @@ const SubscriptionPlans = () => {
     }
   };
 
-  const handleAddJobSlots = async () => {
+  // Handle renewal of existing subscription
+  const handleRenewSubscription = async () => {
+    if (!existingSubscriptionId) {
+      setError('No existing subscription found to renew.');
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
-      console.log('Adding additional job slots:', additionalJobsCount);
       const response = await axios.post(
-        `${baseURL}/payment/job-slots/add/`,
-        { job_count: additionalJobsCount },
+        `${baseURL}/payment/subscription/renew/`,
+        { sub_id: existingSubscriptionId },
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
-      console.log('Add job slots response:', response.data);
-      const { order_id, amount, key_id, job_count } = response.data;
+      console.log('Subscription renew response:', response.data);
+      const { order_id, amount, key_id, subscription_type, planId } = response.data;
 
       if (!window.Razorpay) {
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
-        script.onload = () => initiateJobSlotsPayment(order_id, amount, key_id, job_count);
+        script.onload = () => initiatePayment(order_id, amount, key_id, planId, subscription_type);
         script.onerror = () => {
           setError('Failed to load payment gateway.');
           setLoading(false);
         };
         document.body.appendChild(script);
       } else {
-        initiateJobSlotsPayment(order_id, amount, key_id, job_count);
+        initiatePayment(order_id, amount, key_id, planId, subscription_type);
       }
     } catch (err) {
-      console.error('Adding job slots error:', err.response?.data || err);
+      console.error('Subscription renewal error:', err.response?.data || err);
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: err.response?.data?.message || 'Error adding job slots.',
+        title: 'Subscription Error',
+        text: err.response?.data?.message || 'Error renewing subscription.',
         confirmButtonColor: '#1E3A8A',
       });
-      setError(err.response?.data?.message || 'Error adding job slots.');
+      setError(err.response?.data?.message || 'Error renewing subscription.');
       setLoading(false);
     }
   };
 
-  const initiatePayment = (orderId, amount, keyId, planId, subscriptionType) => {
-    const planDetails = plans.find((p) => p.id === planId);
-    console.log('Initiating payment for:', { orderId, amount, keyId, plan: planDetails, type: subscriptionType });
-
-    const options = {
-      key: keyId,
-      amount,
-      currency: 'INR',
-      name: 'WorkNest',
-      description: subscriptionType === 'extension'
-        ? `Extending ${planDetails?.name || 'Plan'} subscription`
-        : `Subscription to ${planDetails?.name || 'Plan'}`,
-      order_id: orderId,
-      handler: async (response) => {
-        console.log('Payment success:', response);
-        try {
-          const verifyResponse = await axios.post(
-            `${baseURL}/payment/subscription/verify/`,
-            {
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-            },
-            { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
-          );
-          console.log('Verification response:', verifyResponse.data);
-          if (subscriptionType === 'extension') {
-            Swal.fire({
-              icon: 'success',
-              title: 'Subscription Extended!',
-              text: 'Your subscription has been successfully extended.',
-              confirmButtonColor: '#1E3A8A',
-            });
-          } else {
-            Swal.fire({
-              icon: 'success',
-              title: 'Subscription Activated!',
-              text: 'Your subscription has been successfully activated.',
-              confirmButtonColor: '#1E3A8A',
-            });
-          }
-          fetchUsageData();
-        } catch (verifyErr) {
-          console.error('Verification error:', verifyErr.response?.data || verifyErr);
-          Swal.fire({
-            icon: 'error',
-            title: 'Verification Failed',
-            text: verifyErr.response?.data?.message || 'Payment verification failed.',
-            confirmButtonColor: '#1E3A8A',
-          });
-          setError(verifyErr.response?.data?.message || 'Payment verification failed.');
-        } finally {
-          setLoading(false);
-        }
-      },
-      prefill: { email: localStorage.getItem('user_email') || '', contact: localStorage.getItem('user_phone') || '' },
-      theme: { color: '#1E3A8A' },
-      modal: { confirm_close: true, escape: false, animation: true },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.on('payment.failed', (response) => {
-      console.error('Payment failed:', response.error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Payment Failed',
-        text: response.error.description,
-        confirmButtonColor: '#1E3A8A',
-      });
-      setError(`Payment failed: ${response.error.description}`);
-      setLoading(false);
-    });
-    rzp.open();
-  };
-
-  const initiateJobSlotsPayment = (orderId, amount, keyId, jobCount) => {
-    console.log('Initiating job slots payment for:', { orderId, amount, keyId, jobCount });
-
-    const options = {
-      key: keyId,
-      amount,
-      currency: 'INR',
-      name: 'WorkNest',
-      description: `Adding ${jobCount} additional job slots`,
-      order_id: orderId,
-      handler: async (response) => {
-        console.log('Payment success:', response);
-        try {
-          const verifyResponse = await axios.post(
-            `${baseURL}/payment/job-slots/verify/`,
-            {
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-            },
-            { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
-          );
-          console.log('Verification response:', verifyResponse.data);
-          Swal.fire({
-            icon: 'success',
-            title: 'Job Slots Added!',
-            text: `Successfully added ${jobCount} job slots to your subscription.`,
-            confirmButtonColor: '#1E3A8A',
-          });
-          setShowAdditionalJobsModal(false);
-          setAdditionalJobsCount(1);
-          fetchUsageData();
-        } catch (verifyErr) {
-          console.error('Verification error:', verifyErr.response?.data || verifyErr);
-          Swal.fire({
-            icon: 'error',
-            title: 'Verification Failed',
-            text: verifyErr.response?.data?.message || 'Payment verification failed.',
-            confirmButtonColor: '#1E3A8A',
-          });
-          setError(verifyErr.response?.data?.message || 'Payment verification failed.');
-        } finally {
-          setLoading(false);
-        }
-      },
-      prefill: { email: localStorage.getItem('user_email') || '', contact: localStorage.getItem('user_phone') || '' },
-      theme: { color: '#1E3A8A' },
-      modal: { confirm_close: true, escape: false, animation: true },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.on('payment.failed', (response) => {
-      console.error('Payment failed:', response.error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Payment Failed',
-        text: response.error.description,
-        confirmButtonColor: '#1E3A8A',
-      });
-      setError(`Payment failed: ${response.error.description}`);
-      setLoading(false);
-    });
-    rzp.open();
-  };
-
-  const formatDate = (dateString) =>
-    dateString
-      ? new Date(dateString).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        })
-      : 'N/A';
-
-  const fetchUsageData = async () => {
-    setUsageLoading(true);
-    try {
-      const response = await axios.get(`${baseURL}/empjob/job-usage/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log('Job usage response:', response.data);
-      if (response.status === 200) {
-        setUsageData(response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching job usage data:', error.response?.data || error);
-    } finally {
-      setUsageLoading(false);
-    }
-  };
+  // Fetch plans and usage data on component mount
+  useEffect(() => {
+    fetchPlans();
+    fetchUsageData();
+  }, [token]);
 
   return (
     <div className="subscription-wrapper">
@@ -323,9 +283,12 @@ const SubscriptionPlans = () => {
       <div className={`sidebar-container ${isSidebarVisible ? 'active' : ''}`}>
         <SideBar />
       </div>
+
+      {/* Main subscription content */}
       <div className="subscription-container">
         <h2>Choose Your WorkNest Subscription Plan</h2>
 
+        {/* Subscription stats dashboard */}
         {!usageLoading && usageData && (
           <div className="job-usage-dashboard">
             <div className="usage-header">
@@ -413,29 +376,30 @@ const SubscriptionPlans = () => {
                 <div className="stat-content">
                   <h4>{usageData.has_active_subscription ? 'Expires On' : 'Subscription'}</h4>
                   <p className="stat-value">
-                    {usageData.has_active_subscription
-                      ? formatDate(usageData.subscription_end_date)
-                      : 'Inactive'}
-                  </p>
+                      {subscriptionStatus === 'active'
+                        ? formatDate(usageData.subscription_end_date)
+                        :"inactive"
+                      }
+                    </p>
                 </div>
               </div>
             </div>
-
-            {usageData.has_active_subscription &&
-              usageData.remaining_jobs !== 'Unlimited' &&
-              usageData.remaining_jobs === 0 && (
-                <div className="add-jobs-container">
-                  <button
-                    onClick={() => setShowAdditionalJobsModal(true)}
-                    className="add-jobs-button"
-                  >
-                    Buy Additional Job Slots
-                  </button>
-                </div>
-              )}
+            {isPlanExpired && (
+              <div className="renewal-notice">
+                <p>Your plan has expired. Renew Subscription or select new Plan</p>
+                <button
+                  className="renew-button"
+                  onClick={handleRenewSubscription}
+                  disabled={loading}
+                >
+                  {loading ? 'Processing...' : 'Renew Subscription'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
+        {/* Error and loading states */}
         {error && <div className="error-message">{error}</div>}
         {loading && !error && (
           <div className="loading-container">
@@ -448,100 +412,59 @@ const SubscriptionPlans = () => {
           </div>
         )}
 
+        {/* Subscription plans grid */}
         <div className="plans-grid">
-          {plans.map((plan) => (
-            <div key={plan.id} className="plan-card">
-              {plan.name.toLowerCase().includes('premium') && <div className="popular-badge">POPULAR</div>}
-              <h3>{plan.name}</h3>
-              <p className="plan-description">{plan.description}</p>
-              <div className="plan-pricing">
-                <p className="plan-price">
-                  ₹{plan.price}
-                  <span>/month</span>
-                </p>
-                <p className="plan-feature">
-                  <span className="feature-check">✓</span> Job Limit:{' '}
-                  {plan.job_limit === 9999 ? 'Unlimited' : plan.job_limit}
-                </p>
-                <p className="plan-feature">
-                  <span className="feature-check">✓</span> Premium Support
-                </p>
-              </div>
-              <button
-                onClick={() => handleSubscribe(plan.id)}
-                disabled={loading}
-                className="subscribe-button"
+          {plans.map((plan) => {
+            const isActive = isPlanActive(plan.name);
+
+            return (
+              <div
+                key={plan.id}
+                className={`plan-card ${isActive ? 'plan-active' : ''}`}
               >
-                {loading
-                  ? 'Processing...'
-                  : usageData?.has_active_subscription && usageData?.subscription_plan === plan.name
-                  ? 'Renew Subscription'
-                  : 'Subscribe Now'}
-              </button>
-            </div>
-          ))}
+                {isActive && <div className="current-plan-badge">CURRENT PLAN</div>}
+                {plan.name.toLowerCase().includes('premium') && !isActive && (
+                  <div className="popular-badge">POPULAR</div>
+                )}
+                <h3>{plan.name}</h3>
+                <p className="plan-description">{plan.description}</p>
+                <div className="plan-pricing">
+                  <p className="plan-price">
+                    ₹{plan.price}
+                    <span>/month</span>
+                  </p>
+                  <p className="plan-feature">
+                    <span className="feature-check">✓</span> Job Limit: {plan.job_limit === 9999 ? 'Unlimited' : plan.job_limit}
+                  </p>
+                  <p className="plan-feature">
+                    <span className="feature-check">✓</span> Premium Support
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleSubscribe(plan.id)}
+                  disabled={usageData?.has_active_subscription || loading}
+                  className={`subscribe-button ${
+                    usageData?.has_active_subscription ? 'inactive-plan-button' : ''
+                  }`}
+                  title={
+                    usageData?.has_active_subscription && !isActive
+                      ? `Cannot subscribe until current plan expires on ${formatDate(usageData.subscription_end_date)}`
+                      : ''
+                  }
+                >
+                  {loading && usageData?.has_active_subscription
+                    ? 'Processing...'
+                    : isActive
+                    ? 'Active Plan'
+                    : usageData?.has_active_subscription
+                    ? 'Subscription Active'
+                    : 'Subscribe Now'}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
-
-      {showAdditionalJobsModal && (
-        <div className="modal-overlay">
-          <div className="jobs-modal">
-            <div className="modal-header">
-              <h3>Buy Additional Job Slots</h3>
-              <button
-                className="modal-close-button"
-                onClick={() => setShowAdditionalJobsModal(false)}
-                aria-label="Close modal"
-              >
-                &times;
-              </button>
-            </div>
-            <p>You've reached your plan's job limit. Purchase additional job slots to post more jobs.</p>
-            <div className="job-count-selector">
-              <label htmlFor="job-slots">Number of Job Slots:</label>
-              <div className="job-count-controls">
-                <button
-                  onClick={() => setAdditionalJobsCount((prev) => Math.max(1, prev - 1))}
-                  disabled={additionalJobsCount <= 1}
-                  aria-label="Decrease job slots"
-                >
-                  −
-                </button>
-                <input
-                  id="job-slots"
-                  type="number"
-                  min="1"
-                  value={additionalJobsCount}
-                  onChange={(e) => setAdditionalJobsCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  aria-label="Number of job slots"
-                />
-                <button
-                  onClick={() => setAdditionalJobsCount((prev) => prev + 1)}
-                  aria-label="Increase job slots"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="job-cost-summary">
-              <p>Cost per job slot: ₹200</p>
-              <p className="total-cost">Total: ₹{200 * additionalJobsCount}</p>
-            </div>
-            <div className="modal-actions">
-              <button className="cancel-button" onClick={() => setShowAdditionalJobsModal(false)}>
-                Cancel
-              </button>
-              <button
-                className="confirm-button"
-                onClick={handleAddJobSlots}
-                disabled={loading}
-              >
-                {loading ? 'Processing...' : 'Purchase Now'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

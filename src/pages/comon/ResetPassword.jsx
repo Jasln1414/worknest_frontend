@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -23,7 +24,7 @@ const initialValues = {
   confirm_password: ""
 };
 
-function PasswordResetModal({ isOpen, closeModal, email, onResetSuccess }) {
+function ResetPasswordModal({ isOpen, closeModal, email, onResetSuccess }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const baseURL = "http://127.0.0.1:8000";
   
@@ -58,7 +59,7 @@ function PasswordResetModal({ isOpen, closeModal, email, onResetSuccess }) {
   };
   
   const handleBackgroundClick = (e) => {
-    if (e.target.className === "password-reset-overlay") {
+    if (e.target.className === "reset-password-overlay") {
       closeModal();
     }
   };
@@ -66,11 +67,11 @@ function PasswordResetModal({ isOpen, closeModal, email, onResetSuccess }) {
   if (!isOpen) return null;
   
   return (
-    <div className="password-reset-overlay" onClick={handleBackgroundClick}>
-      <div className="password-reset-content" onClick={(e) => e.stopPropagation()}>
-        <button className="password-reset-close" onClick={closeModal}>×</button>
-        <h2 className="password-reset-title">Reset Password</h2>
-        <p className="password-reset-text">Enter your new password below.</p>
+    <div className="reset-password-overlay" onClick={handleBackgroundClick}>
+      <div className="reset-password-content" onClick={(e) => e.stopPropagation()}>
+        <button className="reset-password-close" onClick={closeModal}>×</button>
+        <h2 className="reset-password-title">Reset Password</h2>
+        <p className="reset-password-description">Enter your new password below.</p>
         
         <Formik
           initialValues={initialValues}
@@ -78,37 +79,37 @@ function PasswordResetModal({ isOpen, closeModal, email, onResetSuccess }) {
           onSubmit={handleResetPassword}
         >
           {({ errors, touched, isSubmitting: formikSubmitting }) => (
-            <Form className="password-reset-form">
-              <div className="password-reset-form-group">
-                <label htmlFor="password" className="password-reset-label">New Password</label>
+            <Form className="reset-password-form">
+              <div className="reset-password-form-group">
+                <label htmlFor="password" className="reset-password-label">New Password</label>
                 <Field
                   type="password"
                   id="password"
                   name="password"
                   placeholder="Enter new password"
-                  className={`password-reset-input ${errors.password && touched.password ? "password-reset-input-error" : ""}`}
+                  className={`reset-password-input ${errors.password && touched.password ? "reset-password-input-error" : ""}`}
                   disabled={isSubmitting || formikSubmitting}
                 />
-                <ErrorMessage name="password" component="div" className="password-reset-error" />
+                <ErrorMessage name="password" component="div" className="reset-password-error" />
               </div>
               
-              <div className="password-reset-form-group">
-                <label htmlFor="confirm_password" className="password-reset-label">Confirm Password</label>
+              <div className="reset-password-form-group">
+                <label htmlFor="confirm_password" className="reset-password-label">Confirm Password</label>
                 <Field
                   type="password"
                   id="confirm_password"
                   name="confirm_password"
                   placeholder="Confirm new password"
-                  className={`password-reset-input ${errors.confirm_password && touched.confirm_password ? "password-reset-input-error" : ""}`}
+                  className={`reset-password-input ${errors.confirm_password && touched.confirm_password ? "reset-password-input-error" : ""}`}
                   disabled={isSubmitting || formikSubmitting}
                 />
-                <ErrorMessage name="confirm_password" component="div" className="password-reset-error" />
+                <ErrorMessage name="confirm_password" component="div" className="reset-password-error" />
               </div>
               
               <button 
                 type="submit" 
                 disabled={isSubmitting || formikSubmitting} 
-                className="password-reset-submit"
+                className="reset-password-submit"
               >
                 {isSubmitting || formikSubmitting ? "Processing..." : "Reset Password"}
               </button>
@@ -120,4 +121,4 @@ function PasswordResetModal({ isOpen, closeModal, email, onResetSuccess }) {
   );
 }
 
-export default PasswordResetModal;
+export default ResetPasswordModal;

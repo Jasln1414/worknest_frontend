@@ -1,554 +1,792 @@
-/* Reset Password Modal - Security Enhanced */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 1rem;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  .modal-content {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 450px;
-    padding: 2.5rem;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Security Header */
-  .security-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .security-icon {
-    color: #4a90e2;
-    font-size: 1.5rem;
-  }
-  
-  /* Password Strength Meter */
-  .password-strength {
-    height: 4px;
-    background: #f0f0f0;
-    border-radius: 2px;
-    margin-top: 0.5rem;
-    overflow: hidden;
-  }
-  
-  .strength-meter {
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease, background 0.3s ease;
-  }
-  
-  /* Strength Colors */
-  .weak { background: #e74c3c; width: 33%; }
-  .medium { background: #f39c12; width: 66%; }
-  .strong { background: #2ecc71; width: 100%; }
-  
-  /* Password Requirements */
-  .requirements-list {
-    margin: 0.75rem 0 1.5rem;
-    padding-left: 1.25rem;
-    font-size: 0.85rem;
-    color: #666;
-  }
-  
-  .requirement {
-    position: relative;
-    margin-bottom: 0.25rem;
-    list-style-type: none;
-  }
-  
-  .requirement:before {
-    content: "•";
-    position: absolute;
-    left: -1rem;
-  }
-  
-  .requirement.valid {
-    color: #2ecc71;
-  }
-  
-  /* Enhanced Input Fields */
-  .form-input {
-    width: 100%;
-    padding: 0.875rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background-color: #f9f9f9;
-  }
-  
-  .form-input:focus {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
-    background-color: white;
-  }
-  
-  /* Toggle Password Visibility */
-  .password-toggle {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #666;
-    cursor: pointer;
-  }
-  
-  /* Submit Button Enhancements */
-  .submit-button {
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #4a90e2 0%, #3a80d2 100%);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-  }
-  
-  .submit-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
-  }
-  
-  .submit-button:active {
-    transform: translateY(0);
-  }
-  
-  /* Responsive Adjustments */
-  @media (max-width: 480px) {
-    .modal-content {
-      padding: 1.75rem;
-      max-width: 95%;
-    }
-    
-    .form-input {
-      padding: 0.75rem;
-    }
-    
-    .submit-button {
-      padding: 0.875rem;
-    }
-  }
-  
-  /* Animations */
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-5px); }
-    40%, 80% { transform: translateX(5px); }
-  }
-  
-  .shake {
-    animation: shake 0.4s ease-in-out;
-  }
-/* Password Reset Modal Styles */
+/* common.css - Responsive Modal Styles */
 
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
- 
-  .password-reset-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #6b7280;
-    transition: color 0.2s;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-  }
-  
-  .password-reset-close:hover {
-    color: #4b5563;
-    background-color: #f3f4f6;
-  }
-  
-  .password-reset-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 8px;
-    text-align: center;
-  }
-  
-  .password-reset-text {
-    color: #6b7280;
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  
-  .password-reset-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .password-reset-form-group {
-    position: relative;
-  }
-  
-  .password-reset-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-  }
-  
-  .password-reset-input {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 15px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background-color: #f9fafb;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-  }
-  
-  .password-reset-input:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    background-color: white;
-  }
-  
-  .password-reset-input-error {
-    border-color: #ef4444;
-  }
-  
-  .password-reset-input-error:focus {
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-  }
-  
-  .password-reset-error {
-    color: #ef4444;
-    font-size: 13px;
-    margin-top: 6px;
-    display: block;
-  }
-  
-  .password-reset-submit {
-    width: 100%;
-    padding: 14px;
-    background-color: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 8px;
-  }
-  
-  .password-reset-submit:hover {
-    background-color: #4338ca;
-  }
-  
-  .password-reset-submit:disabled {
-    background-color: #a5b4fc;
-    cursor: not-allowed;
-  }
-  
-  /* Password Input Container */
-  .password-input-container {
-    position: relative;
-  }
-  
-  .password-toggle {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #9ca3af;
-    cursor: pointer;
-    padding: 4px;
-  }
-  
-  .password-toggle:hover {
-    color: #6b7280;
-  }
-  
-  /* Password Strength Meter */
-  .password-strength {
-    height: 4px;
-    background: #e5e7eb;
-    border-radius: 2px;
-    margin-top: 12px;
-    overflow: hidden;
-  }
-  
-  .strength-meter {
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease, background 0.3s ease;
-  }
-  
-  /* Responsive Adjustments */
-  @media (max-width: 480px) {
-    .password-reset-content {
-      padding: 24px;
-      max-width: 90%;
-    }
-    
-    .password-reset-title {
-      font-size: 20px;
-    }
-    
-    .password-reset-input {
-      padding: 10px 14px;
-      font-size: 14px;
-    }
-    
-    .password-reset-submit {
-      padding: 12px;
-      font-size: 14px;
-    }
-  }
+/* ============================================
+   FORGOT PASSWORD MODAL STYLES
+   ============================================ */
 
-
-
-
-
-
-
-
-
-
-  /* Base Styles */
-.jd-modal-overlay {
+.forgot-password-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: transparent;
+  backdrop-filter: none;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 20px;
 }
 
-.jd-modal-container {
+.forgot-password-content {
   background: white;
-  border-radius: 0.5rem;
+  border-radius: 12px;
+  padding: 32px;
   width: 100%;
-  max-width: 800px;
+  max-width: 450px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: modalSlideIn 0.3s ease-out;
 }
 
-.jd-modal-content {
-  padding: 2rem;
-}
-
-/* Header */
-.jd-modal-title {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: #1a1a1a;
-  font-weight: 600;
-}
-
-/* Form Elements */
-.jd-modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.jd-form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.jd-form-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-
-.jd-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.jd-form-label {
-  font-weight: 500;
-  color: #333;
-  font-size: 0.9rem;
-}
-
-.jd-form-input,
-.jd-form-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.jd-form-input:focus,
-.jd-form-textarea:focus {
-  outline: 2px solid #3b82f6;
-  border-color: transparent;
-}
-
-.jd-form-textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-/* Error Handling */
-.jd-error {
-  color: #dc2626;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
-.jd-form-input.error,
-.jd-form-textarea.error {
-  border-color: #dc2626;
-}
-
-/* Close Button */
-.jd-modal-close {
+.forgot-password-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 16px;
+  right: 16px;
   background: none;
   border: none;
+  font-size: 24px;
+  color: #6b7280;
   cursor: pointer;
-  padding: 0.5rem;
-  color: #666;
-  transition: color 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-.jd-modal-close:hover {
-  color: #333;
+.forgot-password-close:hover {
+  background: #f3f4f6;
+  color: #374151;
 }
 
-/* Submit Button */
-.jd-submit-btn {
-  padding: 0.75rem 1.5rem;
+.forgot-password-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.forgot-password-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.forgot-password-form {
+  width: 100%;
+}
+
+.forgot-password-form-group {
+  margin-bottom: 20px;
+}
+
+.forgot-password-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.forgot-password-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: white;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.forgot-password-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.forgot-password-input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.forgot-password-submit {
+  width: 100%;
   background: #3b82f6;
   color: white;
   border: none;
-  border-radius: 0.375rem;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-  align-self: flex-end;
+  transition: all 0.2s ease;
+  margin-top: 8px;
 }
 
-.jd-submit-btn:hover {
+.forgot-password-submit:hover:not(:disabled) {
   background: #2563eb;
+  transform: translateY(-1px);
 }
 
-.jd-submit-btn:disabled {
-  background: #94a3b8;
+.forgot-password-submit:disabled {
+  background: #9ca3af;
   cursor: not-allowed;
+  transform: none;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .jd-modal-content {
-    padding: 1.5rem;
-  }
+/* ============================================
+   EMAIL VERIFICATION MODAL STYLES
+   ============================================ */
 
-  .jd-form-row {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .jd-modal-title {
-    font-size: 1.25rem;
-  }
-
-  .jd-form-input,
-  .jd-form-textarea {
-    padding: 0.625rem;
-  }
-
-  .jd-submit-btn {
-    width: 100%;
-  }
+.email-verification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  backdrop-filter: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  padding: 20px;
 }
 
-@media (max-width: 480px) {
-  .jd-modal-overlay {
-    padding: 0.5rem;
-  }
-
-  .jd-modal-container {
-    max-height: 95vh;
-  }
-
-  .jd-modal-content {
-    padding: 1rem;
-  }
-
-  .jd-form-section {
-    gap: 1.5rem;
-  }
+.email-verification-content {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: modalSlideIn 0.3s ease-out;
 }
 
+.email-verification-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
 
-.jd-cancel-btn {
-  padding: 8px 16px;
-  background-color: #f44336;
+.email-verification-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.email-verification-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.email-verification-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.email-verification-form {
+  width: 100%;
+}
+
+.email-verification-form-group {
+  margin-bottom: 20px;
+}
+
+.email-verification-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 18px;
+  color: #111827;
+  background: white;
+  text-align: center;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.email-verification-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.email-verification-buttons {
+  margin-bottom: 16px;
+}
+
+.email-verification-submit {
+  width: 100%;
+  background: #10b981;
   color: white;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 10px;
+  padding: 14px 24px;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.jd-cancel-btn:hover {
-  background-color: #d32f2f;
+.email-verification-submit:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
 }
 
-.jd-cancel-btn:disabled {
-  background-color: #cccccc;
+.email-verification-submit:disabled {
+  background: #9ca3af;
   cursor: not-allowed;
+  transform: none;
+}
+
+.email-verification-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.email-verification-resend-section {
+  text-align: center;
+}
+
+.email-verification-resend-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.email-verification-resend-btn:hover:not(:disabled) {
+  color: #2563eb;
+}
+
+.email-verification-resend-btn:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.email-verification-timer {
+  color: #6b7280;
+  font-weight: normal;
+}
+
+/* ============================================
+   RESET PASSWORD MODAL STYLES
+   ============================================ */
+
+.reset-password-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  backdrop-filter: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1002;
+  padding: 20px;
+}
+
+.reset-password-content {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.reset-password-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.reset-password-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.reset-password-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+.reset-password-description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.reset-password-form {
+  width: 100%;
+}
+
+.reset-password-form-group {
+  margin-bottom: 20px;
+}
+
+.reset-password-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.reset-password-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #111827;
+  background: white;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.reset-password-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.reset-password-input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.reset-password-input-error {
+  border-color: #ef4444;
+}
+
+.reset-password-input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.reset-password-error {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.reset-password-submit {
+  width: 100%;
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.reset-password-submit:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.reset-password-submit:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================
+   SHARED ANIMATIONS AND UTILITIES
+   ============================================ */
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* Tablet styles */
+@media (max-width: 768px) {
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    padding: 24px;
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .forgot-password-title,
+  .email-verification-title,
+  .reset-password-title {
+    font-size: 22px;
+  }
+
+  .forgot-password-overlay,
+  .email-verification-overlay,
+  .reset-password-overlay {
+    padding: 10px;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    padding: 20px;
+    margin: 5px;
+    max-width: calc(100vw - 10px);
+    border-radius: 8px;
+  }
+
+  .forgot-password-title,
+  .email-verification-title,
+  .reset-password-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .forgot-password-description,
+  .email-verification-description,
+  .reset-password-description {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .forgot-password-input,
+  .reset-password-input {
+    padding: 10px 14px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .email-verification-input {
+    padding: 14px 18px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .forgot-password-submit,
+  .email-verification-submit,
+  .reset-password-submit {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .forgot-password-close,
+  .email-verification-close,
+  .reset-password-close {
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
+  }
+
+  .forgot-password-form-group,
+  .email-verification-form-group,
+  .reset-password-form-group {
+    margin-bottom: 16px;
+  }
+
+  .forgot-password-label,
+  .reset-password-label {
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
+
+  .reset-password-error {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
+  .email-verification-spinner {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* Extra small mobile styles */
+@media (max-width: 360px) {
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    padding: 16px;
+    margin: 0;
+    max-width: 100vw;
+    border-radius: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .forgot-password-overlay,
+  .email-verification-overlay,
+  .reset-password-overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .forgot-password-title,
+  .email-verification-title,
+  .reset-password-title {
+    font-size: 18px;
+  }
+
+  .forgot-password-close,
+  .email-verification-close,
+  .reset-password-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+  }
+}
+
+/* Landscape mobile styles */
+@media (max-width: 768px) and (orientation: landscape) and (max-height: 500px) {
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    max-height: 95vh;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .forgot-password-title,
+  .email-verification-title,
+  .reset-password-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .forgot-password-description,
+  .email-verification-description,
+  .reset-password-description {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .forgot-password-form-group,
+  .email-verification-form-group,
+  .reset-password-form-group {
+    margin-bottom: 12px;
+  }
+}
+
+/* High DPI / Retina display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .forgot-password-input,
+  .email-verification-input,
+  .reset-password-input {
+    border-width: 0.5px;
+  }
+
+  .forgot-password-input:focus,
+  .email-verification-input:focus,
+  .reset-password-input:focus {
+    border-width: 1px;
+  }
+}
+
+/* Dark mode support - Updated with lighter colors */
+@media (prefers-color-scheme: dark) {
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    background: #f8fafc; /* Changed from dark to very light gray */
+    color: #1e293b; /* Changed from light to dark text */
+  }
+
+  .forgot-password-title,
+  .email-verification-title,
+  .reset-password-title {
+    color: #0f172a; /* Changed from light to very dark text */
+  }
+
+  .forgot-password-description,
+  .email-verification-description,
+  .reset-password-description {
+    color: #475569; /* Changed from light to medium gray */
+  }
+
+  .forgot-password-label,
+  .reset-password-label {
+    color: #334155; /* Changed from light to darker gray */
+  }
+
+  .forgot-password-input,
+  .email-verification-input,
+  .reset-password-input {
+    background: #ffffff; /* Changed from dark to white */
+    border-color: #e2e8f0; /* Changed from dark to light border */
+    color: #1e293b; /* Changed from light to dark text */
+  }
+
+  .forgot-password-input:focus,
+  .email-verification-input:focus,
+  .reset-password-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .forgot-password-input:disabled,
+  .reset-password-input:disabled {
+    background: #f1f5f9; /* Changed from dark to very light gray */
+    color: #64748b; /* Changed from dark to medium gray */
+  }
+
+  .forgot-password-close,
+  .email-verification-close,
+  .reset-password-close {
+    color: #64748b; /* Changed from light to medium gray */
+  }
+
+  .forgot-password-close:hover,
+  .email-verification-close:hover,
+  .reset-password-close:hover {
+    background: #e2e8f0; /* Changed from dark to light gray */
+    color: #1e293b; /* Changed from light to dark */
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    animation: none;
+  }
+
+  .forgot-password-submit,
+  .email-verification-submit,
+  .reset-password-submit {
+    transition: none;
+  }
+
+  .forgot-password-submit:hover:not(:disabled),
+  .email-verification-submit:hover:not(:disabled),
+  .reset-password-submit:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .email-verification-spinner {
+    animation: none;
+  }
+}
+
+/* Focus visible for better keyboard navigation */
+.forgot-password-close:focus-visible,
+.email-verification-close:focus-visible,
+.reset-password-close:focus-visible,
+.forgot-password-submit:focus-visible,
+.email-verification-submit:focus-visible,
+.reset-password-submit:focus-visible,
+.email-verification-resend-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .forgot-password-overlay,
+  .email-verification-overlay,
+  .reset-password-overlay {
+    position: static;
+    background: none;
+    backdrop-filter: none;
+  }
+
+  .forgot-password-content,
+  .email-verification-content,
+  .reset-password-content {
+    box-shadow: none;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+
+  .forgot-password-close,
+  .email-verification-close,
+  .reset-password-close {
+    display: none;
+  }
 }

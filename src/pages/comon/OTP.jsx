@@ -1,7 +1,7 @@
+// EmailVerificationModal.jsx (OTP Modal)
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { EmployerVerifyOtpApi, ResendOtpApi, UserVerifyOtpApi, UserResendOtpApi } from "../../Api/Employer_Api/Employer_Auth_Api";
-import "../../Styles/OTP.css";
 
 const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmployer = false }) => {
   const [otp, setOtp] = useState("");
@@ -35,7 +35,6 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
       const response = isEmployer
         ? await EmployerVerifyOtpApi({ otp, email })
         : await UserVerifyOtpApi({ otp, email });
-      console.log("OTP verification response:", response);
 
       if (response.success) {
         toast.success("OTP Verified Successfully!", { toastId: "otp-success" });
@@ -44,12 +43,10 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
         }
       } else {
         toast.error(response.message || "Invalid OTP. Please try again.");
-        console.error("OTP verification failed:", response.message);
       }
     } catch (error) {
       console.error("OTP verification error:", error);
       if (error.response) {
-        console.error("Error response data:", error.response.data);
         toast.error(error.response.data.message || "Error verifying OTP. Please try again.");
       } else {
         toast.error("Network error. Please check your connection.");
@@ -65,11 +62,9 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
     setResendDisabled(true);
 
     try {
-      console.log("Sending OTP resend request...", { email });
       const response = isEmployer
         ? await ResendOtpApi({ email })
         : await UserResendOtpApi({ email });
-      console.log("OTP resend response:", response);
 
       if (response.success) {
         toast.success("OTP resent successfully!");
@@ -81,7 +76,6 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
     } catch (error) {
       console.error("Error resending OTP:", error);
       if (error.response) {
-        console.error("Error response data:", error.response.data);
         toast.error(error.response.data.message || "Error resending OTP. Please try again.");
       } else {
         toast.error("Network error. Please check your connection.");
@@ -102,12 +96,12 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
         </button>
 
         <h2 className="email-verification-title">Enter Verification Code</h2>
-        <p className="email-verification-text">
+        <p className="email-verification-description">
           We've sent a verification code to your email address. Please enter it below.
         </p>
 
         <form onSubmit={handleOTPSubmit} className="email-verification-form">
-          <div className="email-verification-input-group">
+          <div className="email-verification-form-group">
             <input
               type="text"
               placeholder="Enter code"
@@ -131,14 +125,14 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
             </button>
           </div>
           
-          <div className="email-verification-resend">
+          <div className="email-verification-resend-section">
             <button
               type="button"
               onClick={handleResendOTP}
               disabled={resendDisabled || loading}
               className="email-verification-resend-btn"
             >
-              Resend Code {countdown > 0 && <span className="email-verification-timer">{countdown}s</span>}
+              Resend Code {countdown > 0 && <span className="email-verification-timer">({countdown}s)</span>}
             </button>
           </div>
         </form>
@@ -148,3 +142,4 @@ const EmailVerificationModal = ({ isOpen, closeModal, email, onOtpSuccess, isEmp
 };
 
 export default EmailVerificationModal;
+

@@ -1,38 +1,4 @@
-/* src/pages/Employer/utilities/MobileToggle.css */
-.mobile-menu-toggle {
-  display: none; /* Hidden by default, shown on mobile */
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-  background-color: #1E3A8A; /* Match WorkNest primary blue */
-  border: none;
-  border-radius: 6px;
-  padding: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.mobile-menu-toggle svg {
-  color: #FFFFFF;
-}
-
-.mobile-menu-toggle:hover {
-  background-color: #1E40AF;
-}
-
-.mobile-menu-toggle.active {
-  background-color: #F97316; /* Orange when sidebar is open */
-}
-
-/* Show toggle button on mobile */
-@media (max-width: 767px) {
-  .mobile-menu-toggle {
-    display: block;
-  }
-}
-
-/* src/Components/Subscription/Subcription.css */
+/* src/Components/Subscription/Subscription.css */
 :root {
   --primary-blue: #1E3A8A;
   --accent-teal: #2DD4BF;
@@ -74,7 +40,6 @@
   left: 0;
 }
 
-/* Rest of the styles remain unchanged */
 .subscription-container h2 {
   text-align: center;
   margin-bottom: 30px;
@@ -199,6 +164,27 @@
   color: var(--primary-blue);
 }
 
+.add-jobs-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.add-jobs-button {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-jobs-button:hover {
+  background-color: #1e40af;
+}
+
 .plans-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -222,18 +208,22 @@
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-.plan-card h3 {
-  margin: 0 0 15px;
-  color: var(--dark-gray);
-  font-size: 1.375rem;
-  font-weight: 600;
+.plan-card.plan-active {
+  background-color: rgba(45, 212, 191, 0.05); /* Subtle teal tint for active plan */
+  border: 2px solid var(--accent-teal);
 }
 
-.plan-description {
-  margin: 0 0 20px;
-  color: #6B7280;
-  font-size: 0.875rem;
-  line-height: 1.5;
+.current-plan-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: var(--accent-teal);
+  color: var(--white);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .popular-badge {
@@ -247,6 +237,20 @@
   font-size: 0.75rem;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card h3 {
+  margin: 0 0 15px;
+  color: var(--dark-gray);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.plan-description {
+  margin: 0 0 20px;
+  color: #6B7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
 .plan-pricing {
@@ -309,152 +313,18 @@
 }
 
 .subscribe-button:disabled {
-  background-color: #9CA3AF;
+  background-color: var(--accent-teal);
+  color: var(--white);
   cursor: not-allowed;
+  opacity: 1; /* Full opacity for vibrant look */
 }
 
-/* Responsive Design */
-@media (max-width: 767px) {
-  .subscription-container {
-    padding: 15px;
-    margin-left: 0;
-  }
-
-  .subscription-container h2 {
-    font-size: 1.5rem;
-  }
-
-  .job-usage-dashboard {
-    padding: 15px;
-  }
-
-  .usage-header h3 {
-    font-size: 1.25rem;
-  }
-
-  .usage-stats-container {
-    grid-template-columns: 1fr;
-  }
-
-  .plans-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .plan-card {
-    padding: 20px;
-  }
-
-  .plan-card h3 {
-    font-size: 1.25rem;
-  }
-
-  .plan-price {
-    font-size: 1.25rem;
-  }
-
-  .subscribe-button {
-    font-size: 0.875rem;
-    padding: 10px;
-  }
-
-  .sidebar-container {
-    width: 200px;
-  }
+.subscribe-button.inactive-plan-button {
+  background-color: var(--accent-teal);
+  color: var(--white);
+  cursor: not-allowed;
+  opacity: 1; /* Ensure vibrant color */
 }
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .subscription-container {
-    padding: 20px;
-    margin-left: 260px;
-  }
-
-  .sidebar-container {
-    left: 0;
-    width: 250px;
-  }
-
-  .usage-stats-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .plans-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .plan-card {
-    padding: 22px;
-  }
-
-  .subscription-container h2 {
-    font-size: 1.75rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .subscription-container {
-    padding: 30px;
-    margin-left: 280px;
-  }
-
-  .sidebar-container {
-    left: 0;
-    width: 250px;
-  }
-
-  .usage-stats-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .plans-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-
-/* Add these styles to your Subscription.css file */
-
-.add-jobs-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.add-jobs-button {
-  background-color: #1E3A8A;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.add-jobs-button:hover {
-  background-color: #1e40af;
-}
-
-/* Modal styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.jobs-modal {
-  background-color: white;
-  border-radius: 10px;
-  padding: 25px;
-  width: 90%;
-}
-
 
 /* Modal Overlay */
 .modal-overlay {
@@ -494,7 +364,7 @@
 .modal-header h3 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1e3a8a;
+  color: var(--primary-blue);
   margin: 0;
 }
 
@@ -508,7 +378,7 @@
 }
 
 .modal-close-button:hover {
-  color: #1e3a8a;
+  color: var(--primary-blue);
 }
 
 /* Modal Content */
@@ -528,7 +398,7 @@
   display: block;
   font-size: 1rem;
   font-weight: 500;
-  color: #1e3a8a;
+  color: var(--primary-blue);
   margin-bottom: 8px;
 }
 
@@ -545,7 +415,7 @@
   width: 40px;
   height: 40px;
   font-size: 1.25rem;
-  color: #1e3a8a;
+  color: var(--primary-blue);
   cursor: pointer;
   transition: background 0.2s ease, transform 0.1s ease;
 }
@@ -568,13 +438,13 @@
   border-radius: 8px;
   text-align: center;
   font-size: 1rem;
-  color: #1e3a8a;
+  color: var(--primary-blue);
   outline: none;
   transition: border-color 0.2s ease;
 }
 
 .job-count-controls input:focus {
-  border-color: #1e3a8a;
+  border-color: var(--primary-blue);
   box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
@@ -595,7 +465,7 @@
 .job-cost-summary .total-cost {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #1e3a8a;
+  color: var(--primary-blue);
 }
 
 /* Modal Actions */
@@ -623,7 +493,7 @@
 }
 
 .confirm-button {
-  background: #1e3a8a;
+  background: var(--primary-blue);
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
@@ -646,76 +516,166 @@
 
 /* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 /* Responsive Design */
+@media (max-width: 767px) {
+  .subscription-container {
+    padding: 15px;
+    margin-left: 0;
+  }
+  .subscription-container h2 {
+    font-size: 1.5rem;
+  }
+  .job-usage-dashboard {
+    padding: 15px;
+  }
+  .usage-header h3 {
+    font-size: 1.25rem;
+  }
+  .usage-stats-container {
+    grid-template-columns: 1fr;
+  }
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+  .plan-card {
+    padding: 20px;
+  }
+  .plan-card h3 {
+    font-size: 1.25rem;
+  }
+  .plan-price {
+    font-size: 1.25rem;
+  }
+  .subscribe-button {
+    font-size: 0.875rem;
+    padding: 10px;
+  }
+  .sidebar-container {
+    width: 200px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .subscription-container {
+    padding: 20px;
+    margin-left: 260px;
+  }
+  .sidebar-container {
+    left: 0;
+    width: 250px;
+  }
+  .usage-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .plans-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .plan-card {
+    padding: 22px;
+  }
+  .subscription-container h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .subscription-container {
+    padding: 30px;
+    margin-left: 280px;
+  }
+  .sidebar-container {
+    left: 0;
+    width: 250px;
+  }
+  .usage-stats-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .plans-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 600px) {
   .jobs-modal {
     width: 95%;
     padding: 16px;
   }
-
   .modal-header h3 {
     font-size: 1.25rem;
   }
-
   .jobs-modal p {
     font-size: 0.9rem;
   }
-
   .job-count-controls {
     gap: 8px;
   }
-
   .job-count-controls button {
     width: 36px;
     height: 36px;
     font-size: 1rem;
   }
-
   .job-count-controls input {
     width: 70px;
     height: 36px;
     font-size: 0.9rem;
   }
-
   .job-cost-summary {
     padding: 12px;
   }
-
   .job-cost-summary p {
     font-size: 0.9rem;
   }
-
   .job-cost-summary .total-cost {
     font-size: 1rem;
   }
-
   .modal-actions {
     flex-direction: column;
     gap: 8px;
   }
-
   .cancel-button,
   .confirm-button {
     width: 100%;
     padding: 12px;
   }
+}
+
+.renewal-notice.prominent {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ffebee; /* Light red background for urgency */
+  border: 2px solid #ef5350; /* Red border */
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.renewal-text {
+  color: #d32f2f; /* Dark red text */
+  margin-bottom: 10px;
+}
+
+.renew-button.prominent {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #1E3A8A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.renew-button.prominent:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }

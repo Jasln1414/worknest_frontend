@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { formatInTimeZone } from 'date-fns-tz';
+import { isInterviewTimeReached } from './DateTime';
 import './Interview.css';
 
 function AcceptRejectModal({ setModal, modalData, setLoad, load }) {
@@ -9,6 +11,9 @@ function AcceptRejectModal({ setModal, modalData, setLoad, load }) {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const interview = modalData[0];
+
+  // Debug: Log interview data
+  console.log('Interview data:', interview);
 
   const handleClose = () => {
     if (!isProcessing) {
@@ -21,52 +26,36 @@ function AcceptRejectModal({ setModal, modalData, setLoad, load }) {
 
     try {
       setIsProcessing(true);
-      
-      // Show loading indicator
+
       Swal.fire({
         title: `${action === 'Accepted' ? 'Accepting' : 'Rejecting'}...`,
         text: 'Please wait',
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
-        }
+        },
       });
-      
-      // Update application status if application_id exists
-      if (interview.application_id) {
-        await axios.post(
-          `${baseURL}/api/empjob/applicationStatus/${interview.application_id}/`,
-          { action },
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            }
-          }
-        );
-      }
-      
-      // Update interview status
+
       const response = await axios.post(
-        `${baseURL}/api/interview/update-status/${interview.id}/`,
-        { status: action },
+        `${baseURL}/api/interview/status/${interview.id}/`,
+        { action },
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
-          }
+          },
         }
       );
-      
+
       if (response.status === 200) {
         setModal(false);
         setLoad(!load);
-        
+
         Swal.fire({
           icon: 'success',
           title: 'Status Updated',
           text: `Candidate has been ${action.toLowerCase()} for this position.`,
-          timer: 1500
+          timer: 1500,
         });
       }
     } catch (error) {
@@ -75,80 +64,162 @@ function AcceptRejectModal({ setModal, modalData, setLoad, load }) {
         icon: 'error',
         title: 'Action Failed',
         text: `Failed to ${action.toLowerCase()} candidate. ${error.response?.data?.message || 'Please try again.'}`,
-        timer: 2000
+        timer: 2000,
       });
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleReschedule = () => {
-    // We'll just close this modal and let the parent component handle rescheduling
-    setModal(false);
-    
-    Swal.fire({
-      title: 'Reschedule Interview',
-      text: 'This feature will be available soon. Please use the main scheduling interface.',
-      icon: 'info',
-      confirmButtonText: 'OK'
-    });
+  const handleCancel = async () => {
+    if (isProcessing) return;
+
+    // Debug: Log cancel data
+    const cancelData = {
+      interview_id: interview?.id,
+      candidate_id: interview?.candidate || interview?.original?.candidate,
+      job_id: interview?.job || interview?.original?.job,
+    };
+    console.log('Cancel data:', cancelData);
+
+    // Validate required fields
+    if (!cancelData.interview_id || !cancelData.candidate_id || !cancelData.job_id) {
+      console.error('Missing required fields for cancel:', cancelData);
+      Swal.fire({
+        icon: 'error',
+        title: 'Cancel Failed',
+        text: 'Missing interview, candidate, or job data.',
+        timer: 2000,
+      });
+      setIsProcessing(false);
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+
+      Swal.fire({
+        title: 'Canceling...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const response = await axios.post(
+        `${baseURL}/api/interview/cancelApplication/`,
+        cancelData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setModal(false);
+        setLoad(!load);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Application Canceled',
+          text: 'The interview has been canceled successfully.',
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      console.error('Error canceling interview:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Cancel Failed',
+        text: `Failed to cancel interview. ${error.response?.data?.message || 'Please try again.'}`,
+        timer: 2000,
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  // Format date for display
   const formatDate = (dateString) => {
     if (!dateString) return 'Not available';
-    
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+    return formatInTimeZone(new Date(dateString), 'America/New_York', 'EEE, d MMM yyyy h:mm a z');
   };
 
+  const getStatusMessage = () => {
+    if (!interview) return 'Interview data is missing.';
+    if (interview.status === 'Expired') {
+      return 'This interview has expired as the scheduled time has passed.';
+    } else if (interview.status === 'Completed') {
+      return 'This interview has been completed.';
+    } else if (interview.status === 'Accepted') {
+      return 'The candidate has been accepted for this position.';
+    } else if (interview.status === 'Rejected') {
+      return 'The candidate has been rejected for this position.';
+    } else if (interview.status === 'Canceled') {
+      return 'This interview has been canceled.';
+    } else if (interview.status === 'Upcoming' && interview.date && isInterviewTimeReached(interview.date)) {
+      return 'This interview has expired as the scheduled time has passed.';
+    } else {
+      return 'This interview is scheduled and upcoming.';
+    }
+  };
+
+  if (!interview) {
+    return (
+      <div className="modal-overlay" onClick={handleClose}>
+        <div className="modal-container">
+          <h2 className="modal-title">Error</h2>
+          <p>No interview data available.</p>
+          <button className="modal-button cancel" onClick={handleClose}>
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="modal-overlay" onClick={(e) => {
-      if (e.target.className === 'modal-overlay') handleClose();
-    }}>
+    <div
+      className="modal-overlay"
+      onClick={(e) => {
+        if (e.target.className === 'modal-overlay') handleClose();
+      }}
+    >
       <div className="modal-container">
         <h2 className="modal-title">Interview Details</h2>
-        
+
         <div className="interview-details">
           <div className="detail-row">
             <div className="detail-label">Job Title:</div>
             <div className="detail-value">{interview.job_title || 'Not available'}</div>
           </div>
-          
+
           <div className="detail-row">
             <div className="detail-label">Candidate:</div>
             <div className="detail-value">{interview.candidate_name || 'Not available'}</div>
           </div>
-          
-          <div className="detail-row">
-            <div className="detail-label">Applied Date:</div>
-            <div className="detail-value">
-              {interview.applyDate ? formatDate(interview.applyDate) : 'Not available'}
-            </div>
-          </div>
-          
+
           <div className="detail-row">
             <div className="detail-label">Interview Date:</div>
             <div className="detail-value">
               {interview.date ? formatDate(interview.date) : 'Not available'}
             </div>
           </div>
-          
+
           <div className="detail-row">
             <div className="detail-label">Current Status:</div>
             <div className={`detail-value status-cell ${(interview.status || 'upcoming').toLowerCase()}`}>
               {interview.status || 'Upcoming'}
             </div>
           </div>
-          
+
+          <div className="detail-row">
+            <div className="detail-label">Status Message:</div>
+            <div className="detail-value">{getStatusMessage()}</div>
+          </div>
+
           {interview.original && interview.original.notes && (
             <div className="detail-row">
               <div className="detail-label">Notes:</div>
@@ -156,20 +227,19 @@ function AcceptRejectModal({ setModal, modalData, setLoad, load }) {
             </div>
           )}
         </div>
-        
+
         <div className="modal-actions">
-          {/* Only show Accept/Reject for eligible interviews */}
-          {(interview.status === 'Upcoming' || interview.status === 'Completed') && (
+          {(interview.status === 'Upcoming' || interview.status === 'Completed' || interview.status === 'Expired') && (
             <>
-              <button 
+              <button
                 className="modal-button accept-button"
                 onClick={() => handleAcceptReject('Accepted')}
                 disabled={isProcessing}
               >
                 {isProcessing ? 'Processing...' : 'Accept Candidate'}
               </button>
-              
-              <button 
+
+              <button
                 className="modal-button reject-button"
                 onClick={() => handleAcceptReject('Rejected')}
                 disabled={isProcessing}
@@ -178,19 +248,18 @@ function AcceptRejectModal({ setModal, modalData, setLoad, load }) {
               </button>
             </>
           )}
-          
-          {/* Only show Reschedule for upcoming interviews */}
+
           {interview.status === 'Upcoming' && (
-            <button 
-              className="modal-button reschedule-button"
-              onClick={handleReschedule}
+            <button
+              className="modal-button cancel-button"
+              onClick={handleCancel}
               disabled={isProcessing}
             >
-              Reschedule
+              Cancel
             </button>
           )}
-          
-          <button 
+
+          <button
             className="modal-button cancel"
             onClick={handleClose}
             disabled={isProcessing}

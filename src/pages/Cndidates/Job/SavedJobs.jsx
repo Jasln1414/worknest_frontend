@@ -4,10 +4,8 @@ import Swal from 'sweetalert2';
 import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import JobCard from '../utilities/Jobcard';
 import Pagination from '../utilities/Paginations';
-// import './Savedjob.css';
-// import '../../../Styles/Candidate/jobdetail.css';
+import './SavedJob.css';
 
-// Custom hook for managing saved jobs data
 const useSavedJobs = (token) => {
     const [jobdata, setJobData] = useState([]);
     const [loading, setLoading] = useState(true);

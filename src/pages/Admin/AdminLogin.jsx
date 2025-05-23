@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { set_Authentication } from '../../Redux/Authentication/authenticationSlice';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import '../../Styles/Admin/AdminHome.css'; // Import CSS
+import '../../Styles/Admin/AdminHome.css'; 
 
 function AdminLogin() {
   const authentication_user = useSelector((state) => state.authentication_user);

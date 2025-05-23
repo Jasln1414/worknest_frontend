@@ -3,10 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { Home, People, Business, Work, BarChart, ExitToApp } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
-//import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice';
 import { set_Authentication } from '../../../Redux/Authentication/authenticationSlice';
 import '../../../Styles/Sidebar.css';
-
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -45,10 +43,16 @@ function Sidebar() {
           <ListItemText primary="Jobs" />
         </ListItem>
         <Divider />
-        {/* <ListItem button component={Link} to="/admin/reports">
+        <ListItem button component={Link} to="/admin/Subplan">
+          <ListItemIcon><Work /></ListItemIcon>
+          <ListItemText primary="Subscription Plans" />
+        </ListItem>
+        <Divider />
+        <ListItem button component={Link} to="/admin/reports">
           <ListItemIcon><BarChart /></ListItemIcon>
-          <ListItemText primary="Reports" />
-        </ListItem> */}
+          <ListItemText primary="Sales Report" />
+        </ListItem>
+        <Divider />
         <ListItem button onClick={handleSignOut}>
           <ListItemIcon><ExitToApp /></ListItemIcon>
           <ListItemText primary="Sign Out" />

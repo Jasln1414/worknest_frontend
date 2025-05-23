@@ -8,6 +8,7 @@ import { SlLocationPin } from "react-icons/sl";
 import { formatDistanceToNow } from 'date-fns';
 import Swal from 'sweetalert2';
 import Qmodal from '../../../Components/Candidates/utilities/Qmodal';
+import '../../../assets/Style/Toast.css';
 
 const JobHeader = ({ jobData, image }) => (
   <div className="job-header">

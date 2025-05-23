@@ -1,206 +1,257 @@
-/* General container styling */
+/* ===== Base Styles ===== */
+:root {
+  --primary-blue: #1e3a8a;
+  --error-red: #ef4444;
+  --text-gray: #4b5563;
+  --bg-light: #f3f4f6;
+  --white: #ffffff;
+  --border-gray: #d1d5db;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Header Styles ===== */
+.employer-header {
+  width: 100%;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 70px;
+}
+
+/* Logo Section */
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.logo-title {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 600;
+  margin-left: 0.5rem;
+  color: #333;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-gray);
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--primary-blue);
+}
+
+/* Profile & Notifications */
+.profile-notifications {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: border-color 0.2s ease;
+  border: 2px solid var(--border-gray);
+}
+
+.user-profile img:hover {
+  border-color: var(--primary-blue);
+}
+
+/* ===== Notification Styles ===== */
 .notification-bell-container {
   position: relative;
   display: inline-flex;
   align-items: center;
+  margin: 0 15px;
+  flex-shrink: 0;
+  z-index: 1050;
 }
 
-/* Bell icon styling */
 .notification-bell {
-  cursor: pointer;
-  position: relative;
-  padding: 8px;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.notification-bell:hover {
-  transform: scale(1.1);
-  color: #007bff; /* Professional blue on hover */
-}
-
-/* Badge styling */
-.notification-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #dc3545; /* Professional red for unread notifications */
-  color: white;
-  font-size: 10px;
-  font-weight: 600;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.notification-bell:hover {
+  background: var(--bg-light);
+  transform: scale(1.1);
+}
+
+.notification-bell svg {
+  width: 24px;
+  height: 24px;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--error-red);
+  color: var(--white);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Dropdown styling */
 .notification-dropdown {
   position: absolute;
-  top: 100%;
-  right: 0;
-  width: 320px; /* Fixed width for consistency */
-  max-height: 400px;
-  overflow-y: auto;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  animation: slideDown 0.2s ease-out;
+  top: 80px;
+  right: 20px;
+  width: 360px;
+  min-width: 300px;
+  max-width: 92vw;
+  max-height: 450px;
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  overflow-y: auto; /* Allow vertical scrollbar */
+  z-index: 1055;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  animation: slideDown 0.3s ease;
 }
 
-/* Slide-down animation for dropdown */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Header styling */
 .notification-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
-  background-color: #fafafa;
-  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid var(--border-gray);
+  background: var(--bg-light);
+  border-radius: 10px 10px 0 0;
 }
 
 .notification-header h3 {
-  margin: 0;
-  font-size: 16px;
+  font-size: 1.1rem;
+  color: var(--primary-blue);
   font-weight: 600;
-  color: #333;
+  margin: 0;
 }
 
-/* Clear All button */
 .clear-all-btn {
   background: none;
   border: none;
-  color: #007bff;
-  font-size: 14px;
-  font-weight: 500;
+  color: var(--error-red);
+  font-size: 0.9rem;
   cursor: pointer;
   padding: 4px 8px;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .clear-all-btn:hover {
-  color: #0056b3;
-  background-color: rgba(0, 123, 255, 0.1);
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.1);
   border-radius: 4px;
 }
 
-/* Notification list */
 .notification-list {
-  padding: 8px 0;
+  flex: 1;
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  overflow-y: auto;
+  max-height: 390px;
 }
 
-/* Individual notification item */
 .notification-item {
+  display: flex;
   padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-gray);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.2s ease;
+  width: 100%; /* Ensure it fits within parent */
+  box-sizing: border-box;
+}
+
+.notification-item.unread {
+  background: #e6f0ff;
+  font-weight: 500;
+}
+
+.notification-item.read {
+  background: var(--white);
 }
 
 .notification-item:hover {
-  background-color: #f8f9fa;
+  background: var(--bg-light);
 }
 
-/* Notification text */
+.notification-content {
+  flex: 1;
+  overflow-wrap: break-word; /* Break long words to prevent overflow */
+  word-break: break-word; /* Additional support for breaking words */
+}
+
 .notification-text {
-  font-size: 14px;
-  color: #333;
+  font-size: 0.9rem;
+  color: var(--text-gray);
   line-height: 1.4;
   margin-bottom: 4px;
 }
 
-/* Notification timestamp */
 .notification-time {
-  font-size: 12px;
-  color: #6c757d; /* Muted gray for timestamp */
+  font-size: 0.8rem;
+  color: #9ca3af;
 }
 
-/* Read vs unread styling */
-.read {
-  background-color: #f8f9fa;
-}
-
-.unread {
-  background-color: #fff;
-  font-weight: 500; /* Slightly bolder for unread */
-}
-
-/* No notifications message */
 .no-notifications {
   padding: 16px;
   text-align: center;
-  font-size: 14px;
-  color: #6c757d;
+  color: var(--text-gray);
+  font-size: 0.9rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) { /* Tablets and smaller */
-  .notification-dropdown {
-    width: 280px; /* Slightly smaller on tablets */
-    max-height: 300px; /* Shorter height */
-  }
-
-  .notification-header h3 {
-    font-size: 14px;
-  }
-
-  .clear-all-btn {
-    font-size: 12px;
-  }
-
-  .notification-text {
-    font-size: 13px;
-  }
-
-  .notification-time {
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 480px) { /* Mobile devices */
-  .notification-bell {
-    padding: 6px; /* Smaller padding */
-  }
-
-  .notification-badge {
-    width: 14px;
-    height: 14px;
-    font-size: 9px;
-  }
-
-  .notification-dropdown {
-    width: 100%; /* Full width on mobile */
-    max-width: 300px;
-    right: -10px; /* Adjust positioning */
-    border-radius: 4px;
-  }
-
-  .notification-header {
-    padding: 10px 12px;
-  }
-
-  .notification-item {
-    padding: 10px 12px;
-  }
-}
-
-/* Scrollbar styling for a professional look */
+/* Scrollbar styling */
 .notification-dropdown::-webkit-scrollbar {
   width: 6px;
 }
@@ -218,280 +269,39 @@
   background: #a0a0a0;
 }
 
-.logo h1.worknestlogo {
-  font-size: 1.8rem;
-  margin: 0;
-  color: #2557a7;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-.candidate-header {
-  width: 100%;
-  background-color: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
- height:15vh;
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-}
-
-.logo-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.logo-title {
-  margin-left: 10px;
-  font-size: 1.5rem;
-  color: #2557a7;
-  font-weight: bold;
-}
-
-.nav-links {
-  display: flex;
-  gap: 20px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-}
-
-.profile-notifications {
-  display: flex;
- 
-  justify-content:center;
-  gap: 15px;
-}
-
-.profile-image {
-  width: 15vh;
-  height: 15vh;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-  margin-botton:10px;
-}
-
-.mobile-menu {
-  background-color: #fff;
-  padding: 15px;
-  border-top: 1px solid #ddd;
-}
-
-.mobile-menu-links {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.dropdown-link {
-  display: block;
-  padding: 10px;
-  color: #333;
-  text-decoration: none;
-}
-
-.dropdown-link:hover,
-.dropdown-logout-btn:hover {
-  background-color: #f1f1f1;
-}
-
-.dropdown-logout-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 10px;
-  color: red;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-
-/* Dropdown.css */
-.dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-menu {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  background: #fff;
-  padding: 0.5rem;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.dropdown-item, .transition {
-  margin: 0;
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  color: #333;
-  transition: color 0.3s ease, background 0.3s ease;
-  cursor: pointer;
-}
-
-.dropdown-item:hover, .transition:hover {
-  color: #007bff;
-  background: #f0f0f0;
-}
-
-.w-full {
-  width: 100%;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .dropdown-menu {
-    flex-direction: column;
-    width: 100%;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
+/* Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-
-  .dropdown-item, .transition {
-    padding: 0.75rem 1rem;
-    text-align: left;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* EmployerHeader.css - Responsive styles for all devices */
-
-/* Base container styles */
-.employer {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-  background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  height: 70px;
-}
-
-/* Logo styles */
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-
-.logo-image img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e8e8e8;
-}
-
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #2563eb;
-  margin-left: 0.75rem;
-}
-
-/* Navigation links */
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.nav-links a {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #4b5563;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-}
-
-.nav-links a:hover {
-  color: #2563eb;
-  background-color: rgba(37, 99, 235, 0.05);
-}
-
-/* User profile */
-.user-profile {
-  cursor: pointer;
-}
-
-.profile-image {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e8e8e8;
-  transition: border-color 0.2s ease;
-}
-
-.profile-image:hover {
-  border-color: #2563eb;
-}
-
-/* Dropdown menu styling */
-.dropdown-item {
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  color: #4b5563;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-radius: 4px;
-}
-
-.dropdown-item:hover {
-  background-color: #f3f4f6;
-  color: #2563eb;
-}
-
-/* Mobile menu button */
+/* ===== Mobile Menu ===== */
 .mobile-menu-button {
   display: none;
   background: none;
   border: none;
   cursor: pointer;
-  color: #4b5563;
+  color: var(--text-gray);
   transition: color 0.2s ease;
 }
 
 .mobile-menu-button:hover {
-  color: #2563eb;
+  color: var(--primary-blue);
 }
 
-/* Mobile menu container */
 .mobile-menu {
   display: none;
   position: fixed;
   top: 70px;
   left: 0;
   right: 0;
-  background-color: #ffffff;
+  background-color: var(--white);
   padding: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   z-index: 50;
@@ -502,503 +312,242 @@
 .mobile-menu a {
   padding: 0.75rem;
   font-size: 1rem;
-  color: #4b5563;
+  color: var(--text-gray);
   text-decoration: none;
   border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 
 .mobile-menu a:hover {
-  background-color: #f3f4f6;
-  color: #2563eb;
+  background-color: var(--bg-light);
+  color: var(--primary-blue);
 }
 
 .mobile-menu-open {
   display: flex;
 }
 
-/* Notification styles */
-.notification-container {
-  position: relative;
+/* ===== Responsive Design ===== */
+@media (max-width: 1024px) {
+  .notification-bell-container {
+    margin: 0 12px;
+  }
+
+  .notification-bell {
+    width: 36px;
+    height: 36px;
+  }
+
+  .notification-bell svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .notification-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+  }
+
+  .notification-dropdown {
+    width: 340px;
+    top: 75px;
+    right: 15px;
+    max-height: 400px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    overflow-y: auto;
+  }
+
+  .notification-list {
+    max-height: 340px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+  }
 }
 
-.notification-bell {
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 50%;
-  background-color: #f3f4f6;
-  transition: background-color 0.2s ease;
-}
-
-.notification-bell:hover {
-  background-color: #e5e7eb;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background-color: #ef4444;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Media Queries for Responsive Design */
-
-/* Large Desktop (1280px+) */
-@media (min-width: 1280px) {
+@media (max-width: 768px) {
   .header-container {
-    padding: 0.75rem 2rem;
+    padding: 1rem;
   }
-  
-  .nav-links {
-    gap: 2.5rem;
-  }
-  
-  .nav-links a {
-    font-size: 1.1rem;
-  }
-}
 
-/* Desktop (1024px - 1279px) */
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .header-container {
-    padding: 0.75rem 1.5rem;
-  }
-  
-  .nav-links {
-    gap: 2rem;
-  }
-}
-
-/* Tablets (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .header-container {
-    padding: 0.75rem 1.25rem;
-  }
-  
-  .nav-links {
-    gap: 1.5rem;
-  }
-  
-  .nav-links a {
-    font-size: 0.95rem;
-  }
-  
-  .logo-text {
-    font-size: 1.25rem;
-  }
-}
-
-/* Mobile (below 768px) */
-@media (max-width: 767px) {
-  .header-container {
-    padding: 0.75rem 1rem;
-  }
-  
   .nav-links {
     display: none;
   }
-  
+
   .mobile-menu-button {
     display: block;
   }
-  
-  .logo-text {
-    font-size: 1.2rem;
-  }
-  
-  .profile-image, .logo-image img {
-    width: 40px;
-    height: 40px;
-  }
-}
 
-/* Small Mobile (below 480px) */
-@media (max-width: 480px) {
-  .header-container {
-    padding: 0.5rem 0.75rem;
-    height: 60px;
+  .notification-bell-container {
+    margin: 0 10px;
+    z-index: 1050;
   }
-  
-  .logo-text {
+
+  .notification-bell {
+    width: 34px;
+    height: 34px;
+  }
+
+  .notification-bell svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .notification-dropdown {
+    position: fixed;
+    top: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95vw;
+    max-width: 320px;
+    min-width: 280px;
+    right: auto;
+    max-height: 75vh;
+    padding: 12px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    overflow-y: auto;
+  }
+
+  .notification-list {
+    max-height: calc(75vh - 60px);
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+  }
+
+  .notification-header h3 {
     font-size: 1rem;
   }
-  
-  .profile-image, .logo-image img {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .mobile-menu {
-    top: 60px;
-  }
-  
-  .mobile-menu a {
-    padding: 0.5rem;
-    font-size: 0.9rem;
-  }
-}
 
-/* Extra Small Mobile (below 320px) */
-@media (max-width: 320px) {
-  .logo-text {
+  .notification-text {
     font-size: 0.85rem;
   }
-  
-  .profile-image, .logo-image img {
-    width: 30px;
-    height: 30px;
+
+  .notification-time {
+    font-size: 0.75rem;
   }
 }
 
-
-
-/* Notification.css or EmployerHeader.css */
-.employer {
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-
-.logo-image img {
-  width: 40px; /* Adjust size as needed */
-  height: 40px;
-}
-
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
-.nav-links a:hover {
-  color: #007bff;
-}
-
-.notification-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-}
-
-.profile-image {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 767px) {
-  .header-container {
-    padding: 1rem;
+@media (max-width: 480px) {
+  .notification-bell {
+    width: 32px;
+    height: 32px;
   }
 
-  .logo-image {
-    min-width: 0; /* Prevent empty space where image would be */
+  .notification-bell svg {
+    width: 18px;
+    height: 18px;
   }
 
-  .logo-text {
-    margin-left: 0; /* Remove margin when image is hidden */
+  .notification-badge {
+    width: 16px;
+    height: 16px;
+    font-size: 0.65rem;
   }
 
-  .nav-links {
-    display: flex; /* Keep nav links visible unless mobile menu is enabled */
+  .notification-dropdown {
+    top: 100px;
+    width: 90vw;
+    max-width: 300px;
+    padding: 10px;
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+    overflow-y: auto;
+  }
+
+  .notification-list {
+    max-height: calc(70vh - 60px);
+    overflow-x: hidden; /* Prevent horizontal scrollbar */
+  }
+
+  .notification-header {
+    padding: 10px 14px;
+  }
+
+  .notification-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .notification-item {
+    padding: 10px 14px;
+  }
+
+  .notification-text {
+    font-size: 0.8rem;
+  }
+
+  .notification-time {
+    font-size: 0.7rem;
+  }
+
+  .clear-all-btn {
+    font-size: 0.85rem;
   }
 }
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .header-container {
-    padding: 1rem 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .header-container {
-    padding: 1rem 2rem;
-  }
-}
-/* EmployerHeader.css */
-.employer-header {
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-}
-
-.logo-image img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.logo-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  color: #333;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 1rem;
-}
-
-.nav-links a:hover {
-  color: #007bff;
-}
-
-.profile-notifications {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user-profile img {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.mobile-menu-button {
-  display: none; /* Hidden by default, shown on small screens */
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.mobile-menu {
-  display: none; /* Hidden by default, shown on small screens when open */
-  background: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* ===== Notification Dropdown Fix ===== */
+.notification-dropdown {
   position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.mobile-menu-links {
+  top: 60px; /* Adjust this value based on your header height */
+  right: 20px;
+  width: 360px;
+  min-width: 300px;
+  max-width: 92vw;
+  max-height: 450px;
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+  z-index: 1100; /* Increase z-index to be above other elements */
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  gap: 1rem;
+  padding: 15px;
+  animation: slideDown 0.3s ease;
 }
 
-.mobile-menu-links a,
-.mobile-menu-links button {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 1rem;
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-}
-
-.mobile-menu-links a:hover,
-.mobile-menu-links button:hover {
-  color: #007bff;
-}
-
-/* Responsive Adjustments */
-@media (min-width: 1024px) {
-  .header-container {
-    padding: 1rem 2rem;
-  }
-
-  .nav-links {
-    display: flex;
-  }
-
-  .mobile-menu-button,
-  .mobile-menu {
-    display: none; /* Ensure mobile menu stays hidden on large screens */
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .header-container {
-    padding: 1rem 1.5rem;
-  }
-
-  .nav-links {
-    gap: 1.5rem;
-  }
-
-  .mobile-menu-button,
-  .mobile-menu {
-    display: none; /* Hidden on tablet unless adjusted */
-  }
-}
-
-@media (max-width: 767px) {
-  .header-container {
-    padding: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .logo-image {
-    min-width: 0; /* Prevent empty space when image is hidden */
-  }
-
-  .logo-title {
-    margin-left: 0; /* Adjust spacing when image is hidden */
-  }
-
-  .nav-links {
-    display: none; /* Hide desktop nav on small screens */
-  }
-
-  .profile-notifications {
-    gap: 0.5rem;
-  }
-
-  .user-profile img {
-    width: 50px; /* Slightly smaller on mobile */
-    height: 50px;
-  }
-
-  .mobile-menu-button {
-    display: block; /* Show toggle button on small screens */
-  }
-
-  .mobile-menu.open {
-    display: block; /* Show mobile menu when open */
-  }
-}
-
-/* Ensure NotificationBell styles are compatible (from Notification.css) */
-.notification-bell {
-  position: relative;
-  cursor: pointer;
-}
-
-
-/* EmployerHeader.css */
+/* Make sure the header has a lower z-index than the dropdown */
 .employer-header {
-  width: 100%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  z-index: 1000; /* Should be lower than the dropdown's z-index */
 }
 
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+/* For mobile view */
+@media (max-width: 768px) {
+  .notification-dropdown {
+    top: 70px; /* Adjust based on your mobile header height */
+    z-index: 1100; /* Keep high z-index */
+  }
 }
 
-.logo-section {
-  display: flex;
-  align-items: center;
+/* ===== Critical Fixes ===== */
+.notification-bell-container {
+  position: relative;
+  z-index: 1100; /* Higher than header */
 }
 
-.logo-image img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
+.notification-dropdown {
+  z-index: 1101 !important; /* Higher than bell container */
+  position: absolute;
+  top: calc(100% + 10px); /* Dynamic spacing */
+  right: 0;
+  width: 360px;
 }
 
-.logo-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  color: #333;
+/* Mobile Overrides */
+@media (max-width: 768px) {
+  .notification-dropdown {
+    position: fixed;
+    top: 80px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: 95vw;
+    max-width: 300px;
+  }
 }
 
-.nav-links {
-  display: flex;
-  gap: 2rem;
+/* Ensure body doesn't clip content */
+body {
+  overflow-x: visible !important;
+  position: relative; /* Create stacking context */
 }
 
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 1rem;
+/* Ensure the search box has a lower z-index */
+.search-form {
+  position: relative; /* or as per your design */
+  z-index: 500; /* Lower than the notification dropdown */
 }
-
-.nav-links a:hover {
-  color: #007bff;
-}
-
-.profile-notifications {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user-profile img {
-  width: 70px;
-  height:
-}
-
-
-

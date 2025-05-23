@@ -3265,6 +3265,60 @@
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+.ep-detail-block {
+  margin-bottom: 2rem;
+  
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.ep-block-header {
+  margin-bottom: 1.2rem;
+}
+
+.ep-block-heading {
+  font-size: 1.25rem;
+  color: #343a40;
+  margin: 0;
+}
+
+.ep-skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem; /* This creates space between skill tags */
+  align-items: center;
+}
+
+.ep-skill-tag {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.ep-skill-tag:hover {
+  
+  transform: translateY(-1px);
+}
+
+.ep-no-data {
+  color: #6c757d;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Alternative color scheme */
+
+
+.ep-skill-tag {
+  background-color: #d1e7ff;
+  color: #0a58ca;
+}
+
 
 
 

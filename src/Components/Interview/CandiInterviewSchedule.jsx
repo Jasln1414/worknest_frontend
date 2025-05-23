@@ -53,7 +53,7 @@ function ScheduledInterviews() {
                             <tr className="table-header">
                                 <th>Job Title</th>
                                 <th>Company</th>
-                                <th>Applied Date</th>
+                                
                                 <th>Interview Date</th>
                                 <th>Interview Time</th>
                                 <th>Status</th>
@@ -71,7 +71,7 @@ function ScheduledInterviews() {
                                         </Link>
                                     </td>
                                     <td>{interviewItem.employer_name}</td>
-                                    <td>{extractDate(interviewItem.applyDate)}</td>
+                                    
                                     <td>{extractDate(interviewItem.date)}</td>
                                     <td>{extractTime(interviewItem.date)}</td>
                                     <td className={`status-cell ${interviewItem.status.toLowerCase()}`}>

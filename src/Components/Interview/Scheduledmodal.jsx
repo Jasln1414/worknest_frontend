@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { formatInTimeZone, toDate } from 'date-fns-tz';
 import './Interview.css';
 
 const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setInterviewScheduled, application_id }) => {
@@ -10,23 +11,27 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
 
+  // Get current time in America/New_York for min attribute
+  const getMinDateTime = () => {
+    const now = new Date();
+    return formatInTimeZone(now, 'America/New_York', "yyyy-MM-dd'T'HH:mm");
+  };
+
   // Validate date input
   const validateDate = (selectedDate) => {
     setDate(selectedDate);
-    
-    // Check if date is not empty and is in the future
+    if (!selectedDate) {
+      setIsValid(false);
+      return;
+    }
+    const selected = toDate(selectedDate, { timeZone: 'America/New_York' });
     const now = new Date();
-    const selected = new Date(selectedDate);
-    setIsValid(selectedDate && selected > now);
+    setIsValid(selected > now);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent form submission
-    
-    // Prevent multiple submissions
-    if (isSubmitting) return;
-    
-    // Validate date before submission
+    e.preventDefault();
+    if (isSubmitting || !isValid) return;
     if (!date) {
       Swal.fire({
         icon: 'warning',
@@ -38,10 +43,8 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
     }
 
     try {
-      setIsSubmitting(true); // Disable submit button
-      
-      // Show loading indicator immediately
-      Swal.fire({
+      setIsSubmitting(true);
+      const loadingSwal = Swal.fire({
         title: 'Scheduling...',
         text: 'Please wait while we schedule the interview',
         allowOutsideClick: false,
@@ -50,76 +53,93 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
         },
       });
 
-      const formData = new FormData();
-      formData.append('candidate', candidate_id);
-      formData.append('job', job_id);
-      formData.append('date', date);
-      // Add the specific application ID to ensure only this application is updated
-      if (application_id) {
-        formData.append('application_id', application_id);
-      }
+      // Convert date to UTC ISO string (YYYY-MM-DDTHH:mm:ssZ)
+      const utcDate = date ? toDate(date, { timeZone: 'America/New_York' }).toISOString() : '';
 
-      // First, schedule the interview
+      const payload = {
+        candidate: candidate_id,
+        job: job_id,
+        date: utcDate,
+        ...(application_id && { application_id }), // Conditionally include application_id
+      };
+
+      console.log('Scheduling request:', payload);
+
       const response = await axios.post(
         `${baseURL}/api/interview/schedule/`,
-        formData,
-        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
-      );
-      
-      if (response.status === 201) {
-        // If we have an application_id, update the application status
-        if (application_id) {
-          await axios.post(
-            `${baseURL}/api/empjob/applicationStatus/${application_id}/`,
-            { 
-              action: 'Interview Scheduled',
-              job_id: job_id  // Include job_id to ensure only this job's status is changed
-            },
-            { 
-              headers: { 
-                Authorization: `Bearer ${token}`, 
-                'Content-Type': 'application/json' 
-              } 
-            }
-          );
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         }
-        
-        // Update parent component states
-        setAppStatus('Interview Scheduled');
-        setInterviewScheduled(true);
-        
-        // Close modal
+      );
+
+      console.log('Scheduling response:', response.data);
+
+      if (response.status === 201 && response.data.id) {
+        if (typeof setAppStatus === 'function') {
+          setAppStatus('Interview Scheduled');
+        } else {
+          console.error('setAppStatus is not a function:', setAppStatus);
+        }
+        if (typeof setInterviewScheduled === 'function') {
+          setInterviewScheduled(true);
+        } else {
+          console.error('setInterviewScheduled is not a function:', setInterviewScheduled);
+        }
         setModal(false);
-        
-        // Show success notification
+
+        await loadingSwal.close();
+
         Swal.fire({
           icon: 'success',
           title: 'Interview Scheduled',
-          text: 'Interview has been scheduled successfully for this specific job application.',
+          text: `Interview scheduled successfully for ${formatInTimeZone(new Date(response.data.date), 'America/New_York', 'MMM d, yyyy h:mm a z')}`,
           timer: 1500,
         });
+      } else {
+        throw new Error('Invalid response from scheduling API');
       }
     } catch (error) {
       console.error('Interview scheduling error:', error);
+      let errorMessage = 'Failed to schedule interview. Please try again.';
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (error.response.status === 409) {
+          errorMessage = error.response.data.message || 'An active interview already exists for this candidate and job.';
+        } else if (error.response.data) {
+          const errors = error.response.data;
+          if (errors.date) {
+            errorMessage = `Date error: ${errors.date[0]}`;
+          } else if (errors.candidate) {
+            errorMessage = `Candidate error: ${errors.candidate[0]}`;
+          } else if (errors.job) {
+            errorMessage = `Job error: ${errors.job[0]}`;
+          } else {
+            errorMessage = errors.message || errorMessage;
+          }
+        }
+      }
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: error.response?.data?.detail || 'Failed to schedule interview. Please try again.',
+        text: errorMessage,
         timer: 2000,
       });
     } finally {
-      setIsSubmitting(false); // Re-enable submit button
+      setIsSubmitting(false);
     }
   };
 
-  // Handle modal close with escape key
   const handleKeyDown = (e) => {
     if (e.key === 'Escape' && !isSubmitting) {
       setModal(false);
     }
   };
 
-  // Handle outside click to close modal
   const handleOverlayClick = (e) => {
     if (e.target.className === 'modal-overlay' && !isSubmitting) {
       setModal(false);
@@ -127,8 +147,8 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
   };
 
   return (
-    <div 
-      className="modal-overlay" 
+    <div
+      className="modal-overlay"
       onClick={handleOverlayClick}
       onKeyDown={handleKeyDown}
       tabIndex="0"
@@ -138,7 +158,7 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="modal-content">
             <label htmlFor="interview-date" className="modal-label">
-              Select Date and Time
+              Select Date and Time (EDT)
             </label>
             <input
               id="interview-date"
@@ -146,7 +166,7 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
               value={date}
               onChange={(e) => validateDate(e.target.value)}
               className="modal-input"
-              min={new Date().toISOString().slice(0, 16)} // Set min to current date/time
+              min={getMinDateTime()}
               required
             />
             {date && !isValid && (
@@ -154,16 +174,16 @@ const SheduleModal = ({ setModal, candidate_id, job_id, setAppStatus, setIntervi
             )}
           </div>
           <div className="modal-actions">
-            <button 
+            <button
               type="submit"
               className={`modal-button schedule ${isSubmitting || !isValid ? 'disabled' : ''}`}
               disabled={isSubmitting || !isValid}
             >
               {isSubmitting ? 'Scheduling...' : 'Schedule'}
             </button>
-            <button 
+            <button
               type="button"
-              onClick={() => !isSubmitting && setModal(false)} 
+              onClick={() => !isSubmitting && setModal(false)}
               className="modal-button cancel"
               disabled={isSubmitting}
             >
