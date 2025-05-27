@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { RiMessage2Fill } from "react-icons/ri";
 import ChatModal from "./ChatModal";
-// import '../../../Styles/Candidate/Jobdetail.css';
+import '../../../Styles/Candidate/Jobdetail.css';
 
 function StatusJob({ selectedJob }) {
-  const [step, setStep] = useState();
+  const [step, setStep] = useState(0);
   const [chat, setChat] = useState(false);
-  const [recevierId, setReceiverId] = useState(null);
+  const [receiverId, setReceiverId] = useState(null);
   const baseURL = "http://127.0.0.1:8000";
   const currentUserId = localStorage.getItem('user_id');
 
@@ -18,19 +18,21 @@ function StatusJob({ selectedJob }) {
         "Application Viewed": 2,
         "Resume Viewed": 3,
         "Pending": 4,
+        "ShortListed": 4,
         "Interview Scheduled": 5,
         "Accepted": 5,
         "Rejected": 6,
+        "Interview Cancelled": 6, // Added
       };
       setReceiverId(selectedJob.job.employer.user_id);
-      console.log("selected job.......................", selectedJob);
+      console.log("Selected job:", selectedJob);
       setStep(statusSteps[selectedJob.status] || 0);
     }
   }, [selectedJob]);
 
-  useEffect(()=>{
-    console.log("receiver id.......................", recevierId);
-  },[recevierId])
+  useEffect(() => {
+    console.log("Receiver ID:", receiverId);
+  }, [receiverId]);
 
   if (!selectedJob) return null;
 
@@ -48,18 +50,18 @@ function StatusJob({ selectedJob }) {
             userName={selectedJob.job.employer.user_full_name}
             currentUserId={currentUserId}
             senderName={selectedJob.candidate_name}
-            reciverId={recevierId}
+            receiverId={receiverId}
           />
         )}
         <div className="chat-icon" onClick={handleChat}>
           <RiMessage2Fill size={22} />
         </div>
-        
+
         <div className="card-header">
           <h1>{selectedJob.job.title}</h1>
           <span>{selectedJob.job.employer.user_full_name}</span>
         </div>
-        
+
         <div className="status-tracker">
           <h2>Application Status</h2>
           <div className="status-steps">
@@ -67,24 +69,26 @@ function StatusJob({ selectedJob }) {
               { label: "Application Sent", step: 1 },
               { label: "Application Viewed", step: 2 },
               { label: "Resume Viewed", step: 3 },
-              { 
-                label: step >= 4 ? selectedJob.status : "Recruiter Action", 
+              {
+                label: step >= 4 ? selectedJob.status : "Recruiter Action",
                 step: 4,
-                status: selectedJob.status
+                status: selectedJob.status,
               },
             ].map(({ label, step: stepValue, status }, index) => {
               let statusClass = '';
               if (step >= stepValue) {
                 if (stepValue === 4) {
                   if (status === 'Pending') statusClass = 'pending';
-                  else if (status === 'Interview Scheduled') statusClass = 'Interview Scheduled';
+                  else if (status === 'ShortListed') statusClass = 'shortlisted';
+                  else if (status === 'Interview Scheduled') statusClass = 'interview-scheduled';
                   else if (status === 'Accepted') statusClass = 'accepted';
                   else if (status === 'Rejected') statusClass = 'rejected';
+                  else if (status === 'Interview Cancelled') statusClass = 'interview-cancelled'; // Added
                 } else {
                   statusClass = 'completed';
                 }
               }
-              
+
               return (
                 <div
                   key={`step-${index}`}
@@ -143,7 +147,3 @@ function StatusJob({ selectedJob }) {
 }
 
 export default StatusJob;
-
-
-
-

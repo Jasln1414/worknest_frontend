@@ -291,7 +291,7 @@
   }
 
   .search-button {
-    width: 100px; /* Smaller width for mobile */
+   
     height: 50px; /* Smaller height for mobile */
     font-size: 0.9rem;
     font-weight: 600;
@@ -310,6 +310,9 @@
   .suggestions-list {
     max-height: 150px;
   }
+  .search-button-search{
+    width:426px;
+  }
 }
 
 /* Medium screens (481px-767px) */
@@ -323,7 +326,7 @@
   }
 
   .search-button {
-    width: 110px; /* Slightly larger than mobile */
+     /* Slightly larger than mobile */
     height: 60px; /* Slightly larger than mobile */
     font-size: 0.95rem;
     font-weight: 600;
@@ -366,7 +369,7 @@
   }
 
   .search-button {
-    width: 130px;
+   
     height: 70px;
     font-size: 1rem;
     font-weight: 600;
@@ -412,7 +415,7 @@
   }
 
   .search-button {
-    width: 130px;
+   
     height: 70px;
     font-size: 1.1rem;
     font-weight: 600;
@@ -447,3 +450,5 @@
   background-color:#3e71b5;
   border:none;
 } 
+
+ 

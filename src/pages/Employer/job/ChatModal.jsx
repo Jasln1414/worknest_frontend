@@ -3,7 +3,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { IoSend, IoAttach, IoClose } from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-
+import './chat.css';
 function ChatModal({
   setChat,
   profile_pic,
@@ -13,7 +13,7 @@ function ChatModal({
   employer_id,
   senderName,
   currentUserId,
-  reciverId
+   receiverId, 
 }) {
   const modalRef = useRef();
   const chatMessagesRef = useRef(null);
@@ -289,7 +289,7 @@ function ChatModal({
       status: 'sending',
       file_url: fileUrl || null,
       sender_id: user_id,
-      reciverId: reciverId,
+      reciverId: receiverId,
       se_id: user_Id
     };
 
@@ -304,7 +304,7 @@ function ChatModal({
       timestamp,
       file_url: fileUrl || null,
       sender_id: user_id,
-      reciverId: reciverId,
+      reciverId: receiverId,
       se_id: user_Id
     };
 
@@ -356,20 +356,20 @@ function ChatModal({
 
   
   return (
-    <div ref={modalRef} onClick={closeModal} className="chat-modal-overlay">
-      <div className="chat-modal-container">
-        <div className="chat-modal-header">
-          <div className="chat-modal-profile-pic">
+    <div ref={modalRef} onClick={closeModal} className="unique-chat-modal-overlay-emp">
+      <div className="unique-chat-modal-container">
+        <div className="unique-chat-modal-header">
+          <div className="unique-chat-modal-profile-pic">
             <img src={profile_pic || '/default-avatar.png'} alt="user" />
           </div>
           <div className="user-status-wrapper">
-            <p className="chat-modal-username">{otherUserName}</p>
-            <span className={`user-status ${otherUserOnline ? 'online' : 'offline'}`}>
+            <p className="unique-chat-modal-username">{otherUserName}</p>
+            {/* <span className={`user-status ${otherUserOnline ? 'online' : 'offline'}`}>
               {otherUserOnline ? 'Online' : 'Offline'}
-            </span>
+            </span> */}
           </div>
         </div>
-        <div className="chat-messages" ref={chatMessagesRef}>
+        <div className="unique-chat-messages" ref={chatMessagesRef}>
           {websocketStatus === 'connecting' && chattApprove === true && <div className="loading-message">Connecting to chat...</div>}
           {websocketStatus === 'error' && (
             <div className="connection-error-message">Unable to connect to chat server. Please try again later.</div>
@@ -380,9 +380,9 @@ function ChatModal({
             chatMessages.map((msg) => {
               const isCurrentUser = String(msg.sender_id) === String(user_id);
               return (
-                <div key={msg.id || generateMessageId()}>
-                  <div className={`chat-message-${msg.se_id===user_Id ? 'right' : 'left'}`}>
-                    <div className={`chat-message-bubble ${msg.status === 'failed' ? 'failed' : ''}`}>
+                <div className="unique-chat" key={msg.id || generateMessageId()}>
+                  <div className={`unique-chat-message-${msg.se_id===user_Id ? 'right' : 'left'}`}>
+                    <div className={`unique-chat-message-bubble ${msg.status === 'failed' ? 'failed' : ''}`}>
                       <strong>{msg.sendername}</strong>
                       {msg.message && <p>{displayMessageText(msg.message)}</p>}
                       <div className="message-file">{renderFileMessage(msg)}</div>
@@ -398,53 +398,19 @@ function ChatModal({
             })
           )}
         </div>
-        {chatisRequested &&
-          <div style={{
-            padding: '10px',
-            backgroundColor: '#cdf7d9',
-            borderRadius: '8px',
-            margin: '2px 4px',
-          }}>
-            <p style={{
-              color: '#07a333',
-              padding: '0 10px',
-            }}>User is request to send message with a message.</p>
-            <p style={{
-              color: '#07a333',
-              padding: '0 10px',
-              fontSize: '1.3rem',
-              fontWeight: 'bold',
-            }}>{requestMessage}</p>
-            <button
-              style={{
-                backgroundColor: '#007bff',
-                color: 'white',
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s'
-              }}
-              onClick={() => handleChatRequest("approved")}
-            >Approve</button>
-            <button
-              style={{
-                backgroundColor: '#ed1405',
-                color: 'white',
-                padding: '8px 16px',
-                marginLeft: '10px',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s'
-              }}
-              onClick={() => handleChatRequest("rejected")}
-            >Reject</button>
+
+        {chatisRequested && (
+          <div className="unique-chat-approval-box">
+            <p className="unique-chat-approval-label">User is request to send message with a message.</p>
+            <p className="unique-chat-approval-message">{requestMessage}</p>
+            <button className="unique-chat-approve-button" onClick={() => handleChatRequest("approved")}>Approve</button>
+            <button className="unique-chat-reject-button" onFriendClick={() => handleChatRequest("rejected")}>Reject</button>
           </div>
-        }
-        <div className="chat-input-container">
+        )}
+
+        <div className="unique-chat-input-container">
           {selectedFile && renderFilePreview()}
-          <div className="chat-input-wrapper">
+          <div className="unique-chat-input-wrapper">
             <button
               className="file-attach-button"
               onClick={() => fileInputRef.current.click()}
@@ -467,7 +433,7 @@ function ChatModal({
               rows={1}
               onChange={handleTextareaChange}
               value={message}
-              className="chat-input"
+              className="unique-chat-input"
               disabled={websocketStatus !== 'connected' || isUploading}
               onKeyPress={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -477,7 +443,7 @@ function ChatModal({
               }}
             />
             <button
-              className="chat-send-button"
+              className="unique-chat-send-button"
               onClick={sendMessage}
               disabled={websocketStatus !== 'connected' || (!message.trim() && !selectedFile) || isUploading}
             >
@@ -489,5 +455,4 @@ function ChatModal({
     </div>
   );
 }
-
 export default ChatModal;

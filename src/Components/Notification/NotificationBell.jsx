@@ -35,8 +35,8 @@ class NotificationService {
       }
     };
     this.socket.onclose = (e) => {
-      console.log('WebSocket disconnected:', e.reason);
-      setTimeout(() => this.connect(), 1000); // Reconnect after 1 second
+      console.log('WebSocket disconnected...................................:', e.reason);
+      setTimeout(() => this.connect(), 1000); // Reconnect after 1 second 
     };
     this.socket.onerror = (error) => console.error('WebSocket error:', error);
   }
@@ -204,29 +204,6 @@ const NotificationBell = ({ userId, senderName }) => {
     window.location.href = `/chat/${chatId}`;
     setShowDropdown(false);
   };
-
-
-
-
-
-
-
-
-  // Add this useEffect to handle viewport positioning
-useEffect(() => {
-  if (showDropdown && dropdownRef.current) {
-    const dropdown = dropdownRef.current;
-    const viewportHeight = window.innerHeight;
-    const dropdownBottom = dropdown.getBoundingClientRect().bottom;
-
-    // If dropdown goes below viewport
-    if (dropdownBottom > viewportHeight) {
-      dropdown.style.maxHeight = `${viewportHeight - 100}px`;
-      dropdown.style.overflowY = 'auto';
-    }
-  }
-}, [showDropdown, notifications]);
-
 
   useEffect(()=>{
     console.log('Notifications updated:', notifications);

@@ -12,11 +12,14 @@ const SubscriptionPlans = () => {
   const [loading, setLoading] = useState(false); // Loading state for API calls
   const [error, setError] = useState(null); // Error messages
   const [usageData, setUsageData] = useState(null); // User's subscription usage data
+  const [isPlanExpired, setIsPlanExpired] = useState(false); // Track if plan is expired
+  const [existingSubscriptionId, setExistingSubscriptionId] = useState(null); // Store existing subscription ID
+  const [subscriptionStatus , setSubscriptionStatus] = useState('')
   const [usageLoading, setUsageLoading] = useState(true); // Loading state for usage data
   const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Sidebar visibility for mobile
   const baseURL = 'http://127.0.0.1:8000/api'; // API base URL
   const token = localStorage.getItem('access'); // Authentication token
-
+  
   // Toggle sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarVisible((prev) => !prev);
@@ -92,13 +95,21 @@ const SubscriptionPlans = () => {
       console.log('Job usage response:', response.data);
       if (response.status === 200) {
         setUsageData(response.data);
+        setIsPlanExpired(!response.data.has_active_subscription); // Set to true if no active subscription
+        setExistingSubscriptionId(response.data.existing_subscription_id);
+        setSubscriptionStatus(response.data.subscription_status);
         console.log('Normalized subscription plan:', normalizePlanName(response.data.subscription_plan));
+        console.log(".............................statussssssssssssssssssssssssss",response.data)
       }
+
+
+     
     } catch (error) {
       console.error('Error fetching job usage data:', error.response?.data || error);
       if (error.response?.status === 404) {
         console.warn('Job usage endpoint not found. Using fallback data.');
         setUsageData({ job_count: 0, has_active_subscription: false });
+        setIsPlanExpired(true);
       } else {
         setError('Failed to load usage data.');
       }
@@ -216,6 +227,50 @@ const SubscriptionPlans = () => {
     }
   };
 
+  // Handle renewal of existing subscription
+  const handleRenewSubscription = async () => {
+    if (!existingSubscriptionId) {
+      setError('No existing subscription found to renew.');
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.post(
+        `${baseURL}/payment/subscription/renew/`,
+        { sub_id: existingSubscriptionId },
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+      );
+      console.log('Subscription renew response:', response.data);
+      const { order_id, amount, key_id, subscription_type, planId } = response.data;
+
+      if (!window.Razorpay) {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.onload = () => initiatePayment(order_id, amount, key_id, planId, subscription_type);
+        script.onerror = () => {
+          setError('Failed to load payment gateway.');
+          setLoading(false);
+        };
+        document.body.appendChild(script);
+      } else {
+        initiatePayment(order_id, amount, key_id, planId, subscription_type);
+      }
+    } catch (err) {
+      console.error('Subscription renewal error:', err.response?.data || err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Subscription Error',
+        text: err.response?.data?.message || 'Error renewing subscription.',
+        confirmButtonColor: '#1E3A8A',
+      });
+      setError(err.response?.data?.message || 'Error renewing subscription.');
+      setLoading(false);
+    }
+  };
+
   // Fetch plans and usage data on component mount
   useEffect(() => {
     fetchPlans();
@@ -224,10 +279,10 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subscription-wrapper">
-     
-   
+      <MobileMenuToggle toggleSidebar={toggleSidebar} isSidebarVisible={isSidebarVisible} />
+      <div className={`sidebar-container ${isSidebarVisible ? 'active' : ''}`}>
         <SideBar />
-    
+      </div>
 
       {/* Main subscription content */}
       <div className="subscription-container">
@@ -321,13 +376,32 @@ const SubscriptionPlans = () => {
                 <div className="stat-content">
                   <h4>{usageData.has_active_subscription ? 'Expires On' : 'Subscription'}</h4>
                   <p className="stat-value">
-                    {usageData.has_active_subscription
-                      ? formatDate(usageData.subscription_end_date)
-                      : 'Inactive'}
-                  </p>
+                      {subscriptionStatus === 'active'
+                        ? formatDate(usageData.subscription_end_date)
+                        :"inactive"
+                      }
+                    </p>
                 </div>
               </div>
             </div>
+
+            {/* {!usageData?.has_active_subscription && !usageData?.existing_subscription_id && (
+  <div className="new-user-notice">
+    <p>You don't have an active subscription. Please select a plan below to get started.</p>
+  </div>
+)} */}
+            {isPlanExpired && (
+              <div className="renewal-notice">
+                <p>Your plan has expired. Renew Subscription or select new Plan</p>
+                <button
+                  className="renew-button"
+                  onClick={handleRenewSubscription}
+                  disabled={loading}
+                >
+                  {loading ? 'Processing...' : 'Renew Subscription'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -366,7 +440,7 @@ const SubscriptionPlans = () => {
                     <span>/month</span>
                   </p>
                   <p className="plan-feature">
-                    <span className="feature-check">✓</span> Job Limit: {plan.job_limit}
+                    <span className="feature-check">✓</span> Job Limit: {plan.job_limit === 9999 ? 'Unlimited' : plan.job_limit}
                   </p>
                   <p className="plan-feature">
                     <span className="feature-check">✓</span> Premium Support

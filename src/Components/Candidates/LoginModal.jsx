@@ -19,6 +19,7 @@ function CandidateLogin({ isOpen, onClose, switchToSignup }) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const baseURL = "http://127.0.0.1:8000";
 
   const handleLoginSubmit = async (values, { setSubmitting }) => {
@@ -29,12 +30,14 @@ function CandidateLogin({ isOpen, onClose, switchToSignup }) {
     try {
       const response = await axios.post(`${baseURL}/api/account/candidatelogin/`, formData);
       console.log("Login Response:", response);
-      console.log("user id.............", response.data.user_id);
+      console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@.................user id.............", response.data);
 
       if (response.status === 200) {
         // Save tokens to localStorage
         localStorage.setItem("access", response.data.access_token);
         localStorage.setItem("refresh", response.data.refresh_token);
+        localStorage.setItem("user_id", response.data.user_id);
+        
 
         // Decode the token
         const decodedToken = jwtDecode(response.data.access_token);
@@ -120,9 +123,12 @@ function CandidateLogin({ isOpen, onClose, switchToSignup }) {
     try {
       const response = await axios.post(baseURL + '/api/account/auth/candidate/', formData);
       console.log("auth response ", response);
+
+       console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@.................user id.............", response.data);
       if (response.status === 200) {
         localStorage.setItem('access', response.data.access_token);
         localStorage.setItem('refresh', response.data.refresh_token);
+        localStorage.setItem("user_id", response.data.user_id);
 
         dispatch(
           set_Authentication({

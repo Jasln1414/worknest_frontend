@@ -6,16 +6,23 @@ function ApplyCard({ selectedJob, setChange, setCurrent, setStatus }) {
     const baseURL = 'http://127.0.0.1:8000';
     const [applications, setApplications] = useState([]);
 
-    useEffect(() => {
-        if (selectedJob) {
-            setApplications(selectedJob.applications);
-        }
-    }, [selectedJob]);
+   
 
-    const handleClick = (data) => {
-        setChange(false);
-        setCurrent(data);
-    };
+    useEffect(() => {
+  if (selectedJob) {
+    console.log('ApplyCard selectedJob:', selectedJob);
+    console.log('ApplyCard applications:', selectedJob.applications);
+    setApplications(selectedJob.applications);
+  }
+}, [selectedJob]);
+
+const handleClick = (data) => {
+  console.log('ApplyCard handleClick - Setting current:', data);
+  setChange(false);
+  setCurrent(data);
+};
+
+  
 
     return (
         <div className="apply-card-container">

@@ -1,13 +1,54 @@
-// Redux/Authentication/authenticationSlice.js
+// // Redux/Authentication/authenticationSlice.js
+// import { createSlice } from "@reduxjs/toolkit";
+
+// const initialState = {
+//   name: null,
+//   email: null,
+//   companyName: null,  // Add company name here
+//   isAuthenticated: false,
+//   isAdmin: false,
+//   usertype: null,
+// };
+
+// const authenticationSlice = createSlice({
+//   name: "authentication_user",
+//   initialState,
+//   reducers: {
+//     set_Authentication: (state, action) => {
+//       state.name = action.payload.name;
+//       state.userid = action.payload.userid;
+//       state.email = action.payload.email;
+//       state.companyName = action.payload.companyName;  // Store company name
+//       state.isAuthenticated = action.payload.isAuthenticated;
+//       state.isAdmin = action.payload.isAdmin;
+//       state.usertype = action.payload.usertype;
+//     },
+//     clear_Authentication: (state) => {
+//       state.name = null;
+//       state.email = null;
+//       state.userid = null;
+//       state.companyName = null;  // Clear company name
+//       state.isAuthenticated = false;
+//       state.isAdmin = false;
+//       state.usertype = null;
+//     },
+//   },
+// });
+
+// export const { set_Authentication, clear_Authentication } = authenticationSlice.actions;
+// export default authenticationSlice.reducer;
+
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   name: null,
   email: null,
-  companyName: null,  // Add company name here
+  companyName: null,
   isAuthenticated: false,
   isAdmin: false,
   usertype: null,
+  profile_completed: false, 
 };
 
 const authenticationSlice = createSlice({
@@ -18,19 +59,21 @@ const authenticationSlice = createSlice({
       state.name = action.payload.name;
       state.userid = action.payload.userid;
       state.email = action.payload.email;
-      state.companyName = action.payload.companyName;  // Store company name
+      state.companyName = action.payload.companyName;
       state.isAuthenticated = action.payload.isAuthenticated;
       state.isAdmin = action.payload.isAdmin;
       state.usertype = action.payload.usertype;
+      state.profile_completed = action.payload.profile_completed; 
     },
     clear_Authentication: (state) => {
       state.name = null;
       state.email = null;
       state.userid = null;
-      state.companyName = null;  // Clear company name
+      state.companyName = null;
       state.isAuthenticated = false;
       state.isAdmin = false;
       state.usertype = null;
+      state.profile_completed = false; 
     },
   },
 });

@@ -13,18 +13,19 @@
 body {
     font-family: var(--font-sans);
     color: var(--text-primary);
-    background-color: var(--secondary-color);
+    /* background-color: var(--secondary-color); */
     line-height: 1.5;
 }
 
 /* Main container */
 .profile-container {
     min-height: 100vh;
-    background-color: var(--secondary-color);
+    /* background-color: var(--secondary-color); */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 2rem;
+    
 }
 
 .profile-wrapper {
@@ -430,6 +431,7 @@ body {
     padding: 2rem;
     width: calc(100% - 250px); /* Ensure content doesn't exceed viewport */
     box-sizing: border-box; /* Include padding in width calculation */
+    margin-top:90px;
   }
   
   /* Make sure all elements inside don't overflow */

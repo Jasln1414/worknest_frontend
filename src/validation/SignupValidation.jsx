@@ -13,10 +13,18 @@ export const initialValues={
                 .matches(/^[A-Z][a-zA-Z]/,'First lettershould be capital')
                 .max(100,'Too Long!')
                 .required('Required'),
+    // email: Yup.string()
+    //             .email('Invalid email')
+    //             .matches(/^[\w-\.]+@([\w-]+\.)+com$/, 'Invalid email')
+    //             .required('Required'),
     email: Yup.string()
-                .email('Invalid email')
-                .matches(/^[\w-\.]+@([\w-]+\.)+com$/, 'Invalid email')
-                .required('Required'),
+            .email('Invalid email')
+            .matches(
+              /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              'Invalid email'
+            )
+            .required('Required'),
+
     password: Yup.string()
                 .min(8,'Password should be minimum 8 charecters')
                 .matches(/[A-Z]/,'Password should have atleast one uppercase')

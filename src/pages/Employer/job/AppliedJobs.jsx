@@ -8,7 +8,8 @@ import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import ApplicationData from '../utilities/ApplicationData';
 import { FaArrowLeft } from "react-icons/fa6";
-// import '../../../Styles/Job/StatusJob.css';
+import './style/Candidateview.css';
+
 
 // Custom styles for the drawer
 const customDrawerStyle = {
@@ -97,7 +98,7 @@ const fetchJobDetails = async () => {
     };
 
     return (
-        <div className="app-mgmt-container">
+        <div className="app-mgmt-container" >
             {!isSmallScreen && (
                 
                     <SideBar />
@@ -117,13 +118,14 @@ const fetchJobDetails = async () => {
                 {!isSmallScreen && (
                     <div className="app-mgmt-candidates-section" style={{
                         ...candidatesSectionStyle,
-                        marginTop: '20px'  // Add more top margin
+                        marginTop: '120px'  // Add more top margin
                     }}>
                         <div className="app-mgmt-header">
                             <span style={{
                                 fontWeight: 700,
                                 fontSize: '1.8rem',
-                                color: 'black'
+                                color: 'black',
+                               
                             }}>Applied Candidates</span>
                             <div onClick={() => setChange(!change)} className="app-mgmt-back-button">
                                 <FaArrowLeft size={27} />

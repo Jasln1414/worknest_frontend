@@ -520,7 +520,7 @@
 }
 
 .notification-dropdown {
-  z-index: 1101 !important; /* Higher than bell container */
+  z-index: 2101 !important; /* Higher than bell container */
   position: absolute;
   top: calc(100% + 10px); /* Dynamic spacing */
   right: 0;

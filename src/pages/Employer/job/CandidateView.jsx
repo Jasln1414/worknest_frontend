@@ -3,29 +3,27 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import SheduleModal from '../../../Components/Interview/Scheduledmodal';
 import ChatModal from './ChatModal';
-import '../../../Styles/USER/Home.css';
+import './style/Candidateview.css';
 
-const CandidateView = ({ 
-  selectedJob, 
-  setChange, 
-  current, 
-  questions: initialQuestions = [], 
-  setFetchJob, 
-  fetchJob, 
-  fetchJobDetails 
+const CandidateView = ({
+  selectedJob,
+  setChange,
+  current,
+  questions: initialQuestions = [],
+  fetchJobDetails = () => {},
 }) => {
   const baseURL = 'http://127.0.0.1:8000';
   const token = localStorage.getItem('access');
-  
+
   // State management
   const [appStatus, setAppStatus] = useState(current?.status || 'Application Send');
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [interviewScheduled, setInterviewScheduled] = useState(
-    current?.status === 'Interview Scheduled' || 
-    current?.interview_status === 'Scheduled'
+    current?.status === 'Interview Scheduled'
   );
   const [interviewDate, setInterviewDate] = useState(null);
+  const [interviewAttended, setInterviewAttended] = useState(false);
   const [questions, setQuestions] = useState(initialQuestions);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -34,56 +32,64 @@ const CandidateView = ({
 
   // Update states when current prop changes
   useEffect(() => {
-    if (current) {
-      if (current.status === 'Application Send') {
-        changeStatus("Application Viewed");
-      }
-      setAppStatus(current.status || 'Application Send');
-      setInterviewScheduled(
-        current.status === 'Interview Scheduled' || 
-        current.interview_status === 'Scheduled'
-      );
-      setReceiverId(current.candidate?.user || null);
-      fetchInterviewDate();
-    }
+    if (!current) return;
+     console.log('CandidateView line 42 - current=================:', current.status);
+    setAppStatus(current.status || 'Application Send');
+    setInterviewScheduled(current.status === 'Interview Scheduled');
+    setReceiverId(current.candidate?.user || null);
+    fetchInterviewDate();
   }, [current]);
-
-  // Fetch interview date if interview is scheduled
+  console.log('CandidateView line 42 - ##########################:',appStatus );
+ 
+  // Fetch interview date and attended status
   const fetchInterviewDate = async () => {
-    if (!current || !current.id || !interviewScheduled) {
+    if (!current || !current.candidate?.id || !selectedJob?.id) {
       setInterviewDate(null);
+      setInterviewScheduled(false);
+      setInterviewAttended(false);
       return;
     }
 
     try {
-      const response = await axios.get(
-        `${baseURL}/api/interview/schedules/`,
-        { headers: { Authorization: `Bearer ${token}` } }
+      const response = await axios.get(`${baseURL}/api/interview/schedules/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const interviews = Array.isArray(response.data) ? response.data : response.data?.results || [];
+      const matchingInterview = interviews.find(
+        (interview) =>
+          interview.candidate === current.candidate.id &&
+          interview.job === selectedJob.id &&
+          interview.active
       );
 
-      if (response.status === 200) {
-        const interviews = Array.isArray(response.data) ? response.data : response.data?.interviews || [];
-        const matchingInterview = interviews.find(
-          interview =>
-            (interview.application_id === current.id) ||
-            (interview.candidate === current.candidate?.id && interview.job === selectedJob?.id)
-        );
-
-        if (matchingInterview?.date) {
-          setInterviewDate(matchingInterview.date);
-        } else {
-          setInterviewDate(null);
-        }
+      if (matchingInterview?.date) {
+        setInterviewDate(matchingInterview.date);
+        setInterviewScheduled(true);
+        setInterviewAttended(matchingInterview.attended || false);
+        setAppStatus('Interview Scheduled');
+      } else {
+        setInterviewDate(null);
+        setInterviewScheduled(current.status === 'Interview Scheduled');
+        setInterviewAttended(false);
       }
     } catch (error) {
       console.error('Error fetching interview data:', error);
       setInterviewDate(null);
+      setInterviewScheduled(current.status === 'Interview Scheduled');
+      setInterviewAttended(false);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to load interview details. Please try again.',
+        timer: 1500,
+      });
     }
   };
 
   // Format date for display
   const formatInterviewDate = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return 'Not scheduled';
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
       weekday: 'short',
@@ -103,9 +109,9 @@ const CandidateView = ({
 
       setLoadingQuestions(true);
       try {
-        if (current?.answers?.some(answer => answer.question_text)) {
+        if (current?.answers?.some((answer) => answer.question_text)) {
           const uniqueQuestions = current.answers.reduce((acc, answer) => {
-            if (answer.question_text && !acc.some(q => q.id === answer.question)) {
+            if (answer.question_text && !acc.some((q) => q.id === answer.question)) {
               acc.push({
                 id: answer.question,
                 text: answer.question_text,
@@ -118,15 +124,20 @@ const CandidateView = ({
           return;
         }
 
-        const response = await axios.get(
-          `${baseURL}/api/job/questions/${selectedJob.id}/`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const response = await axios.get(`${baseURL}/api/job/questions/${selectedJob.id}/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         const questionsData = Array.isArray(response.data) ? response.data : response.data?.questions || [];
         setQuestions(questionsData);
       } catch (error) {
         console.error('Error fetching questions:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to load questions. Please try again.',
+          timer: 1500,
+        });
       } finally {
         setLoadingQuestions(false);
       }
@@ -137,6 +148,7 @@ const CandidateView = ({
     }
   }, [selectedJob, initialQuestions, token, current]);
 
+  
   // Change application status
   const changeStatus = async (action) => {
     if (isButtonDisabled) return;
@@ -164,11 +176,22 @@ const CandidateView = ({
         if (action === 'Interview Scheduled') {
           setInterviewScheduled(true);
           await fetchInterviewDate();
-        } else if (action === 'Accepted' || action === 'Rejected') {
-          // Keep interview scheduled state
+        } else if (action === 'Accepted' || action === 'Rejected' || action === 'Interview Cancelled') {
+          setInterviewScheduled(false);
+          setInterviewDate(null);
+          setInterviewAttended(false);
         } else {
           setInterviewScheduled(false);
           setInterviewDate(null);
+          setInterviewAttended(false);
+        }
+
+        try {
+          if (typeof fetchJobDetails === 'function') {
+            fetchJobDetails();
+          }
+        } catch (fetchError) {
+          console.error('Error refreshing job details:', fetchError);
         }
 
         Swal.fire({
@@ -195,37 +218,41 @@ const CandidateView = ({
 
   // Check for existing interviews before showing schedule modal
   const openScheduleModal = async () => {
-    if (isCheckingSchedule) return;
-    
+    if (isCheckingSchedule || ['Accepted', 'Rejected'].includes(appStatus)) return;
+
     setIsCheckingSchedule(true);
-    
+
     try {
-      const response = await axios.get(
-        `${baseURL}/api/interview/schedules/`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      const interviews = Array.isArray(response.data) ? response.data : response.data?.interviews || [];
+      const response = await axios.get(`${baseURL}/api/interview/schedules/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const interviews = Array.isArray(response.data) ? response.data : response.data?.results || [];
       const existingInterviews = interviews.filter(
-        interview => interview.candidate === current.candidate?.id && 
-                   interview.job === selectedJob.id &&
-                   interview.active
+        (interview) =>
+          interview.candidate === current.candidate?.id &&
+          interview.job === selectedJob.id &&
+          interview.active
       );
-      
+
       if (existingInterviews.length > 0) {
         Swal.fire({
           icon: 'warning',
           title: 'Interview Already Scheduled',
           text: 'This candidate already has an active interview for this position.',
-          footer: `Scheduled for: ${formatInterviewDate(existingInterviews[0].date)}`
+          footer: `Scheduled for: ${formatInterviewDate(existingInterviews[0].date)}`,
         });
+        setInterviewScheduled(true);
+        setInterviewDate(existingInterviews[0].date);
+        setInterviewAttended(existingInterviews[0].attended || false);
+        setAppStatus('Interview Scheduled');
         return;
       }
-      
+
       setShowScheduleModal(true);
     } catch (error) {
       console.error('Error checking for existing interviews:', error);
-      setShowScheduleModal(true); // Still allow trying to schedule
+      setShowScheduleModal(true);
     } finally {
       setIsCheckingSchedule(false);
     }
@@ -239,10 +266,86 @@ const CandidateView = ({
     changeStatus('Resume Viewed');
   };
 
+  // Cancel interview
+  const cancelInterview = async () => {
+    if (isButtonDisabled || interviewAttended || ['Accepted', 'Rejected'].includes(appStatus)) {
+      return;
+    }
+
+    const confirmation = await Swal.fire({
+      title: 'Cancel Interview',
+      text: 'Are you sure you want to cancel this interview?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, cancel',
+      cancelButtonText: 'No',
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    setIsButtonDisabled(true);
+
+    try {
+      Swal.fire({
+        title: 'Canceling Interview...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      const response = await axios.post(
+        `${baseURL}/api/interview/cancelApplication/`,
+        {
+          candidate_id: current.candidate.id,
+          job_id: selectedJob.id,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setAppStatus('Interview Cancelled');
+        setInterviewScheduled(false);
+        setInterviewDate(null);
+        setInterviewAttended(false);
+
+        try {
+          if (typeof fetchJobDetails === 'function') {
+            fetchJobDetails();
+          }
+        } catch (fetchError) {
+          console.error('Error refreshing job details:', fetchError);
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Interview Cancelled',
+          text: 'The interview has been cancelled successfully.',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      console.error('Error cancelling interview:', error);
+      const errorMessage =
+         'Failed to cancel interview. Please try again.';
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: errorMessage,
+        showConfirmButton: true,
+      });
+    } finally {
+      setIsButtonDisabled(false);
+    }
+  };
+
   // Prepare question-answer pairs for display
   const getQuestionAnswerPairs = () => {
-    const answers = current.answers || [];
-    return answers.map(answer => {
+    if (!current || !current.answers) return [];
+
+    return current.answers.map((answer) => {
       if (answer.question_text) {
         return {
           question: {
@@ -254,7 +357,7 @@ const CandidateView = ({
         };
       }
 
-      const question = questions.find(q => q && Number(q.id) === Number(answer.question));
+      const question = questions.find((q) => q && Number(q.id) === Number(answer.question));
       if (question) {
         return {
           question,
@@ -279,8 +382,26 @@ const CandidateView = ({
   // Render action buttons based on interview status
   const renderActionButtons = () => (
     <div className="candidate-actions">
-      {!interviewScheduled ? (
+      {['Accepted', 'Rejected'].includes(appStatus) ? (
+        <div className="status-info">
+          <span className={`interview-status status-${appStatus.toLowerCase()}`}>
+            {appStatus}
+          </span>
+          <button
+            className="action-button chat-button"
+            onClick={openChatModal}
+            disabled={isButtonDisabled}
+          >
+            Chat
+          </button>
+        </div>
+      ) : appStatus === 'Interview Cancelled' || !interviewScheduled ? (
         <>
+          {appStatus === 'Interview Cancelled' && (
+            <div className="interview-cancelled-info">
+              <span className="interview-status">Interview Cancelled</span>
+            </div>
+          )}
           <button
             className={`action-button ${appStatus === 'Pending' ? 'pending-button active' : 'pending-button'}`}
             onClick={() => changeStatus('Pending')}
@@ -298,7 +419,8 @@ const CandidateView = ({
           <button
             className="action-button schedule-button"
             onClick={openScheduleModal}
-            disabled={isButtonDisabled || isCheckingSchedule}
+            disabled={isButtonDisabled || isCheckingSchedule || ['Accepted', 'Rejected'].includes(appStatus)}
+            title={['Accepted', 'Rejected'].includes(appStatus) ? "Cannot schedule - Candidate already selected/rejected" : ""}
           >
             {isCheckingSchedule ? 'Checking...' : 'Schedule Interview'}
           </button>
@@ -314,25 +436,42 @@ const CandidateView = ({
         <>
           <div className="interview-scheduled-info">
             <span className="interview-status">Interview Scheduled</span>
-            {interviewDate && (
-              <span className="interview-date">
-                {formatInterviewDate(interviewDate)}
-              </span>
+            <span className="interview-date">{formatInterviewDate(interviewDate)}</span>
+            {interviewAttended && (
+              <span className="interview-attended">Attended</span>
             )}
           </div>
+          {current.status==="Application Send" || current.status=== 'Interview Scheduled' ? 
+          <><button
+                  className={`action-button ${current.status === 'Accepted' ? 'accept-button active' : 'accept-button'}`}
+                  onClick={() => changeStatus('Accepted')}
+                  disabled={isButtonDisabled}
+                >
+                  Accept
+                </button><button
+                  className={`action-button ${current.status === 'Rejected' ? 'reject-button active' : 'reject-button'}`}
+                  onClick={() => changeStatus('Rejected')}
+                  disabled={isButtonDisabled}
+                >
+                    Reject
+                  </button></>:
+          <p>{current.status}</p>
+}
           <button
-            className={`action-button ${appStatus === 'Accepted' ? 'accept-button active' : 'accept-button'}`}
-            onClick={() => changeStatus('Accepted')}
-            disabled={isButtonDisabled}
+            className="action-button cancel-button"
+            onClick={cancelInterview}
+            disabled={
+              isButtonDisabled || 
+              interviewAttended || 
+              ['Accepted', 'Rejected'].includes(appStatus)
+            }
+            title={
+              interviewAttended ? "Cannot cancel - Interview already attended" :
+              ['Accepted', 'Rejected'].includes(appStatus) ? "Cannot cancel - Candidate already selected/rejected" :
+              ""
+            }
           >
-            Accept
-          </button>
-          <button
-            className={`action-button ${appStatus === 'Rejected' ? 'reject-button active' : 'reject-button'}`}
-            onClick={() => changeStatus('Rejected')}
-            disabled={isButtonDisabled}
-          >
-            Reject
+            Cancel Interview
           </button>
           <button
             className="action-button chat-button"
@@ -351,7 +490,6 @@ const CandidateView = ({
   }
 
   // Prepare candidate data
-  const answers = current.answers || [];
   const profilePic = current.candidate?.profile_pic ? `${baseURL}${current.candidate.profile_pic}` : '';
   const userName = current.candidate?.user_name || current.candidate_name || 'N/A';
   const candidateId = current.candidate?.id;
@@ -361,7 +499,6 @@ const CandidateView = ({
 
   return (
     <div className="candidate-view-container">
-      {/* Schedule Interview Modal */}
       {showScheduleModal && (
         <SheduleModal
           setModal={setShowScheduleModal}
@@ -371,13 +508,17 @@ const CandidateView = ({
           onScheduleSuccess={(interviewData) => {
             setInterviewDate(interviewData.date);
             setInterviewScheduled(true);
+            setInterviewAttended(false);
             setAppStatus('Interview Scheduled');
             Swal.fire({
               icon: 'success',
               title: 'Interview Scheduled',
               text: `Interview scheduled for ${formatInterviewDate(interviewData.date)}`,
-              timer: 2000
+              timer: 2000,
             });
+            if (typeof fetchJobDetails === 'function') {
+              fetchJobDetails();
+            }
           }}
           onScheduleError={(error) => {
             Swal.fire({
@@ -389,7 +530,6 @@ const CandidateView = ({
         />
       )}
 
-      {/* Chat Modal */}
       {showChatModal && (
         <ChatModal
           setChat={setShowChatModal}
@@ -404,10 +544,12 @@ const CandidateView = ({
         />
       )}
 
-      {/* Action Buttons */}
       {renderActionButtons()}
 
-      {/* Candidate Information Section */}
+      
+
+
+
       <div className="candidate-info-section">
         <h2 className="section-title">Candidate Info</h2>
         <div className="candidate-profile">
@@ -439,12 +581,13 @@ const CandidateView = ({
           </div>
           <div className="info-item">
             <span className="info-label">Status:</span>
-            <p className="info-value">{appStatus}</p>
+            <p className={`info-value status-${appStatus.toLowerCase().replace(' ', '-')}`}>
+              {appStatus}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Education Information Section */}
       {current.candidate?.education?.length > 0 && (
         <div className="education-info-section">
           <h2 className="section-title">Education Info</h2>
@@ -477,7 +620,6 @@ const CandidateView = ({
         </div>
       )}
 
-      {/* Links Section */}
       <div className="links-section">
         <h2 className="section-title">Links</h2>
         <div className="info-details">
@@ -537,7 +679,6 @@ const CandidateView = ({
         </div>
       </div>
 
-      {/* Questions & Answers Section */}
       <div className="answers-section">
         <h2 className="section-title">Interview Questions & Answers</h2>
         {loadingQuestions ? (
@@ -560,16 +701,17 @@ const CandidateView = ({
         )}
       </div>
 
-      {/* Back Button */}
-      <button
-        className="back-btn"
-        onClick={() => setChange(true)}
-        disabled={isButtonDisabled}
-      >
-        Back to Applications
-      </button>
+      {/* <div className="back-btn">
+        <button
+          className="back-button"
+          onClick={() => setChange(true)}
+          disabled={isButtonDisabled}
+        >
+          Back to Applications
+        </button>
+      </div> */}
     </div>
   );
 };
 
-export default CandidateView;
+export default CandidateView; 

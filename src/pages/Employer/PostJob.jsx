@@ -159,7 +159,7 @@ function PostJob() {
           <Qmodal setModal={setShowQuestionModal} questions={questions} setQuestions={setQuestions} />
         )}
 
-        <div className="post-job-form-wrapper">
+        <div className="post-job-form-wrapper" style={{marginTop:"90px"}}>
           <h1>Post A Job</h1>
 
           <Formik
@@ -168,7 +168,7 @@ function PostJob() {
             onSubmit={handleSubmit}
           >
             {({ isSubmitting }) => (
-              <Form className="post-job-form">
+              <Form className= "post-job-form">
                 <div className="form-grid">
                   <div className="input-group">
                     <Field name="title" placeholder=" " />

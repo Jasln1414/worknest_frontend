@@ -1,115 +1,118 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import SideBar from '../../pages/Employer/SideBar';
 import MobileMenuToggle from '../../pages/Employer/utilities/MobileToggle';
-import './Subcription.css'; 
+import './Subcription.css';
 
-// SubscriptionPlans component for managing and displaying subscription plans
 const SubscriptionPlans = () => {
-  // State management
-  const [plans, setPlans] = useState([]); // Store subscription plans
-  const [loading, setLoading] = useState(false); // Loading state for API calls
-  const [error, setError] = useState(null); // Error messages
-  const [usageData, setUsageData] = useState(null); // User's subscription usage data
-  const [isPlanExpired, setIsPlanExpired] = useState(false); // Track if plan is expired
-  const [existingSubscriptionId, setExistingSubscriptionId] = useState(null); // Store existing subscription ID
-  const [subscriptionStatus , setSubscriptionStatus] = useState('')
-  const [usageLoading, setUsageLoading] = useState(true); // Loading state for usage data
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Sidebar visibility for mobile
-  const baseURL = 'http://127.0.0.1:8000/api'; // API base URL
-  const token = localStorage.getItem('access'); // Authentication token
-  
-  // Toggle sidebar visibility
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [usageData, setUsageData] = useState(null);
+  const [isPlanExpired, setIsPlanExpired] = useState(false);
+  const [existingSubscriptionId, setExistingSubscriptionId] = useState(null);
+  const [renewalSubscriptionId, setRenewalSubscriptionId] = useState(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState('');
+  const [usageLoading, setUsageLoading] = useState(true);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
+  const baseURL = 'http://127.0.0.1:8000/api';
+  const token = localStorage.getItem('access');
+  const navigate = useNavigate();
+
   const toggleSidebar = () => {
-    setIsSidebarVisible((prev) => !prev);
+    setIsSidebarVisible(prev => !prev);
   };
 
-  // Normalize plan names for consistent comparison
   const normalizePlanName = (name) => {
-    return name?.trim().toLowerCase();
+    return name?.trim().toLowerCase() || '';
   };
 
-  // Check if a plan is the user's current active subscription
   const isPlanActive = (planName) => {
-    const isActive = usageData?.has_active_subscription && 
-      normalizePlanName(usageData?.subscription_plan) === normalizePlanName(planName);
-    console.log(`Checking if plan "${planName}" is active:`, {
-      usageDataPlan: usageData?.subscription_plan,
-      normalizedUsageDataPlan: normalizePlanName(usageData?.subscription_plan),
-      normalizedPlanName: normalizePlanName(planName),
-      isActive,
-    });
-    return isActive;
+    return usageData?.has_active_subscription &&
+           normalizePlanName(usageData?.subscription_plan) === normalizePlanName(planName);
   };
 
-  // Format date for display
-  const formatDate = (dateString) =>
-    dateString
+  const formatDate = (dateString) => {
+    return dateString
       ? new Date(dateString).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'short',
           day: 'numeric',
         })
       : 'N/A';
+  };
 
-  // Fetch subscription plans from API
+  const isSubscriptionNearExpiry = () => {
+    if (!usageData?.subscription_end_date || !usageData.has_active_subscription) return false;
+    const endDate = new Date(usageData.subscription_end_date);
+    const now = new Date();
+    const daysUntilExpiry = (endDate - now) / (1000 * 60 * 60 * 24);
+    return daysUntilExpiry <= 7;
+  };
+
+  const isRenewalSubscriptionExpired = () => {
+    if (!usageData?.renewal_subscription_end_date) return false;
+    const endDate = new Date(usageData.renewal_subscription_end_date);
+    const now = new Date();
+    return endDate < now;
+  };
+
   const fetchPlans = async () => {
     if (!token) {
-      setError('Please log in to view subscription plans.');
-      setLoading(false);
+      navigate('/login');
       return;
     }
+    
     setLoading(true);
     setError(null);
+    
     try {
-      console.log('Fetching subscription plans...');
       const response = await axios.get(`${baseURL}/payment/subscription/plans/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Plans API Response:', response.data);
+      
       if (response.data && Array.isArray(response.data) && response.data.length > 0) {
         setPlans(response.data);
       } else {
         setError('No subscription plans found.');
       }
     } catch (err) {
-      console.error('Error fetching plans:', err.response?.data || err);
       setError(err.response?.data?.message || 'Failed to load subscription plans.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch user's subscription usage data
   const fetchUsageData = async () => {
     if (!token) {
+      navigate('/login');
       setUsageLoading(false);
       return;
     }
+    
     setUsageLoading(true);
+    
     try {
       const response = await axios.get(`${baseURL}/empjob/job-usage/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Job usage response:', response.data);
+      
       if (response.status === 200) {
         setUsageData(response.data);
-        setIsPlanExpired(!response.data.has_active_subscription); // Set to true if no active subscription
+        setIsPlanExpired(!response.data.has_active_subscription);
         setExistingSubscriptionId(response.data.existing_subscription_id);
+        setRenewalSubscriptionId(response.data.renewal_subscription_id);
         setSubscriptionStatus(response.data.subscription_status);
-        console.log('Normalized subscription plan:', normalizePlanName(response.data.subscription_plan));
-        console.log(".............................statussssssssssssssssssssssssss",response.data)
       }
-
-
-     
     } catch (error) {
-      console.error('Error fetching job usage data:', error.response?.data || error);
       if (error.response?.status === 404) {
-        console.warn('Job usage endpoint not found. Using fallback data.');
         setUsageData({ job_count: 0, has_active_subscription: false });
         setIsPlanExpired(true);
+        setExistingSubscriptionId(null);
+        setRenewalSubscriptionId(null);
       } else {
         setError('Failed to load usage data.');
       }
@@ -118,11 +121,9 @@ const SubscriptionPlans = () => {
     }
   };
 
-  // Initiate Razorpay payment
   const initiatePayment = (orderId, amount, keyId, planId, subscriptionType) => {
-    const planDetails = plans.find((p) => p.id === planId);
-    console.log('Initiating payment for:', { orderId, amount, keyId, plan: planDetails, type: subscriptionType });
-
+    const planDetails = plans.find(p => p.id === planId);
+    
     const options = {
       key: keyId,
       amount,
@@ -133,7 +134,6 @@ const SubscriptionPlans = () => {
         : `Subscription to ${planDetails?.name || 'Plan'}`,
       order_id: orderId,
       handler: async (response) => {
-        console.log('Payment success:', response);
         try {
           const verifyResponse = await axios.post(
             `${baseURL}/payment/subscription/verify/`,
@@ -144,7 +144,7 @@ const SubscriptionPlans = () => {
             },
             { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
           );
-          console.log('Verification response:', verifyResponse.data);
+          
           Swal.fire({
             icon: 'success',
             title: subscriptionType === 'extension' ? 'Subscription Extended!' : 'Subscription Activated!',
@@ -153,9 +153,9 @@ const SubscriptionPlans = () => {
               : 'Your subscription has been successfully activated.',
             confirmButtonColor: '#1E3A8A',
           });
+          
           fetchUsageData();
         } catch (verifyErr) {
-          console.error('Verification error:', verifyErr.response?.data || verifyErr);
           Swal.fire({
             icon: 'error',
             title: 'Verification Failed',
@@ -167,14 +167,16 @@ const SubscriptionPlans = () => {
           setLoading(false);
         }
       },
-      prefill: { email: localStorage.getItem('user_email') || '', contact: localStorage.getItem('user_phone') || '' },
+      prefill: { 
+        email: localStorage.getItem('user_email') || '', 
+        contact: localStorage.getItem('user_phone') || '' 
+      },
       theme: { color: '#1E3A8A' },
       modal: { confirm_close: true, escape: false, animation: true },
     };
 
     const rzp = new window.Razorpay(options);
     rzp.on('payment.failed', (response) => {
-      console.error('Payment failed:', response.error);
       Swal.fire({
         icon: 'error',
         title: 'Payment Failed',
@@ -187,25 +189,26 @@ const SubscriptionPlans = () => {
     rzp.open();
   };
 
-  // Handle subscription to a plan
   const handleSubscribe = async (planId) => {
     setLoading(true);
     setError(null);
+    
     try {
-      console.log('Subscribing to plan ID:', planId);
       const response = await axios.post(
         `${baseURL}/payment/subscription/create/`,
         { plan_id: planId },
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
-      console.log('Subscription create response:', response.data);
+      
       const { order_id, amount, key_id, subscription_type } = response.data;
 
       if (!window.Razorpay) {
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
-        script.onload = () => initiatePayment(order_id, amount, key_id, planId, subscription_type);
+        script.onload = () => {
+          initiatePayment(order_id, amount, key_id, planId, subscription_type);
+        };
         script.onerror = () => {
           setError('Failed to load payment gateway.');
           setLoading(false);
@@ -215,7 +218,6 @@ const SubscriptionPlans = () => {
         initiatePayment(order_id, amount, key_id, planId, subscription_type);
       }
     } catch (err) {
-      console.error('Subscription creation error:', err.response?.data || err);
       Swal.fire({
         icon: 'error',
         title: 'Subscription Error',
@@ -227,29 +229,33 @@ const SubscriptionPlans = () => {
     }
   };
 
-  // Handle renewal of existing subscription
   const handleRenewSubscription = async () => {
-    if (!existingSubscriptionId) {
-      setError('No existing subscription found to renew.');
-      setLoading(false);
+    const subscriptionIdToRenew = renewalSubscriptionId || existingSubscriptionId;
+    
+    if (!subscriptionIdToRenew) {
+      setError('No subscription found to renew.');
       return;
     }
+    
     setLoading(true);
     setError(null);
+    
     try {
       const response = await axios.post(
         `${baseURL}/payment/subscription/renew/`,
-        { sub_id: existingSubscriptionId },
+        { sub_id: subscriptionIdToRenew },
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
-      console.log('Subscription renew response:', response.data);
+      
       const { order_id, amount, key_id, subscription_type, planId } = response.data;
 
       if (!window.Razorpay) {
         const script = document.createElement('script');
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
         script.async = true;
-        script.onload = () => initiatePayment(order_id, amount, key_id, planId, subscription_type);
+        script.onload = () => {
+          initiatePayment(order_id, amount, key_id, planId, subscription_type);
+        };
         script.onerror = () => {
           setError('Failed to load payment gateway.');
           setLoading(false);
@@ -259,7 +265,6 @@ const SubscriptionPlans = () => {
         initiatePayment(order_id, amount, key_id, planId, subscription_type);
       }
     } catch (err) {
-      console.error('Subscription renewal error:', err.response?.data || err);
       Swal.fire({
         icon: 'error',
         title: 'Subscription Error',
@@ -271,11 +276,15 @@ const SubscriptionPlans = () => {
     }
   };
 
-  // Fetch plans and usage data on component mount
   useEffect(() => {
     fetchPlans();
     fetchUsageData();
-  }, [token]);
+  }, []);
+
+  const shouldShowRenewButton = usageData && (
+    (usageData.has_active_subscription && (isSubscriptionNearExpiry() || subscriptionStatus !== 'active')) ||
+    (usageData.renewal_subscription_id && isRenewalSubscriptionExpired())
+  );
 
   return (
     <div className="subscription-wrapper">
@@ -284,11 +293,9 @@ const SubscriptionPlans = () => {
         <SideBar />
       </div>
 
-      {/* Main subscription content */}
       <div className="subscription-container">
         <h2>Choose Your WorkNest Subscription Plan</h2>
 
-        {/* Subscription stats dashboard */}
         {!usageLoading && usageData && (
           <div className="job-usage-dashboard">
             <div className="usage-header">
@@ -376,17 +383,21 @@ const SubscriptionPlans = () => {
                 <div className="stat-content">
                   <h4>{usageData.has_active_subscription ? 'Expires On' : 'Subscription'}</h4>
                   <p className="stat-value">
-                      {subscriptionStatus === 'active'
-                        ? formatDate(usageData.subscription_end_date)
-                        :"inactive"
-                      }
-                    </p>
+                    {subscriptionStatus === 'active'
+                      ? formatDate(usageData.subscription_end_date)
+                      : 'Inactive'}
+                  </p>
                 </div>
               </div>
             </div>
-            {isPlanExpired && (
+
+            {shouldShowRenewButton && (
               <div className="renewal-notice">
-                <p>Your plan has expired. Renew Subscription or select new Plan</p>
+                <p>
+                  {isPlanExpired || isRenewalSubscriptionExpired()
+                    ? `Your ${usageData?.renewal_subscription_plan || 'previous'} plan has expired. Renew your subscription or select a new plan.`
+                    : 'Your subscription is nearing expiry. Renew now to extend its validity.'}
+                </p>
                 <button
                   className="renew-button"
                   onClick={handleRenewSubscription}
@@ -399,20 +410,24 @@ const SubscriptionPlans = () => {
           </div>
         )}
 
-        {/* Error and loading states */}
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+        
         {loading && !error && (
           <div className="loading-container">
             <div className="loading-spinner"></div>
           </div>
         )}
+        
         {!loading && plans.length === 0 && !error && (
           <div className="no-plans-message">
             <p>No subscription plans available.</p>
           </div>
         )}
 
-        {/* Subscription plans grid */}
         <div className="plans-grid">
           {plans.map((plan) => {
             const isActive = isPlanActive(plan.name);
@@ -434,7 +449,8 @@ const SubscriptionPlans = () => {
                     <span>/month</span>
                   </p>
                   <p className="plan-feature">
-                    <span className="feature-check">✓</span> Job Limit: {plan.job_limit === 9999 ? 'Unlimited' : plan.job_limit}
+                    <span className="feature-check">✓</span> Job Limit:{' '}
+                    {plan.job_limit === 9999 ? 'Unlimited' : plan.job_limit}
                   </p>
                   <p className="plan-feature">
                     <span className="feature-check">✓</span> Premium Support
@@ -443,18 +459,14 @@ const SubscriptionPlans = () => {
                 <button
                   onClick={() => handleSubscribe(plan.id)}
                   disabled={usageData?.has_active_subscription || loading}
-                  className={`subscribe-button ${
-                    usageData?.has_active_subscription ? 'inactive-plan-button' : ''
-                  }`}
+                  className={`subscribe-button ${usageData?.has_active_subscription ? 'inactive-plan-button' : ''}`}
                   title={
                     usageData?.has_active_subscription && !isActive
-                      ? `Cannot subscribe until current plan expires on ${formatDate(usageData.subscription_end_date)}`
+                      ? `Cannot subscribe until current plan expires on ${formatDate(usageData?.subscription_end_date)}`
                       : ''
                   }
                 >
-                  {loading && usageData?.has_active_subscription
-                    ? 'Processing...'
-                    : isActive
+                  {loading ? 'Processing...' : isActive
                     ? 'Active Plan'
                     : usageData?.has_active_subscription
                     ? 'Subscription Active'

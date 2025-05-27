@@ -6,7 +6,7 @@ import { set_Authentication } from '../../Redux/Authentication/authenticationSli
 import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import NotificationBell from '../../Components/Notification/NotificationBell';
-import InterviewCallModal from '../../Components/Interview/InterviewCallModal';
+ import InterviewCallModal from '../../Components/Interview/InterviewCallModal';
 import { openInterviewModal, closeInterviewModal } from '../../Redux/Interview/interviewCallSlice';
 import '../../assets/component/Employheader.css';
 
@@ -20,6 +20,9 @@ function CandidateHeader() {
   const roomId = useSelector((state) => state.interview_call.roomId);
   const interviewId = useSelector((state) => state.interview_call.interviewId);
   const [userId, setUserId] = useState(null);
+
+  const token = localStorage.getItem('access');
+  const user_id= localStorage.getItem('user_id');
 
   useEffect(() => {
     if (authentication.userid) {
@@ -54,6 +57,7 @@ function CandidateHeader() {
         user_type_id: null,
       })
     );
+    localStorage.removeItem('user_id');     
 
     message.success({
       content: 'Logged out successfully!',
@@ -106,7 +110,8 @@ function CandidateHeader() {
 
         {/* Notifications and Profile */}
         <div className="profile-notifications">
-          {userId && <NotificationBell userId={userId} />}
+          {user_id && <NotificationBell userId={user_id} />}
+          {console.log(".......................userrrrrrrrrrrrr",user_id)}
           {interviewModal && <InterviewCallModal />}
           <div className="user-profile">
             <Dropdown

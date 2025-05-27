@@ -1074,6 +1074,7 @@
   transition: all 0.2s;
   background-color: #e5e7eb;
   color: #4b5563;
+  margin-right:85px;
 }
 
 .action-button:hover {
@@ -1090,7 +1091,7 @@
 }
 
 .accept-button.active {
-  background-color: #10b981;
+  background-color: #3f51b5;
 }
 
 .reject-button.active {
@@ -1457,4 +1458,504 @@
 .modal-button.cancel {
   background-color: #dc3545;
   color: white;
+}
+
+
+.interview-room-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #1f2937;
+  overflow: hidden;
+}
+
+.myCallContainer {
+  width: 100%;
+  height: 100%;
+  background-color: #111827;
+}
+
+.back-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1100;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.back-button:hover {
+  background-color: #1e40af;
+}
+
+.back-button .MuiSvgIcon-root {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .myCallContainer {
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+  }
+
+  .back-button {
+    top: 10px;
+    left: 10px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .back-button {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+  }
+}
+
+
+
+.schedules-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  margin-top:90px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 250px;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 20px;
+}
+
+.table-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header th {
+  background-color: #0e3a78;
+  color: #ffffff;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.table-row td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.status-cell {
+  font-weight: 500;
+}
+
+.status-cell.upcoming {
+  color: #2563eb;
+}
+
+.status-cell.ongoing {
+  color: #d97706;
+}
+
+.status-cell.completed {
+  color: #16a34a;
+}
+
+.status-cell.you-missed,
+.status-cell.rejected,
+.status-cell.canceled {
+  color: #dc2626;
+}
+
+.status-cell.selected {
+  color: #16a34a;
+}
+
+.start-button {
+  padding: 6px 12px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.start-button:hover {
+  background-color: #1e40af;
+}
+
+.view-button:hover {
+  background-color: #45a049;
+}
+
+.drawer-toggle-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.drawer-icon {
+  width: 24px;
+  height: 24px;
+  fill: #ffffff;
+}
+
+.drawer-menu {
+  background-color: #1f2937;
+}
+
+.drawer-sidebar {
+  width: 250px;
+  height: 100%;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination .MuiButton-root {
+  background-color: #2563eb;
+  color: #ffffff;
+  margin: 0 5px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+
+.pagination .MuiButton-outlined {
+  background-color: #ffffff;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.pagination .MuiButton-root:hover {
+  background-color: #1e40af;
+}
+
+.pagination .MuiButton-outlined:hover {
+  background-color: #e6f0ff;
+}
+
+.pagination .MuiButton-root.Mui-disabled {
+  background-color: #d1d5db;
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .main-heading {
+    font-size: 1.5rem;
+  }
+
+  .table-header th,
+  .table-row td {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .start-button,
+  .view-button {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+
+  .pagination .MuiButton-root {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    margin: 0 3px;
+  }
+}
+
+/* Base styles for the interview room wrapper */
+.interview-room-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Back button styles */
+.back-button {
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  text-transform: none;
+  border-radius: 4px;
+  background-color: #1e3a8a;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.back-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Video call container styles */
+.myCallContainer {
+  width: 100%;
+  height: calc(100vh - 4rem); /* Adjust for button and padding */
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Tablet screens (max-width: 768px) */
+@media screen and (max-width: 768px) {
+  .interview-room-wrapper {
+    padding: 0.5rem;
+  }
+
+  .back-button {
+    margin: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .myCallContainer {
+    height: calc(100vh - 3rem); /* Adjust for smaller button */
+  }
+}
+
+/* Mobile screens (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  .interview-room-wrapper {
+    padding: 0.25rem;
+  }
+
+  .back-button {
+    margin: 0.25rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .myCallContainer {
+    height: calc(100vh - 2.5rem); /* Adjust for smaller button */
+    border-radius: 4px;
+  }
+}
+
+/* Ensure no overflow on very small screens */
+@media screen and (max-height: 500px) {
+  .myCallContainer {
+    height: calc(100vh - 2rem);
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.pagination-button {
+  min-width: 36px;
+}
+
+
+/* UniqueInterviewCallModal.css */
+.unique-interview-modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 10px;
+  backdrop-filter: blur(2px);
+}
+
+.unique-interview-modal-content {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.unique-interview-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.unique-interview-spinner-outer {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.unique-interview-spinner-inner {
+  width: 30px;
+  height: 30px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #28a745;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite reverse;
+}
+
+.unique-interview-button-group {
+  display: flex;
+  gap: 15px;
+}
+
+.unique-accept-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.unique-accept-button:hover {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+.unique-reject-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.unique-reject-button:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .unique-interview-modal-content {
+    max-width: 90%;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  .unique-interview-spinner-outer {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+  }
+
+  .unique-interview-spinner-inner {
+    width: 24px;
+    height: 24px;
+    border-width: 3px;
+  }
+
+  .unique-accept-button,
+  .unique-reject-button {
+    padding: 8px 16px;
+    font-size: 0.95rem;
+  }
+
+  .unique-interview-button-group {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .unique-interview-modal-content {
+    padding: 15px;
+  }
+
+  .unique-interview-button-group {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .unique-accept-button,
+  .unique-reject-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .unique-interview-spinner-container {
+    margin-bottom: 15px;
+  }
 }

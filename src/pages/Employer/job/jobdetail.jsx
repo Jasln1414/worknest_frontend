@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobDetailModal from '../../../Components/Employer/Employjobdetail';
-//import './JobDetail.css'; // Import the CSS file
+import './style/Candidateview.css';
 
 function JobDetail() {
   const baseURL = import.meta.env.VITE_API_BASEURL || 'http://127.0.0.1:8000';

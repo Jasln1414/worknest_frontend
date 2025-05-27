@@ -1,44 +1,68 @@
-// Qmodal.jsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Qmodal.css';
 
 const Qmodal = ({ setModal, questions, setAnswers, answers, handleApply }) => {
+  const modalRef = useRef(null);
+
+  // Focus modal on mount
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.focus();
+    }
+  }, []);
+
   const handleAnswerChange = (questionId, value) => {
-    setAnswers(prev => ({
+    setAnswers((prev) => ({
       ...prev,
-      [questionId]: value
+      [questionId]: value,
     }));
   };
 
   const handleSubmit = () => {
     const formattedAnswers = Object.entries(answers).map(([questionId, answer_text]) => ({
       question: parseInt(questionId),
-      answer_text
+      answer_text,
     }));
     handleApply(formattedAnswers);
+    setModal(false); // Close modal after submission
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setModal(false);
+    }
   };
 
   return (
-    <div className="modal-overlay">
+    <div
+      className="modal-overlay"
+      ref={modalRef}
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+      role="dialog"
+      aria-labelledby="modal-title"
+    >
       <div className="modal-content">
-        <h2>Application Questions</h2>
+        <h2 id="modal-title">Application Questions</h2>
         {questions.length > 0 ? (
           questions.map((question, index) => (
             <div key={index} className="question-item">
               <label className="block text-lg font-semibold text-gray-800 rounded-md px-3 py-1 mb-2 shadow-sm">
-    {question.text}
-  </label>
+                {question.text}
+              </label>
               {question.question_type === 'TEXT' && (
                 <textarea
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   placeholder="Type your answer here..."
+                  aria-label={`Answer for ${question.text}`}
                 />
               )}
               {question.question_type === 'MCQ' && (
                 <select
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                  aria-label={`Select an option for ${question.text}`}
                 >
                   <option value="">Select an option</option>
                   {Object.entries(question.options || {}).map(([key, value]) => (
@@ -50,44 +74,33 @@ const Qmodal = ({ setModal, questions, setAnswers, answers, handleApply }) => {
                 <textarea
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                  placeholder="Write your code here..."
+                  placeholder="/* Write your code here... */"
                   className="code-input"
+                  aria-label={`Code input for ${question.text}`}
                 />
               )}
             </div>
           ))
         ) : (
-          <p>No questions available</p>
+          <p className="no-questions">No questions available</p>
         )}
-
-<div className="modal-buttons flex justify-end gap-6 p-6">
-  <button 
-    onClick={() => setModal(false)}
-    className="w-32 h-12 bg-gradient-to-br from-teal-900 to-teal-900 text-teal-100 rounded-xl hover:from-teal-900 hover:to-teal-900 transition-all duration-300 shadow-sm text-base font-semibold"
-  >
-    Cancel
-  </button>
-  <button 
-    onClick={handleSubmit}
-    disabled={Object.keys(answers).length !== questions.length}
-    className="w-48 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 disabled:from-gray-300 disabled:to-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed shadow-sm text-base font-semibold"
-  >
-    Submit Application
-  </button>
-</div>
-
-
-
-
-        {/* <div className="modal-buttons">
-          <button onClick={() => setModal(false)}>Cancel</button>
-          <button 
+        <div className="modal-buttons flex justify-end gap-6 p-6">
+          <button
+            onClick={() => setModal(false)}
+            className="w-32 h-12 bg-gradient-to-br from-teal-900 to-teal-900 text-teal-100 rounded-xl hover:from-teal-900 hover:to-teal-900 transition-all duration-300 shadow-sm text-base font-semibold"
+            aria-label="Cancel application"
+          >
+            Cancel
+          </button>
+          <button
             onClick={handleSubmit}
             disabled={Object.keys(answers).length !== questions.length}
+            className="w-48 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 disabled:from-gray-300 disabled:to-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed shadow-sm text-base font-semibold"
+            aria-label="Submit application"
           >
             Submit Application
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );

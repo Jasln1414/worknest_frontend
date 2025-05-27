@@ -358,16 +358,16 @@ function EmpHome() {
                 <div className="subscription-cta warning-cta">
                   <div className="cta-message">
                     <h3>Job Limit Reached!</h3>
-                    <p>You've used all your job postings. Upgrade your plan or pay ₹200 for an extra job slot.</p>
+                    <p>You've used all your job postings. Upgrade your plan </p>
                   </div>
-                  <div className="cta-buttons">
+                  {/* <div className="cta-buttons">
                     <Link to="/employer/subscriptions" className="cta-button upgrade-button">
                       Upgrade Plan
                     </Link>
                     <button onClick={initiatePaymentForExtraJob} className="cta-button pay-button">
                       Pay for Extra Job
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               )}
 

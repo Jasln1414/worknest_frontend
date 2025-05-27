@@ -1,485 +1,398 @@
-/* Chat Modal Overlay */
-.chat-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow-y: auto;
-  padding: 10px;
+/* UniqueApplyedJob.css */
+.unique-applyed-jobs-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
 }
 
-/* Chat Modal Container */
-.chat-modal-container {
-  background: #fff;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 600px;
-  height: 80vh;
-  max-height: 700px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-}
-
-/* Chat Modal Header */
-.chat-modal-header {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.chat-modal-profile-pic img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 10px;
-}
-
-.user-status-wrapper {
-  flex: 1;
-}
-
-.chat-modal-username {
-  margin: 0;
-  font-size: 1.1rem;
+.unique-applyed-jobs-heading {
+  font-size: 2rem;
   font-weight: 600;
   color: #333;
-}
-
-.user-status {
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.user-status.online {
-  color: #28a745;
-}
-
-.user-status.offline {
-  color: #6c757d;
-}
-
-/* Chat Messages Area */
-.chat-messages {
-  flex: 1;
-  padding: 15px;
-  overflow-y: auto;
-  background: #f1f3f5;
-  scroll-behavior: smooth;
-}
-
-/* Message Styling */
-.chat-message-left,
-.chat-message-right {
-  display: flex;
-  margin-bottom: 12px;
-}
-
-.chat-message-left {
-  justify-content: flex-start;
-}
-
-.chat-message-right {
-  justify-content: flex-end;
-}
-
-.chat-message-bubble {
-  max-width: 70%;
-  padding: 10px 15px;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.chat-message-right .chat-message-bubble {
-  background: #007bff;
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-
-.chat-message-left .chat-message-bubble {
-  background: #e9ecef;
-  color: #333;
-  border-bottom-left-radius: 4px;
-}
-
-.chat-message-bubble strong {
-  display: block;
-  font-size: 0.9rem;
-  margin-bottom: 5px;
-}
-
-.chat-message-bubble p {
-  margin: 0;
-  font-size: 0.95rem;
-  word-break: break-word;
-}
-
-.message-timestamp {
-  font-size: 0.75rem;
-  color: #6c757d;
-  margin-top: 5px;
-  text-align: right;
-}
-
-.chat-message-right .message-timestamp {
-  color: #d1e7ff;
-}
-
-.message-status {
-  font-size: 0.7rem;
-  margin-left: 5px;
-}
-
-.message-status.error {
-  color: #dc3545;
-}
-
-/* File Message Styling */
-.message-file {
-  margin-top: 8px;
-}
-
-.chat-image,
-.chat-video {
-  max-width: 100%;
-  border-radius: 8px;
-  margin-top: 5px;
-}
-
-.file-download-link {
-  color: #007bff;
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.chat-message-right .file-download-link {
-  color: #d1e7ff;
-}
-
-/* File Preview */
-.file-preview {
-  display: flex;
-  align-items: center;
-  background: #e9ecef;
-  padding: 8px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  position: relative;
-  max-width: 100%;
-}
-
-.file-preview-image,
-.file-preview-video {
-  max-width: 100px;
-  max-height: 100px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.file-preview-generic {
-  display: flex;
-  align-items: center;
-}
-
-.file-icon {
-  font-size: 1.5rem;
-  margin-right: 8px;
-}
-
-.file-name {
-  font-size: 0.9rem;
-  color: #333;
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.file-remove-button {
-  background: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.file-remove-button:hover {
-  background: #c82333;
-}
-
-/* Chat Input Container */
-.chat-input-container {
-  padding: 10px;
-  background: #fff;
-  border-top: 1px solid #e9ecef;
-}
-
-/* Chat Input Wrapper */
-.chat-input-wrapper {
-  display: flex;
-  align-items: flex-end;
-  background: #f1f3f5;
-  border-radius: 20px;
-  padding: 8px;
-}
-
-.chat-input {
-  flex: 1;
-  border: none;
-  background: transparent;
-  resize: none;
-  font-size: 0.95rem;
-  padding: 8px 10px;
-  outline: none;
-  max-height: 150px;
-  color: #333;
-}
-
-.chat-input::placeholder {
-  color: #6c757d;
-}
-
-.chat-input:disabled {
-  background: #e9ecef;
-  cursor: not-allowed;
-}
-
-.file-attach-button,
-.chat-send-button {
-  background: none;
-  border: none;
-  color: #007bff;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-
-.file-attach-button:hover,
-.chat-send-button:hover {
-  color: #0056b3;
-}
-
-.chat-send-button:disabled,
-.file-attach-button:disabled {
-  color: #6c757d;
-  cursor: not-allowed;
-}
-
-.loading-spinner {
-  border: 2px solid #fff;
-  border-top: 2px solid #007bff;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Status Messages */
-.loading-message,
-.connection-error-message,
-.no-messages {
+  margin-bottom: 20px;
   text-align: center;
-  color: #6c757d;
-  font-size: 0.9rem;
-  padding: 15px;
 }
 
-.connection-error-message {
-  color: #dc3545;
+.unique-applyed-jobs-layout {
+  display: flex;
+  gap: 20px;
 }
 
-/* Request Approval Section */
-.chat-request-container {
-  padding: 15px;
-  background: #f8f9fa;
+.unique-job-list-section {
+  flex: 1;
+  background-color: #ffffff;
   border-radius: 8px;
-  margin: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.chat-request-message {
-  color: #dc3545;
+.unique-job-list-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.unique-job-list-section p {
   font-size: 1rem;
+  color: #6c757d;
   margin-bottom: 15px;
 }
 
-.chat-request-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
+.unique-job-list-item {
+  padding: 15px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
   margin-bottom: 10px;
-  min-height: 100px;
-  resize: vertical;
-  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
-.chat-request-button {
-  background: #007bff;
-  color: #fff;
-  padding: 8px 16px;
+.unique-job-list-item:hover {
+  background-color: #f1f3f5;
+  border-color: #007bff;
+}
+
+.unique-selected-job {
+  background-color: #e7f1ff;
+  border-color: #007bff;
+}
+
+.unique-job-item-content {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.unique-job-item-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.unique-job-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.unique-job-item-details {
+  flex: 1;
+}
+
+.unique-job-item-details h3 {
+  font-size: 1.2rem;
+  margin: 0 0 5px;
+  color: #333;
+}
+
+.unique-job-item-details p {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0 0 5px;
+}
+
+.unique-job-item-tags {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.unique-job-experience-tag,
+.unique-job-salary-tag {
+  background-color: #e9ecef;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.unique-job-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.unique-job-applied-date {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.unique-job-status-tag {
+  font-size: 0.85rem;
+}
+
+.unique-status-indicator {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.unique-status-indicator.unique-inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.unique-status-indicator.unique-in-progress,
+.unique-status-indicator.unique-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.unique-status-indicator.unique-accepted {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.unique-status-indicator.unique-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.unique-job-details-section {
+  flex: 2;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unique-job-inactive-notice {
+  display: flex;
+  align-items: center;
+  background-color: #f8d7da;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.unique-job-inactive-notice p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #721c24;
+}
+
+.unique-warning-icon {
+  font-size: 1.2rem;
+  margin-right: 10px;
+  color: #721c24;
+}
+
+.unique-no-job-selected-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #6c757d;
+  padding: 20px;
+}
+
+.unique-no-applications-message {
+  text-align: center;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unique-no-applications-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.unique-no-applications-icon {
+  width: 50px;
+  height: 50px;
+  color: #6c757d;
+}
+
+.unique-no-applications-content h2 {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.unique-no-applications-content p {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.unique-find-jobs-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
   transition: background-color 0.3s;
 }
 
-.chat-request-button:hover {
-  background: #0056b3;
+.unique-find-jobs-button:hover {
+  background-color: #0056b3;
 }
 
-.chat-request-pending {
-  color: #07a333;
-  padding: 10px;
-  background: #cdf7d9;
+.unique-mobile-drawer-wrapper {
+  display: none;
+}
+
+.unique-mobile-drawer-content {
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.unique-drawer-handle {
+  width: 40px;
+  height: 5px;
+  background-color: #6c757d;
+  border-radius: 2px;
+  margin: 10px auto;
+}
+
+.unique-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.unique-pagination-button {
+  background-color: #e9ecef;
+  border: none;
+  padding: 8px 12px;
   border-radius: 4px;
-  border: 1px solid #ffeeba;
-  font-size: 0.95rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.unique-pagination-button:hover:not(:disabled) {
+  background-color: #007bff;
+  color: white;
+}
+
+.unique-pagination-button:disabled {
+  background-color: #f1f3f5;
+  cursor: not-allowed;
+}
+
+.unique-pagination-button.unique-active {
+  background-color: #007bff;
+  color: white;
+}
+
+.unique-loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #6c757d;
+  padding: 40px;
+}
+
+/* SweetAlert2 Custom Styles */
+.unique-swal-custom-popup {
+  border-radius: 8px;
+}
+
+.unique-swal-custom-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.unique-swal-custom-content {
+  font-size: 1rem;
+  color: #6c757d;
 }
 
 /* Responsive Design */
-
-/* Mobile Devices (<600px) */
-@media (max-width: 600px) {
-  .chat-modal-container {
-    max-width: 95%;
-    height: 90vh;
+@media (max-width: 768px) {
+  .unique-applyed-jobs-wrapper {
+    padding: 15px;
   }
 
-  .chat-modal-header {
+  .unique-applyed-jobs-layout {
+    flex-direction: column;
+  }
+
+  .unique-job-list-section {
+    padding: 15px;
+  }
+
+  .unique-job-details-section {
+    display: none;
+  }
+
+  .unique-mobile-drawer-wrapper {
+    display: block;
+  }
+
+  .unique-job-list-item {
     padding: 10px;
   }
 
-  .chat-modal-profile-pic img {
-    width: 32px;
-    height: 32px;
+  .unique-job-item-image {
+    width: 50px;
+    height: 50px;
   }
 
-  .chat-modal-username {
-    font-size: 1rem;
+  .unique-job-item-details h3 {
+    font-size: 1.1rem;
   }
 
-  .user-status {
-    font-size: 0.75rem;
-  }
-
-  .chat-messages {
-    padding: 10px;
-  }
-
-  .chat-message-bubble {
-    max-width: 80%;
-    padding: 8px 12px;
-  }
-
-  .chat-message-bubble strong {
+  .unique-job-item-details p {
     font-size: 0.85rem;
   }
 
-  .chat-message-bubble p {
-    font-size: 0.9rem;
+  .unique-job-item-tags {
+    gap: 8px;
   }
 
-  .message-timestamp {
-    font-size: 0.7rem;
-  }
-
-  .chat-input-wrapper {
-    padding: 6px;
-  }
-
-  .chat-input {
-    font-size: 0.9rem;
-    padding: 6px 8px;
-  }
-
-  .file-attach-button,
-  .chat-send-button {
-    padding: 6px;
-  }
-
-  .file-preview-image,
-  .file-preview-video {
-    max-width: 80px;
-    max-height: 80px;
-  }
-
-  .file-name {
-    max-width: 120px;
-  }
-}
-
-/* Tablets (600px - 1024px) */
-@media (min-width: 601px) and (max-width: 1024px) {
-  .chat-modal-container {
-    max-width: 80%;
-    height: 85vh;
-  }
-
-  .chat-modal-header {
-    padding: 12px;
-  }
-
-  .chat-modal-profile-pic img {
-    width: 36px;
-    height: 36px;
-  }
-
-  .chat-modal-username {
-    font-size: 1.05rem;
-  }
-
-  .user-status {
+  .unique-job-experience-tag,
+  .unique-job-salary-tag {
     font-size: 0.8rem;
+    padding: 4px 8px;
   }
 
-  .chat-message-bubble {
-    max-width: 75%;
+  .unique-job-item-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
   }
 
-  .chat-input {
-    font-size: 0.95rem;
+  .unique-pagination-button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
   }
 }
 
-/* Desktops (>1024px) */
-@media (min-width: 1025px) {
-  .chat-modal-container {
-    max-width: 600px;
+@media (max-width: 400px) {
+  .unique-applyed-jobs-heading {
+    font-size: 1.5rem;
   }
 
-  .chat-message-bubble {
-    max-width: 70%;
+  .unique-job-list-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .unique-job-item-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .unique-job-item-details h3 {
+    font-size: 1rem;
+  }
+
+  .unique-no-applications-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .unique-find-jobs-button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .unique-mobile-drawer-content {
+    padding: 15px;
   }
 }

@@ -10,7 +10,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: transparent;
+  background: transparent; /* No background effect */
   backdrop-filter: none;
   display: flex;
   justify-content: center;
@@ -146,7 +146,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: transparent;
+  background: transparent; /* No background effect */
   backdrop-filter: none;
   display: flex;
   justify-content: center;
@@ -316,7 +316,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: transparent;
+  background: transparent; /* No background effect */
   backdrop-filter: none;
   display: flex;
   justify-content: center;
@@ -789,4 +789,205 @@
   .reset-password-close {
     display: none;
   }
+}
+
+/* Modal Overlay */
+.jd-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent; /* No background effect */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+/* Modal Container */
+.jd-modal-container {
+  background: #ffffff;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  padding: 30px 25px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close Button */
+.jd-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s;
+}
+
+.jd-modal-close:hover {
+  color: #000;
+}
+
+/* Modal Title */
+.jd-modal-title {
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* Form Styles */
+.jd-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.jd-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.jd-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.jd-form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.jd-form-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #334155;
+}
+
+.jd-form-input,
+.jd-form-textarea {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border 0.3s;
+}
+
+.jd-form-input:focus,
+.jd-form-textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.jd-form-textarea {
+  resize: vertical;
+}
+
+/* Validation Error */
+.jd-error {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 4px;
+}
+
+/* Buttons */
+.jd-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.jd-submit-btn,
+.jd-cancel-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.jd-submit-btn {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.jd-submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.jd-cancel-btn {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.jd-cancel-btn:hover {
+  background-color: #cbd5e1;
+}
+
+/* Error border */
+.error {
+  border-color: #dc2626;
+}
+
+/* Responsive Fixes */
+@media (max-width: 640px) {
+  .jd-form-row {
+    flex-direction: column;
+  }
+
+  .jd-modal-container {
+    padding: 20px;
+  }
+
+  .jd-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .jd-submit-btn,
+  .jd-cancel-btn {
+    width: 100%;
+  }
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.jd-modal-container {
+  animation: scaleFadeIn 0.3s ease-in-out;
 }

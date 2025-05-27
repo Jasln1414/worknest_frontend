@@ -157,8 +157,7 @@ function JobDetailModal({ setModal, jobData, onUpdate }) {
                         <option value="">Select</option>
                         <option value="Full Time">Full Time</option>
                         <option value="Part Time">Part Time</option>
-                        <option value="Contract">Contract</option>
-                        <option value="Internship">Internship</option>
+                        
                       </Field>
                       <ErrorMessage name="jobtype" component="div" className="jd-error" />
                     </div>

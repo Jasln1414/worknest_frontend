@@ -1305,3 +1305,69 @@
 
 
 
+/* Jobdetail.css */
+.status-step.interview-scheduled .step-circle {
+  background-color: #3498db; /* Blue for Interview Scheduled */
+  color: white;
+}
+
+.status-step.interview-scheduled .step-label {
+  color: #3498db;
+}
+
+.status-step.interview-cancelled .step-circle {
+  background-color: #e74c3c; /* Red for Interview Cancelled */
+  color: white;
+}
+
+.status-step.interview-cancelled .step-label {
+  color: #e74c3c;
+}
+
+.status-step.shortlisted .step-circle {
+  background-color: #f1c40f; /* Yellow for ShortListed */
+  color: white;
+}
+
+.status-step.shortlisted .step-label {
+  color: #f1c40f;
+}
+
+.status-step.pending .step-circle {
+  background-color: #e67e22; /* Orange for Pending */
+  color: white;
+}
+
+.status-step.pending .step-label {
+  color: #e67e22;
+}
+
+.status-step.accepted .step-circle {
+  background-color: #2ecc71; /* Green for Accepted */
+  color: white;
+}
+
+.status-step.accepted .step-label {
+  color: #2ecc71;
+}
+
+.status-step.rejected .step-circle {
+  background-color: #e74c3c; /* Red for Rejected */
+  color: white;
+}
+
+.status-step.rejected .step-label {
+  color: #e74c3c;
+}
+
+.status-step.completed .step-circle {
+  background-color: #7f8c8d; /* Gray for completed steps */
+  color: white;
+}
+
+.status-step.completed .step-label {
+  color: #7f8c8d;
+}
+
+
+
