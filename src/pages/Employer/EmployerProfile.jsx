@@ -120,6 +120,7 @@ function EmpProfileCreation() {
     setIsLoading(true);
     const formData = new FormData();
     formData.append('phone', values.phone || '');
+    formData.append('is_verified','true');
     formData.append('website_link', values.website_link || '');
     formData.append('headquarters', values.headquarters || '');
     formData.append('industry', values.industry || '');
@@ -135,7 +136,7 @@ function EmpProfileCreation() {
       console.log('Profile Creation - CSRF Token:', csrfToken);
       console.log('Sending Profile Creation:', Object.fromEntries(formData));
 
-      const response = await axios.put(`${baseURL}/api/account/employer/profile/update/`, formData, {
+      const response = await axios.post(`${baseURL}/api/account/user/emp_profile_creation/`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json',

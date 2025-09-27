@@ -1,0 +1,378 @@
+/* style/Candidateview.css */
+
+/* Global Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.candidate-view-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  color:#f9fafb;
+}
+
+/* Action Buttons Section */
+.candidate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.action-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+}
+
+.pending-button {
+  background-color: #e0e7ff;
+  color: #4b5563;
+}
+
+.pending-button.active {
+  background-color: #6366f1;
+  color: #ffffff;
+}
+
+.accept-button {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.accept-button.active {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.reject-button {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.reject-button.active {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.schedule-button {
+  background-color: #bfdbfe;
+  color: #065f46;
+}
+
+.schedule-button:hover {
+  background-color: #3b82f6;
+  color: #065f46;
+}
+
+.cancel-button {
+  background-color: #e5e7eb;
+  color: #065f46;
+}
+
+.cancel-button:hover {
+  background-color: #9ca3af;
+  color: #065f46;
+}
+
+.chat-button {
+  background-color: #fef08a;
+  color: #713f12;
+}
+
+.chat-button:hover {
+  background-color: #eab308;
+  color: #ffffff;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.interview-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-application-viewed {
+  background-color: #e0e7ff;
+  color: #4b5563;
+}
+
+.status-accepted {
+  background-color: #10b981;
+  color: #f9fafb;
+}
+
+.status-rejected {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.status-interview-cancelled {
+  background-color: #e5e7eb;
+   color: #4b5563;
+}
+
+.interview-cancelled-info,
+.interview-scheduled-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+   color: #ffffff;
+
+}
+
+.interview-date,
+.interview-attended {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* Candidate Info Section */
+.candidate-info-section,
+.education-info-section,
+.links-section,
+.answers-section {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 15px;
+}
+
+.candidate-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.candidate-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.info-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 5px;
+}
+
+.info-value {
+  font-size: 16px;
+  color: #1f2937;
+}
+
+.info-value a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.info-value a:hover {
+  text-decoration: underline;
+}
+
+.status-application-viewed {
+  color: #6366f1;
+  font-weight: 500;
+}
+
+/* Answers Section */
+.qa-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.qa-item {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 15px;
+}
+
+.question h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.answer pre {
+  font-size: 14px;
+  color: #4b5563;
+  white-space: pre-wrap;
+  background-color: #f9fafb;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.no-answers {
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* No Selection Message */
+.no-selection {
+  text-align: center;
+  font-size: 16px;
+  color: #6b7280;
+  padding: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .candidate-view-container {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .candidate-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .action-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .candidate-profile {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .candidate-name {
+    font-size: 20px;
+  }
+
+  .info-details {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .candidate-view-container {
+    padding: 10px;
+  }
+
+  .action-button {
+    font-size: 14px;
+  }
+
+  .info-label {
+    font-size: 12px;
+  }
+
+  .info-value {
+    font-size: 14px;
+  }
+
+  .question h3 {
+    font-size: 14px;
+  }
+
+  .answer pre {
+    font-size: 12px;
+  }
+}
+.job-app-candidate-status span {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Specific status classes */
+.job-app-status-application-send {
+  background-color: #6c757d; /* Gray */
+}
+
+.job-app-status-shortlisted {
+  background-color: #007bff; /* Blue */
+}
+
+.job-app-status-accepted {
+  background-color: #28a745; /* Green */
+}
+
+.job-app-status-application-viewed {
+  background-color: #17a2b8; /* Teal */
+}
+
+.job-app-status-resume-viewed {
+  background-color: #6610f2; /* Indigo */
+}
+
+.job-app-status-interview-scheduled {
+  background-color: #fd7e14; /* Orange */
+}
+
+.job-app-status-rejected {
+  background-color: #dc3545; /* Red */
+}
+
+.job-app-status-cancelled {
+  background-color: #842029; /* Dark Red */
+}
+
+

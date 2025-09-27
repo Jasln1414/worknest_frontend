@@ -17,7 +17,7 @@ function EmpHome() {
   const [usageLoading, setUsageLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [jobsPerPage] = useState(9);
+  const [jobsPerPage] = useState(12);
 
   const token = localStorage.getItem('access');
   const dispatch = useDispatch();

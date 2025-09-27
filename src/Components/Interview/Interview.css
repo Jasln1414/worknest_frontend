@@ -1959,3 +1959,220 @@
     margin-bottom: 15px;
   }
 }
+
+
+
+
+
+
+
+
+
+.status-cell {
+  text-align: center;
+}
+
+.status-cell p {
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.status-cell.accepted {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+
+.status-cell.selected {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+
+.status-cell.rejected {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+
+.status-cell.canceled {
+  background-color: #6c757d; /* Gray */
+  color: white;
+}
+
+.status-cell.you-missed {
+  background-color: #ffc107; /* Yellow */
+  color: black;
+}
+
+.status-cell.completed {
+  background-color: #17a2b8; /* Cyan */
+  color: white;
+}
+
+.status-cell.upcoming {
+  background-color: transparent; /* No background for buttons */
+}
+
+.start-button {
+  padding: 4px 12px;
+  background-color: #007bff; /* Blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.start-button:hover {
+  background-color: #0056b3;
+}
+
+.interview-attended {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #28a745; /* Green, same as Accepted */
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+.accept-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.reject-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+
+
+.schedules-container {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.personally-main-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #ffeeee;
+  border-radius: 4px;
+}
+
+.loading,
+.no-interviews {
+  text-align: center;
+  margin: 40px 0;
+  color: #666;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header th {
+  background-color: #f4f4f4;
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.table-row td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.status-cell.upcoming {
+  color: #2196F3;
+}
+
+.status-cell.completed {
+  color: #4CAF50;
+}
+
+.status-cell.you-missed {
+  color: #f44336;
+}
+
+.status-cell.accepted {
+  color: #4CAF50;
+}
+
+.status-cell.rejected {
+  color: #f44336;
+}
+
+.start-button {
+  padding: 6px 12px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.accept-button {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.reject-button {
+  padding: 6px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.drawer-toggle-button {
+  padding: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.drawer-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.drawer-menu {
+  width: 250px;
+}

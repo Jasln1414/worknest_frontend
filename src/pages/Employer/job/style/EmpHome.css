@@ -27,6 +27,7 @@
 @media (min-width: 1024px) {
   .eh-container {
     flex-direction: row;
+    margin-left:30vh;
   }
   
   .eh-main-content {
@@ -511,4 +512,7 @@
     margin-right: 0;
     width: 100%;
   }
+}
+
+@media (min-width: 1200px) {
 }

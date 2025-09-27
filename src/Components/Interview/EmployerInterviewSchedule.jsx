@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import SideBar from '../../pages/Employer/SideBar';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
-import { extractDate, extractTime, isInterviewStartable } from './DateTime';
-import './Interview.css';
+import { extractDate, extractTime, isInterviewTimeReached } from './DateTime';
+import { parseISO, addMinutes, isAfter } from 'date-fns';
+import './Style/Candschedule.css';
 
 function Schedules() {
   const baseURL = 'http://127.0.0.1:8000';
@@ -17,8 +18,6 @@ function Schedules() {
   const [load, setLoad] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
@@ -36,244 +35,246 @@ function Schedules() {
     };
   }, []);
 
-  // Enhanced data processing function
-  const processInterviewData = (item) => {
-    console.log('Processing individual item:', JSON.stringify(item, null, 2));
+  const isWithinStartWindow = (dateString, windowMinutes = 5) => {
+    if (!dateString) return false;
+    const interviewTime = parseISO(dateString);
+    const now = new Date();
+    const endWindow = addMinutes(interviewTime, windowMinutes);
+    return isAfter(now, interviewTime) && isAfter(endWindow, now);
+  };
+
+  const getInterviewStatus = (date, status, attended) => {
+    // If status is already set (Accepted, Rejected, etc.), return it
+    if (status && status !== 'Upcoming' && status !== 'In Progress') {
+      return status;
+    }
     
-    const jobTitle = 
-      item.job_title ||
-      item.job?.title ||
-      item.job?.job_title ||
-      item.job_info?.title ||
-      item.job_info?.job_title ||
-      item.position ||
-      item.role ||
-      'Position Not Specified';
+    if (!date) return 'Upcoming';
+    
+    const interviewDate = parseISO(date);
+    const now = new Date();
+    const startWindowEnd = addMinutes(interviewDate, 5);
 
-    const candidateName = 
-      item.candidate_name ||
-      item.candidate?.name ||
-      item.candidate?.full_name ||
-      item.candidate?.first_name + ' ' + item.candidate?.last_name ||
-      item.applicant_name ||
-      item.applicant?.name ||
-      item.applicant?.full_name ||
-      item.user?.name ||
-      item.user?.full_name ||
-      'Candidate Name Not Available';
+    if (attended && status === 'In Progress') {
+      return 'In Progress';
+    }
 
-    const interviewDate = 
-      item.interview_date ||
-      item.date ||
-      item.scheduled_date ||
-      item.datetime ||
-      item.created_at ||
-      null;
+    if (attended) {
+      return 'Completed';
+    }
 
-    return {
-      id: item.id || item.interview_id || Math.random().toString(36),
-      job_title: jobTitle,
-      candidate_name: candidateName,
-      applyDate: item.created_at || item.applied_date || null,
-      date: interviewDate,
-      status: item.status || item.interview_status || 'Pending',
-      attended: item.attended || item.has_attended || false,
-      original: item,
-    };
+    if (isAfter(now, startWindowEnd)) {
+      return 'You missed';
+    }
+
+    return 'Upcoming';
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        console.log('Fetching interview schedules...');
         const response = await axios.get(`${baseURL}/api/interview/schedules/`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
           },
         });
-        
-        console.log('Raw API Response:', JSON.stringify(response.data, null, 2));
-        
+
         if (response.status === 200) {
           let interviewData = response.data;
-          
-          if (interviewData.results) {
-            interviewData = interviewData.results;
-          } else if (interviewData.data) {
-            interviewData = interviewData.data;
-          }
-          
           if (!Array.isArray(interviewData)) {
             interviewData = [interviewData];
           }
-          
-          if (interviewData.length === 0) {
-            setError('No interview schedules found.');
-            setInterview([]);
-          } else {
-            console.log('Processing', interviewData.length, 'interviews');
-            const processedData = interviewData.map(processInterviewData);
-            console.log('Processed data:', JSON.stringify(processedData, null, 2));
-            setInterview(processedData);
-            setError(null);
-          }
+
+          const processedData = interviewData.map((item) => ({
+            id: item.id,
+            job_title: item.job_title || item.job_info?.title || 'Unknown Job',
+            candidate_name: item.candidate_name || 'Unknown Candidate',
+            applyDate: item.apply_date || null,
+            date: item.date || null,
+            status: item.status || 'Upcoming',
+            attended: item.attended || false,
+            original: item,
+          }));
+
+          setInterview(processedData);
+          setError(null);
         }
       } catch (error) {
-        console.error('Error fetching interviews:', error.response?.data || error.message);
-        
-        if (error.response?.status === 401) {
-          setError('Authentication failed. Please log in again.');
-        } else if (error.response?.status === 403) {
-          setError('Access denied. You may not have permission to view interview schedules.');
-        } else if (error.response?.status === 404) {
-          setError('Interview schedules endpoint not found.');
-        } else {
-          setError('Failed to load interview schedules. Please try again later.');
-        }
-        
+        console.error('Error fetching interviews:', error);
+        setError('Failed to load interview schedules.');
         try {
           const localInterviews = JSON.parse(localStorage.getItem('scheduled_interviews') || '[]');
-          console.log('Local Interviews:', JSON.stringify(localInterviews, null, 2));
           if (localInterviews.length > 0) {
-            const processedLocalData = localInterviews.map(processInterviewData);
-            setInterview(processedLocalData);
-            setError(prev => prev + ' (Using cached data)');
-          } else {
-            setInterview([]);
+            setInterview(localInterviews);
           }
         } catch (localError) {
           console.error('Error retrieving local interviews:', localError);
-          setInterview([]);
         }
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     fetchData();
-  }, [load, token]);
-
-  const markInterviewAttended = async (interviewId) => {
-    try {
-      const response = await axios.patch(
-        `${baseURL}/api/interview/status/${interviewId}/`,
-        { action: 'Attended', attended: true },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (response.status === 200) {
-        setInterview(prev =>
-          prev.map(item =>
-            item.id === interviewId ? { ...item, status: 'Completed', attended: true } : item
-          )
-        );
-        setLoad(!load);
-      }
-    } catch (error) {
-      console.error('Error marking interview as attended:', error);
-      alert('Failed to mark interview as attended. Please try again.');
-    }
-  };
-
-  const getInterviewStatus = (interviewDate, currentStatus, attended) => {
-    if (!interviewDate) return currentStatus || 'Not scheduled';
-    
-    const now = new Date();
-    const interviewTime = new Date(interviewDate);
-    const gracePeriodEnd = new Date(interviewTime.getTime() + 15 * 60000);
-    
-    if (['Selected', 'Rejected', 'Canceled', 'Completed'].includes(currentStatus)) {
-      return currentStatus;
-    }
-    
-    if (now < interviewTime) {
-      return 'Upcoming';
-    } else if (now >= interviewTime && now <= gracePeriodEnd) {
-      return 'Ongoing';
-    } else {
-      return attended ? 'Completed' : 'You missed';
-    }
-  };
-
-  const updateInterviewStatus = async (interviewId, newStatus) => {
-    if (!['You missed', 'Selected', 'Completed'].includes(newStatus)) return;
-    
-    try {
-      await axios.patch(
-        `${baseURL}/api/interview/schedules/${interviewId}/`,
-        { status: newStatus },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      console.log(`Interview ${interviewId} status updated to ${newStatus}`);
-      setLoad(!load);
-    } catch (error) {
-      console.error(`Error updating interview ${interviewId} status:`, error.response?.data || error.message);
-    }
-  };
+  }, [load]);
 
   useEffect(() => {
     if (interview.length === 0) return;
-    
+
     const interval = setInterval(() => {
-      const updatedInterviews = interview.map(item => {
-        const currentStatus = getInterviewStatus(item.date, item.status, item.attended);
-        if (currentStatus === 'You missed' && item.status !== 'You missed' && !item.attended) {
-          updateInterviewStatus(item.id, 'You missed');
-        } else if (currentStatus === 'Completed' && item.status !== 'Completed' && item.attended) {
-          updateInterviewStatus(item.id, 'Completed');
-        }
-        return { ...item, status: currentStatus };
-      });
-      setInterview(updatedInterviews);
+      const now = new Date();
+      const interviewsToUpdate = interview.filter(
+        (item) =>
+          item.status === 'Upcoming' &&
+          !item.attended &&
+          item.date &&
+          isAfter(now, addMinutes(parseISO(item.date), 5))
+      );
+
+      if (interviewsToUpdate.length > 0) {
+        interviewsToUpdate.forEach(async (item) => {
+          try {
+            await axios.post(
+              `${baseURL}/api/interview/status/${item.id}/`,
+              { action: 'Missed' },
+              {
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+          } catch (error) {
+            console.error(`Error updating interview ${item.id} to Missed:`, error);
+          }
+        });
+        setLoad((prev) => !prev);
+      }
     }, 60000);
-    
+
     return () => clearInterval(interval);
   }, [interview, token]);
 
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = interview.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(interview.length / itemsPerPage);
+  const handleStartInterview = async (interviewId) => {
+    try {
+      // Set status to "In Progress" when starting
+      setInterview((prevInterviews) =>
+        prevInterviews.map((item) =>
+          item.id === interviewId ? { ...item, attended: true, status: 'In Progress' } : item
+        )
+      );
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+      const response = await axios.post(
+        `${baseURL}/api/interviewCall/`,
+        { interviewId },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Interview Started',
+          text: 'The interview has been started.',
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      console.error(`Error starting interview ${interviewId}:`, error);
+      setInterview((prevInterviews) =>
+        prevInterviews.map((item) =>
+          item.id === interviewId ? { ...item, attended: false, status: 'Upcoming' } : item
+        )
+      );
+      Swal.fire({
+        icon: 'error',
+        title: 'Action Failed',
+        text: error.response?.data?.message || 'Failed to start interview.',
+        timer: 2000,
+      });
     }
   };
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+  const handleCompleteInterview = async (interviewId) => {
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/interview/status/${interviewId}/`,
+        { action: 'Complete' },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log("sssssssssssssssssssssss",response.data)
+
+      if (response.status === 200) {
+        setLoad(!load);
+        Swal.fire({
+          icon: 'success',
+          title: 'Interview Completed',
+          text: 'The interview has been marked as completed.',
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      console.error(`Error completing interview ${interviewId}:`, error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Action Failed',
+        text: error.response?.data?.message || 'Failed to complete interview.',
+        timer: 2000,
+      });
     }
   };
 
-  const getVisiblePages = () => {
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+  const handleAcceptReject = async (interviewId, action) => {
+    try {
+      Swal.fire({
+        title: `${action === 'Accepted' ? 'Accepting' : 'Rejecting'}...`,
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      const response = await axios.post(
+        `${baseURL}/api/interview/status/${interviewId}/`,
+        { action },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setLoad(!load);
+        Swal.fire({
+          icon: 'success',
+          title: 'Status Updated',
+          text: `Candidate has been ${action.toLowerCase()} for this position.`,
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      console.error(`Error ${action.toLowerCase()} interview ${interviewId}:`, error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Action Failed',
+        text: error.response?.data?.message || `Failed to ${action.toLowerCase()} candidate.`,
+        timer: 2000,
+      });
     }
-
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   };
 
   return (
@@ -283,7 +284,7 @@ function Schedules() {
           <>
             <button onClick={toggleDrawer} className="drawer-toggle-button">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="drawer-icon">
-                <path d="M12 22C17.5 22 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"></path>
+                <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"></path>
                 <path d="M8 12H16"></path>
                 <path d="M12 16V8"></path>
               </svg>
@@ -301,125 +302,87 @@ function Schedules() {
 
       <div className="main-content">
         <div className="content-wrapper">
-          <h1 className="main-heading">Interview Schedules</h1>
+          <h1 className="personally-main-heading">Interview Schedules</h1>
 
-          {error && (
-            <div
-              className="error-message"
-              style={{
-                color: '#d32f2f',
-                margin: '10px 0',
-                padding: '12px',
-                backgroundColor: '#ffebee',
-                borderRadius: '6px',
-                border: '1px solid #ffcdd2',
-              }}
-            >
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
           {isLoading ? (
-            <div
-              className="loading"
-              style={{
-                textAlign: 'center',
-                margin: '40px 0',
-                color: '#666',
-                fontSize: '16px',
-              }}
-            >
-              <div>Loading interview schedules...</div>
-              <div style={{ marginTop: '10px', fontSize: '14px' }}>
-                This may take a moment...
-              </div>
-            </div>
+            <div className="loading">Loading interview schedules...</div>
           ) : interview.length === 0 ? (
-            <div
-              className="no-interviews"
-              style={{
-                textAlign: 'center',
-                margin: '40px 0',
-                color: '#666',
-                fontSize: '16px',
-              }}
-            >
-              <div>No interviews scheduled yet.</div>
-              <div style={{ marginTop: '10px', fontSize: '14px' }}>
-                Interview schedules will appear here once they are created.
-              </div>
-            </div>
+            <div className="no-interviews">No interviews scheduled yet.</div>
           ) : (
-            <>
-              <div className="table-container">
-                <table className="schedule-table">
-                  <thead>
-                    <tr className="table-header">
-                      <th>Job Title</th>
-                      <th>Candidate</th>
-                      <th>Interview Date</th>
-                      <th>Interview Time</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentItems.map((item, index) => {
-                      const currentStatus = getInterviewStatus(item.date, item.status, item.attended);
-                      return (
-                        <tr key={item.id || `interview-${index}`} className="table-row">
-                          <td title={item.job_title}>{item.job_title}</td>
-                          <td title={item.candidate_name}>{item.candidate_name}</td>
-                          <td>{item.date ? extractDate(item.date) : 'Not scheduled'}</td>
-                          <td>{item.date ? extractTime(item.date) : 'Not scheduled'}</td>
-                          <td className={`status-cell ${currentStatus.toLowerCase().replace(' ', '-')}`}>
-                            {currentStatus === 'Ongoing' && isInterviewStartable(item.date) ? (
-                              <Link to={`/interview/${item.id}`} onClick={() => markInterviewAttended(item.id)}>
-                                <button className="start-button">Start</button>
-                              </Link>
-                            ) : (
-                              <span className={`status-badge ${currentStatus.toLowerCase().replace(' ', '-')}`}>
-                                {currentStatus}
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+            <div className="table-container">
+              <table className="schedule-table">
+                <thead>
+                  <tr className="table-header">
+                    <th>Job Title</th>
+                    <th>Candidate</th>
+                    <th>Interview Date</th>
+                    <th>Interview Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {interview.map((item, index) => {
+                    const status = getInterviewStatus(item.date, item.status, item.attended);
+                    const showAcceptReject = status === 'Completed';
+                    const isStartable = (status === 'Upcoming' && isWithinStartWindow(item.date)) || 
+                                       status === 'In Progress';
 
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <Button
-                    variant="contained"
-                    disabled={currentPage === 1}
-                    onClick={handlePrevPage}
-                    className="pagination-button"
-                  >
-                    Previous
-                  </Button>
-                  {getVisiblePages().map(page => (
-                    <Button
-                      key={page}
-                      variant={page === currentPage ? 'contained' : 'outlined'}
-                      onClick={() => handlePageChange(page)}
-                      className="pagination-button"
-                    >
-                      {page}
-                    </Button>
-                  ))}
-                  <Button
-                    variant="contained"
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                    className="pagination-button"
-                  >
-                    Next
-                  </Button>
-                </div>
-              )}
-            </>
+                    return (
+                      <tr key={item.id || `interview-${index}`} className="table-row">
+                        <td>{item.job_title || 'Unknown Job'}</td>
+                        <td>{item.candidate_name || 'Unknown Candidate'}</td>
+                        <td>{item.date ? extractDate(item.date) : 'Not available'}</td>
+                        <td>{item.date ? extractTime(item.date) : 'Not available'}</td>
+                        <td className={`status-cell ${status.toLowerCase().replace(' ', '-')}`}>
+                          {isStartable ? (
+                            <Link to={`/interview/${item.id}`}>
+                              <button
+                                className="start-button"
+                                onClick={() => handleStartInterview(item.id)}
+                              >
+                                {status === 'In Progress' ? 'Rejoin' : 'Start'}
+                              </button>
+                            </Link>
+                          ) : (
+                            <p>{status}</p>
+                          )}
+                        </td>
+                        <td>
+                          {showAcceptReject ? (
+                            <>
+                              <button
+                                className="accept-button"
+                                onClick={() => handleAcceptReject(item.id, 'Accepted')}
+                              >
+                                Accept
+                              </button>
+                              <button
+                                className="reject-button"
+                                onClick={() => handleAcceptReject(item.id, 'Rejected')}
+                              >
+                                Reject
+                              </button>
+                            </>
+                          ) : status === 'In Progress' ? (
+                            <button
+                              className="complete-button"
+                              onClick={() => handleCompleteInterview(item.id)}
+                            >
+                              Complete
+                            </button>
+                          ) : (
+                            <p>No actions available</p>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

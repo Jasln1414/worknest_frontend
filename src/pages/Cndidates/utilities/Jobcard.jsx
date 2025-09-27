@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+import '../../../assets/Stylesheet/JobCard.css';
 
 
 function JobCard({
   id,
   title,
-  img, // This should be profile_pic from the API
+  img, 
   posted,
   posteDate,
   salary,
@@ -16,7 +17,7 @@ function JobCard({
   applybefore,
   jobtype,
   isApplied,
-  empname,
+  emp_name,
   baseURL = 'http://127.0.0.1:8000',
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -65,6 +66,7 @@ function JobCard({
   const isValidDate = postDateStr && !isNaN(new Date(postDateStr).getTime());
   const postDate = isValidDate ? new Date(postDateStr) : null;
   const postedText = isValidDate ? formatDistanceToNow(postDate, { addSuffix: true }) : 'N/A';
+  
 
   const formattedSalary = salary && salary.includes('-')
     ? `${salary.replace('-', ' - ')} LPA`
@@ -100,6 +102,11 @@ function JobCard({
                 {title}
               </h2>
             </Link>
+
+              <div className="job-card-company">
+              <span>{emp_name}</span> 
+            </div>
+
             <div className="job-card-location">
               <span>{location || 'Location not specified'}</span>
             </div>

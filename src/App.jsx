@@ -16,6 +16,8 @@ import ForgotPasswordModal from "./pages/comon/ForgotPassword";
 import InterviewRoom from "./Components/Interview/InterviewRoom";
 import "react-toastify/dist/ReactToastify.css"; // Base toast styles
 import './assets/Style/Toast.css';
+// import AppliedCandidatevew from "./pages/Employer/job/AppliedCandidatevew";
+
 
 // Custom Toast Container Component
 const CustomToastContainer = () => {
@@ -170,6 +172,7 @@ const router = createBrowserRouter([
       { path: "/candidate/*", element: <CandidateWrapper /> },
       { path: "/reset_password/:id", element: <ResetPasswordModal /> },
       { path: "/interview/:id", element: <InterviewRoom /> },
+      // { path: "/appstatus", element: <AppliedCandidatevew /> },
       { path: "*", element: <div>Page Not Found</div> }
     ]
   }

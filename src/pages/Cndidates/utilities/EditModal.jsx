@@ -6,7 +6,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import ProfilepicModal from '../../Employer/ProfilepicModal';
 import { ProfileDataSchema } from '../../../validation/CandidateProfileValidation';
-import "../../../Styles/USER/Home.css";
+import "../../../assets/Stylesheet/candiprofile.css";
 
 function EditProfileModal({ isOpen, onClose, profileData, refreshProfile }) {
   const baseURL = "http://127.0.0.1:8000/";

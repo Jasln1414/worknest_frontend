@@ -242,6 +242,9 @@ function SideBar({ hideHeader = false }) {
             <span>Schedules</span>
           </Link>
         </li>
+
+
+       
       </ul>
 
       <button onClick={handleLogout} className="signout">

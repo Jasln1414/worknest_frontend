@@ -1,53 +1,88 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import '../../../Styles/Job/StatusJob.css';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setCurrentCandidate } from './../../../Redux/Status/StatusSlice';
+import '../job/style/AppliedjobCandidate.css';
 
-function ApplyCard({ selectedJob, setChange, setCurrent, setStatus }) {
-    const baseURL = 'http://127.0.0.1:8000';
-    const [applications, setApplications] = useState([]);
+import Pagination from './paginations';
 
-   
+function ApplyCard({ selectedJob, setChange }) {
+  const baseURL = 'http://127.0.0.1:8000';
+  const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
-    useEffect(() => {
-  if (selectedJob) {
-    console.log('ApplyCard selectedJob:', selectedJob);
-    console.log('ApplyCard applications:', selectedJob.applications);
-    setApplications(selectedJob.applications);
+  const handleClick = (data) => {
+    dispatch(setCurrentCandidate(data));
+    setChange(false);
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentApplications = selectedJob?.applications?.slice(indexOfFirstItem, indexOfLastItem) || [];
+  const totalPages = Math.ceil(selectedJob?.applications?.length / itemsPerPage) || 1;
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (!selectedJob || !selectedJob.applications || selectedJob.applications.length === 0) {
+    return <div className="applycard-no-applications">No applications available for this job</div>;
   }
-}, [selectedJob]);
 
-const handleClick = (data) => {
-  console.log('ApplyCard handleClick - Setting current:', data);
-  setChange(false);
-  setCurrent(data);
-};
-
-  
-
-    return (
-        <div className="apply-card-container">
-            {applications.map((data, index) => (
-                <div key={index} className="application-card">
-                    <div className="application-card-header">
-                        <div className="candidate-info">
-                            <div className="profile-pic-container-cand">
-                                <img src={baseURL + data.candidate.profile_pic} alt="" className="profile-pic" />
-                            </div>
-                            <div className="candidate-details">
-                                <p className="candidate-name-candi">{data.candidate.user_name}</p>
-                                <p className="candidate-education">{data.candidate.education[0].education}</p>
-                            </div>
-                        </div>
-                        <div className="view-button-container">
-                            <button className="view-button" onClick={() => handleClick(data)}>
-                                View
-                            </button>
-                        </div>
-                    </div>
+  return (
+    <div className="applycard-container">
+      <div className="applycard-count">
+        Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, selectedJob.applications.length)} of {selectedJob.applications.length} candidates
+      </div>
+      
+      <div className="applycard-grid">
+        {currentApplications.map((data, index) => (
+          <div key={index} className="applycard-card">
+            <div className="applycard-card-header">
+              <div className="applycard-candidate-info">
+                <div className="applycard-profile-pic-container">
+                  <img
+                    src={baseURL + data.candidate.profile_pic}
+                    alt="Candidate profile"
+                    className="applycard-profile-pic"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/default-profile.png';
+                    }}
+                  />
                 </div>
-            ))}
-        </div>
-    );
+                <div className="applycard-candidate-details">
+                  <p className="applycard-candidate-name">{data.candidate.user_name}</p>
+                  <p className="applycard-candidate-education">
+                    {data.candidate.education[0]?.education || 'N/A'}
+                  </p>
+                </div>
+              </div>
+              <div className="applycard-view-button-container">
+                <button 
+                  className="applycard-view-button" 
+                  onClick={() => handleClick(data)}
+                  aria-label={`View ${data.candidate.user_name}'s profile`}
+                >
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
+    </div>
+  );
 }
 
 export default ApplyCard;

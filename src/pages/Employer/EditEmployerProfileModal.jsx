@@ -4,7 +4,10 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import ProfilepicModal from './ProfilepicModal';
+import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice';
+
 import '../../Styles/EmpHome.css';
+import { useDispatch } from 'react-redux';
 
 function EditEmployerProfileModal({ profileData, onClose, onSave }) {
   const baseURL = 'http://127.0.0.1:8000';
@@ -15,7 +18,9 @@ function EditEmployerProfileModal({ profileData, onClose, onSave }) {
   const [croppedImageUrl, setCroppedImageUrl] = useState('');
   const [imgError, setImgError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ProfileData,setProfileData]=useState({})
   const [csrfToken, setCsrfToken] = useState('');
+  const dispatch=useDispatch()
 
   useEffect(() => {
     const getCsrfToken = async () => {
@@ -96,84 +101,101 @@ function EditEmployerProfileModal({ profileData, onClose, onSave }) {
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append('phone', values.phone || '');
-    formData.append('website_link', values.website_link || '');
-    formData.append('headquarters', values.headquarters || '');
-    formData.append('industry', values.industry || '');
-    formData.append('address', values.address || '');
-    formData.append('about', values.about || '');
-    formData.append('completed', 'true');
-    if (profile_pic instanceof File) {
-      formData.append('profile_pic', profile_pic);
-    }
+  setIsSubmitting(true);
 
-    try {
-      console.log('EditProfile - Token:', token ? 'Present' : 'Missing');
-      console.log('EditProfile - CSRF Token:', csrfToken);
-      console.log('Sending Profile Update:', Object.fromEntries(formData));
+  const formData = new FormData();
+  formData.append('phone', values.phone || '');
+  formData.append('website_link', values.website_link || '');
+  formData.append('headquarters', values.headquarters || '');
+  formData.append('industry', values.industry || '');
+  formData.append('address', values.address || '');
+  formData.append('about', values.about || '');
+  formData.append('completed', 'true');
 
-      const response = await axios.put(
-        `${baseURL}/api/account/employer/profile/update/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-            'Content-Type': 'multipart/form-data',
-            'X-CSRFToken': csrfToken || '',
-          },
-          withCredentials: true,
-        }
-      );
+  if (profile_pic instanceof File) {
+    formData.append('profile_pic', profile_pic);
+  }
 
-      console.log('Profile Update Response:', JSON.stringify(response.data, null, 2));
-      if (response.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Profile Updated',
-          text: 'Your profile has been successfully updated.',
-        });
-        localStorage.setItem('profileCompleted', 'true');
-        onSave({
-          ...values,
-          profile_pic: response.data.data?.profile_pic || croppedImageUrl,
-          user_full_name: profileData.user_full_name,
-          user_email: profileData.user_email,
-          completed: true,
-        });
-        onClose();
+  try {
+    console.log('EditProfile - Token:', token ? 'Present' : 'Missing');
+    console.log('EditProfile - CSRF Token:', csrfToken);
+    console.log('Sending Profile Update:', Object.fromEntries(formData));
+
+    const response = await axios.put(
+      `${baseURL}/api/account/employer/profile/update/`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          'X-CSRFToken': csrfToken || '',
+        },
+        withCredentials: true,
       }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      let errorMessage = 'Failed to update profile.';
-      if (error.response) {
-        console.error('Backend error:', error.response.data, 'Status:', error.response.status);
-        errorMessage = error.response.data.message || errorMessage;
-        if (error.response.status === 401) {
-          errorMessage = 'Unauthorized. Please log in again.';
-          localStorage.removeItem('access');
-          localStorage.removeItem('refresh');
-          window.location.href = '/login';
-        } else if (error.response.status === 403) {
-          errorMessage = 'Permission denied. Invalid CSRF token or session.';
-        }
-      } else {
-        errorMessage = error.message.includes('Network Error')
-          ? 'Network error. Please check your connection.'
-          : error.message;
-      }
+    );
+
+    console.log('Profile Update Response:', JSON.stringify(response.data, null, 2));
+
+    if (response.status === 200) {
       Swal.fire({
-        icon: 'error',
-        title: 'Profile Update Failed',
-        text: errorMessage,
+        icon: 'success',
+        title: 'Profile Updated',
+        text: 'Your profile has been successfully updated.',
       });
-    } finally {
-      setIsSubmitting(false);
-      setSubmitting(false);
+
+      localStorage.setItem('profileCompleted', 'true');
+
+      // Redux + local state update
+      const updatedData = {
+        ...values,
+        profile_pic: response.data.data?.profile_pic || croppedImageUrl,
+        user_full_name: profileData.user_full_name,
+        user_email: profileData.user_email,
+        completed: true,
+      };
+
+      setProfileData(updatedData); // update local state
+      dispatch(set_user_basic_details({
+        profile_pic: updatedData.profile_pic,
+        name: updatedData.user_full_name,
+        email: updatedData.user_email,
+      }));
+
+      // onSave(updatedData); // trigger parent update
+      onClose(); // close the modal/drawer
     }
-  };
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    let errorMessage = 'Failed to update profile.';
+    if (error.response) {
+      console.error('Backend error:', error.response.data, 'Status:', error.response.status);
+      errorMessage = error.response.data.message || errorMessage;
+
+      if (error.response.status === 401) {
+        errorMessage = 'Unauthorized. Please log in again.';
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        window.location.href = '/login';
+      } else if (error.response.status === 403) {
+        errorMessage = 'Permission denied. Invalid CSRF token or session.';
+      }
+    } else {
+      errorMessage = error.message.includes('Network Error')
+        ? 'Network error. Please check your connection.'
+        : error.message;
+    }
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Profile Update Failed',
+      text: errorMessage,
+    });
+  } finally {
+    setIsSubmitting(false);
+    setSubmitting(false);
+  }
+};
 
   return (
     <div className="modal-overlay">

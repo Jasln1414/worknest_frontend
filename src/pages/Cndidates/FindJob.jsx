@@ -28,6 +28,8 @@ function CandidateHome() {
     suggestionType: '', // Track suggestion type
   });
 
+  console.log("serch........................",searchParams)
+
   const [filters, setFilters] = useState({
     jobtype: '',
     jobmode: '',
@@ -37,12 +39,15 @@ function CandidateHome() {
     datePosted: '',
     salary: 0,
     salaryType: 'annual',
+    
   });
 
   const itemsPerPage = 6;
   const token = localStorage.getItem('access');
   const cacheKey = 'jobSearchCache';
   const cacheTTL = 5 * 60 * 1000;
+  console.log("caheeeeeeeeeeeeeeeeeeeeeeeee",cacheKey );
+  
 
   const getImageForCache = useCallback(
     (imageUrl) => {
@@ -106,6 +111,8 @@ function CandidateHome() {
       JSON.stringify({ query, data, timestamp: Date.now() })
     );
   };
+
+  
 
   const fetchAllJobs = useCallback(async () => {
     setLoading(true);
@@ -181,6 +188,7 @@ function CandidateHome() {
       setLoading(false);
     }
   }, [token, getImageForCache]);
+  
 
   // Improved handleSearch function with better profile picture handling
   const handleSearch = useCallback(
@@ -217,7 +225,7 @@ function CandidateHome() {
             .trim()
             .split(/\s+/);
           if (keywords.length > 0 && keywords[0]) {
-            queryParams.append('search', keywords.join(' '));
+            queryParams.append('title', keywords.join(' '));
           }
         }
       } else if (updatedSearchParams.keyword) {
@@ -226,7 +234,7 @@ function CandidateHome() {
           .trim()
           .split(/\s+/);
         if (keywords.length > 0 && keywords[0]) {
-          queryParams.append('search', keywords.join(' '));
+          queryParams.append('title', keywords.join(' '));
         }
       }
 
@@ -262,7 +270,7 @@ function CandidateHome() {
 
       const cached = getCachedResults(queryString);
       if (cached && cached.length > 0) {
-        console.log('Using cached search results:', cached);
+        console.log('Using cached search results..........................:', cached);
         
         // Process each job's profile picture from cache
         cached.forEach((job) => {
@@ -439,24 +447,46 @@ function CandidateHome() {
 
         <div className="job-cards-container-h1233">
           {getCurrentJobs().length > 0 ? (
-            getCurrentJobs().map((job) => (
-              <JobCard
-                key={job.id}
-                id={job.id}
-                baseURL={baseURL}
-                img={job.employer?.formattedProfilePic} // Using ONLY formattedProfilePic
-                title={job.title}
-                posted={job.posteDate}
-                applybefore={job.applyBefore}
-                empname={job.employer?.user?.full_name || 'Unknown Company'}
-                experience={job.experience}
-                jobmode={job.jobmode}
-                jobtype={job.jobtype}
-                location={job.location}
-                salary={job.lpa}
-                getImageForCache={getImageForCache} // Pass the function as prop
-              />
-            ))
+            // getCurrentJobs().map((job) => (
+
+              
+            //   <JobCard
+            //     key={job.id}
+            //     id={job.id}
+            //     baseURL={baseURL}
+            //     img={job.employer?.formattedProfilePic} // Using ONLY formattedProfilePic
+            //     title={job.title}
+                
+            //     posted={job.posteDate}
+            //     applybefore={job.applyBefore}
+            //     empname={job.employer?.user_full_name || job.employer?.company_name || 'Unknown Company'} 
+            //     experience={job.experience}
+            //     jobmode={job.jobmode}
+            //     jobtype={job.jobtype}
+            //     location={job.location}
+            //     salary={job.lpa}
+            //     getImageForCache={getImageForCache} // Pass the function as prop
+            //   />
+            // ))
+
+            // When mapping through jobs
+getCurrentJobs().map((job) => (
+  <JobCard
+    key={job.id}
+    id={job.id}
+    baseURL={baseURL}
+    img={job.employer?.profile_pic} 
+    title={job.title}
+    posted={job.posteDate}
+    applybefore={job.applyBefore}
+    emp_name={job.employer?.company_name || job.employer?.user_full_name || 'Company'}
+    experience={job.experience}
+    jobmode={job.jobmode}
+    jobtype={job.jobtype}
+    location={job.location}
+    salary={job.lpa}
+  />
+))
           ) : (
             <div className="no-jobs-message-h1233">
               <p>No active jobs match your current filters</p>

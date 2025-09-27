@@ -264,9 +264,19 @@ function PostJob() {
                   )}
                 </div>
 
-                <button type="submit" disabled={isSubmitting} className="submit-button">
+                {/* <button type="submit" disabled={isSubmitting} className="submit-button">
                   {isSubmitting ? 'Posting...' : 'Post Job'}
-                </button>
+                </button> */}
+
+                              <button
+                type="submit"
+                disabled={
+                  isSubmitting || questions.filter((q) => q.text.trim()).length === 0
+                }
+                className="submit-button"
+              >
+                {isSubmitting ? 'Posting...' : 'Post Job'}
+              </button>
               </Form>
             )}
           </Formik>

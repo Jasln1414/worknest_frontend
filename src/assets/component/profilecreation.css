@@ -1,12 +1,4 @@
-/* :root {
-  --primary-blue: #1e3a8a;
-  --error-red: #ef4444;
-  --text-gray: #374151;
-  --bg-light: #f9fafb;
-  --white: #ffffff;
-  --border-gray: #e5e7eb;
-  --shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-} */
+
 
 * {
   box-sizing: border-box;
@@ -14,11 +6,7 @@
   padding: 0;
 }
 
-/* body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--bg-light);
-  color: var(--text-gray);
-} */
+
 
 .profile-creation-container {
   display: flex;
@@ -417,5 +405,144 @@
     width: 32px;
     height: 32px;
     font-size: 0.9rem;
+  }
+}
+
+/* Profile Picture Crop Modal Styles */
+.profilepic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.profilepic-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.profilepic-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem;
+  z-index: 1001;
+}
+
+.profilepic-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.profilepic-modal-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.profilepic-modal-close-button {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0.25rem;
+}
+
+.profilepic-modal-close-button:hover {
+  color: #1f2937;
+}
+
+.profilepic-modal-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.profilepic-modal-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+}
+
+.profilepic-modal-crop-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+  position: sticky;
+  bottom: 1rem;
+  z-index: 10;
+}
+
+.profilepic-modal-crop-button:hover {
+  background-color: #2563eb;
+}
+
+.profilepic-modal-canvas {
+  display: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .profilepic-modal-container {
+    margin: 0.5rem;
+  }
+  
+  .profilepic-modal-body {
+    padding: 1rem;
+    max-height: 85vh;
+  }
+  
+  .profilepic-modal-image {
+    max-height: 65vh;
+  }
+  
+  .profilepic-modal-crop-button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .profilepic-modal-content {
+    border-radius: 8px;
+  }
+  
+  .profilepic-modal-header {
+    padding: 0.75rem;
+  }
+  
+  .profilepic-modal-body {
+    gap: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .profilepic-modal-crop-button {
+    width: 100%;
+    bottom: 0.5rem;
   }
 }

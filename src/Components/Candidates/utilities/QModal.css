@@ -1,260 +1,209 @@
-/* Qmodal.css */
-
-/* Modal overlay */
+/* ===== Modal Overlay ===== */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6); /* Semi-transparent backdrop */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow: auto; /* Allow scrolling if content overflows */
-}
-
-/* Modal content */
-.modal-content {
-  
-  border-radius: 12px;
-  max-width: 90vw; /* Responsive width */
-  max-height: 90vh; /* Responsive height */
   width: 100%;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  background-color: rgba(25, 25, 25, 0.7);
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  overflow-y: auto; /* Scrollable content if too long */
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999;
+  overflow-y: auto;
 }
 
-/* Modal header */
+/* ===== Modal Content ===== */
+.modal-content {
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Heading ===== */
 .modal-content h2 {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: #1f2937; /* Gray-800 */
-  margin: 0;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
-/* Question item */
+/* ===== Question Item ===== */
 .question-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Label styling */
 .question-item label {
-  font-size: 1.125rem; /* text-lg */
+  display: block;
   font-weight: 600;
-  color: #1f2937;
-  background: #f9fafb; /* Light gray for contrast */
-  padding: 0.75rem;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
-/* Textarea styling (for TEXT and CODE types) */
-.question-item textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db; /* Gray-300 */
-  border-radius: 6px;
-  font-size: 1rem;
-  color: #1f2937;
-  resize: vertical; /* Allow vertical resize only */
-  background: #fff;
-  transition: border-color 0.2s ease;
-}
-
-.question-item textarea:focus {
-  outline: none;
-  border-color: #4f46e5; /* Indigo-600 */
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-}
-
-/* Code input specific styling */
-.question-item textarea.code-input {
-  font-family: 'Fira Code', 'Consolas', monospace;
-  background: #f8fafc; /* Slightly different background for code */
-  border: 1px solid #e5e7eb;
-  min-height: 150px;
-  white-space: pre-wrap; /* Preserve code formatting */
-}
-
-/* Select styling (for MCQ) */
+/* ===== Textarea & Select ===== */
+.question-item textarea,
 .question-item select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
   font-size: 1rem;
-  color: #1f2937;
-  background: #fff;
-  transition: border-color 0.2s ease;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  resize: vertical;
+  transition: border-color 0.3s;
 }
 
+.question-item textarea:focus,
 .question-item select:focus {
-  outline: none;
   border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+  outline: none;
 }
 
-/* Placeholder text when no questions */
-.modal-content p {
-  font-size: 1rem;
-  color: #6b7280; /* Gray-500 */
+/* ===== Code Input Style ===== */
+.code-input {
+  font-family: monospace;
+  background-color: #f5f5f5;
+  min-height: 100px;
+}
+
+/* ===== No Questions Message ===== */
+.no-questions {
   text-align: center;
-  padding: 1rem;
+  color: #777;
+  font-size: 1rem;
 }
 
-/* Modal buttons container */
-.modal-buttons {
+/* ===== Buttons ===== */
+.modal-content > div:last-child {
   display: flex;
   justify-content: flex-end;
-  gap: 1.5rem;
-  padding: 1rem;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-/* Button styling (already defined in JSX, but ensuring consistency) */
-.modal-buttons button {
-  min-width: 120px;
-  height: 48px;
-  border-radius: 12px;
+.modal-content button {
+  padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s;
 }
 
-/* Cancel button */
-.modal-buttons button:first-child {
-  background: linear-gradient(135deg, #134e4a, #0f766e); /* Teal-900 to Teal-700 */
-  color: #d1fae5; /* Teal-100 */
-}
-
-.modal-buttons button:first-child:hover {
-  background: linear-gradient(135deg, #0f766e, #115e59);
-}
-
-/* Submit button */
-.modal-buttons button:last-child {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed); /* Indigo-500 to Purple-600 */
-  color: #fff;
-}
-
-.modal-buttons button:last-child:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4338ca, #6d28d9);
-}
-
-.modal-buttons button:disabled {
-  background: linear-gradient(135deg, #d1d5db, #9ca3af); /* Gray-300 to Gray-400 */
-  color: #4b5563; /* Gray-600 */
+.modal-content button[disabled] {
+  background-color: #ccc;
+  color: #666;
   cursor: not-allowed;
 }
 
-/* Media Queries for Responsiveness */
+.modal-content button:first-of-type {
+  background-color: #f44336;
+  color: white;
+}
 
-/* Mobile devices (≤600px) */
-@media screen and (max-width: 600px) {
+.modal-content button:first-of-type:hover {
+  background-color: #d32f2f;
+}
+
+.modal-content button:last-of-type {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.modal-content button:last-of-type:hover {
+  background-color: #4338ca;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
   .modal-content {
-    max-width: 95vw;
-    max-height: 95vh;
-    padding: 1rem;
+    padding: 1.5rem;
+    max-width: 95%;
   }
 
-  .modal-content h2 {
-    font-size: 1.25rem;
+  .modal-content > div:last-child {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
   }
 
-  .question-item label {
-    font-size: 1rem;
-    padding: 0.5rem;
+  .modal-content button {
+    width: 100%;
   }
+}
+/* ===== Buttons Container ===== */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
 
-  .question-item textarea,
-  .question-item select {
-    font-size: 0.9rem;
-    padding: 0.5rem;
-  }
+/* ===== Button Style ===== */
+.modal-buttons button {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 
-  .question-item textarea.code-input {
-    min-height: 120px;
-  }
+/* Disabled Button */
+.modal-buttons button[disabled] {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
 
+/* Cancel Button */
+.modal-buttons .cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.modal-buttons .cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Submit Button */
+.modal-buttons .submit-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.modal-buttons .submit-btn:hover {
+  background-color: #4338ca;
+}
+
+/* ===== Responsive Buttons ===== */
+@media (max-width: 768px) {
   .modal-buttons {
-    flex-direction: column; /* Stack buttons vertically */
-    gap: 1rem;
-    padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .modal-buttons button {
     width: 100%;
-    min-width: unset;
-    height: 44px; /* Touch-friendly height */
   }
 }
 
-/* Tablets (601px–1024px) */
-@media screen and (min-width: 601px) and (max-width: 1024px) {
-  .modal-content {
-    max-width: 80vw;
-    max-height: 85vh;
-    padding: 1.25rem;
-  }
-
-  .modal-content h2 {
-    font-size: 1.375rem;
-  }
-
-  .question-item label {
-    font-size: 1.125rem;
-  }
-
-  .question-item textarea,
-  .question-item select {
-    font-size: 0.95rem;
-  }
-
-  .modal-buttons button {
-    min-width: 140px;
-  }
-}
-
-/* Desktops and Laptops (≥1025px) */
-@media screen and (min-width: 1025px) {
-  .modal-content {
-    max-width: 700px; /* Fixed width for larger screens */
-    max-height: 80vh;
-  }
-
-  .modal-content h2 {
-    font-size: 1.5rem;
-  }
-
-  .question-item textarea,
-  .question-item select {
-    font-size: 1rem;
-  }
-
-  .modal-buttons button {
-    min-width: 160px;
-  }
-}
-
-/* High-resolution displays */
-@media screen and (min-resolution: 2dppx) {
-  .modal-content {
-    border-radius: 14px; /* Slightly larger for crispness */
-  }
-
-  .question-item textarea,
-  .question-item select {
-    font-smooth: always;
-    -webkit-font-smoothing: antialiased;
-  }
-}

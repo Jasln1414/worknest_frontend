@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "../../styles/USER/Home.css";
+
 
 import EditProfileModal from "./utilities/EditModal";
 
@@ -14,6 +15,8 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+ const  Navigate=useNavigate();
 
   const fetchProfileData = async () => {
     setLoading(true);
@@ -58,6 +61,9 @@ function Profile() {
   const handleEditProfile = () => {
     setIsEditModalOpen(true);
   };
+
+
+
 
   if (loading) {
     return (
@@ -110,6 +116,15 @@ function Profile() {
               Edit Profile
             </button>
           </div>
+        
+           
+           <div className="ep-edit-button-container">
+            <button className="ep-edit-button" onClick={()=>Navigate('/candidate/shedules')}>
+             interview schedule
+            </button>
+          </div>
+           
+        
         </div>
 
         <div className="ep-info-row">

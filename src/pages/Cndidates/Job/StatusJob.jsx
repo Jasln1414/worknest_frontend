@@ -1,7 +1,16 @@
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import { RiMessage2Fill } from "react-icons/ri";
 import ChatModal from "./ChatModal";
-import '../../../Styles/Candidate/Jobdetail.css';
+import './detail.css';
 
 function StatusJob({ selectedJob }) {
   const [step, setStep] = useState(0);
@@ -22,21 +31,27 @@ function StatusJob({ selectedJob }) {
         "Interview Scheduled": 5,
         "Accepted": 5,
         "Rejected": 6,
-        "Interview Cancelled": 6, // Added
+        "Interview Cancelled": 6,
       };
       setReceiverId(selectedJob.job.employer.user_id);
-      console.log("Selected job:", selectedJob);
       setStep(statusSteps[selectedJob.status] || 0);
     }
   }, [selectedJob]);
 
-  useEffect(() => {
-    console.log("Receiver ID:", receiverId);
-  }, [receiverId]);
-
   if (!selectedJob) return null;
 
   const handleChat = () => setChat(true);
+
+  const statusData = [
+    { label: "Application Sent", step: 1 },
+    { label: "Application Viewed", step: 2 },
+    { label: "Resume Viewed", step: 3 },
+    {
+      label: step >= 4 ? selectedJob.status : "Recruiter Action",
+      step: 4,
+      status: selectedJob.status,
+    },
+  ];
 
   return (
     <div className="status-job-container">
@@ -64,17 +79,8 @@ function StatusJob({ selectedJob }) {
 
         <div className="status-tracker">
           <h2>Application Status</h2>
-          <div className="status-steps">
-            {[
-              { label: "Application Sent", step: 1 },
-              { label: "Application Viewed", step: 2 },
-              { label: "Resume Viewed", step: 3 },
-              {
-                label: step >= 4 ? selectedJob.status : "Recruiter Action",
-                step: 4,
-                status: selectedJob.status,
-              },
-            ].map(({ label, step: stepValue, status }, index) => {
+          <div className="status-steps-horizontal">
+            {statusData.map(({ label, step: stepValue, status }, index) => {
               let statusClass = '';
               if (step >= stepValue) {
                 if (stepValue === 4) {
@@ -83,7 +89,7 @@ function StatusJob({ selectedJob }) {
                   else if (status === 'Interview Scheduled') statusClass = 'interview-scheduled';
                   else if (status === 'Accepted') statusClass = 'accepted';
                   else if (status === 'Rejected') statusClass = 'rejected';
-                  else if (status === 'Interview Cancelled') statusClass = 'interview-cancelled'; // Added
+                  else if (status === 'Interview Cancelled') statusClass = 'interview-cancelled';
                 } else {
                   statusClass = 'completed';
                 }
@@ -92,9 +98,9 @@ function StatusJob({ selectedJob }) {
               return (
                 <div
                   key={`step-${index}`}
-                  className={`status-step ${statusClass}`}
+                  className={`status-step-horizontal ${statusClass}`}
                 >
-                  <div className="step-circle">
+                  <div className="step-circle-horizontal">
                     {step >= stepValue && (
                       <svg
                         fill="none"
@@ -111,7 +117,10 @@ function StatusJob({ selectedJob }) {
                       </svg>
                     )}
                   </div>
-                  <p className="step-label">{label}</p>
+                  <p className="step-label-horizontal">{label}</p>
+                  {index < statusData.length - 1 && (
+                    <div className={`step-connector ${step > stepValue ? 'completed' : ''}`}></div>
+                  )}
                 </div>
               );
             })}

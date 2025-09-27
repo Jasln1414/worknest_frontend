@@ -3,202 +3,168 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import SheduleModal from '../../../Components/Interview/Scheduledmodal';
 import ChatModal from './ChatModal';
-import './style/Candidateview.css';
+import './style/AppliedCandidateview.css';
 
-const CandidateView = ({
-  selectedJob,
-  setChange,
-  current,
-  questions: initialQuestions = [],
-  fetchJobDetails = () => {},
-}) => {
+const CandidateView = ({ current, selectedJob, fetchJobDetails, onClose, questions: propQuestions }) => {
+  // API Configuration
   const baseURL = 'http://127.0.0.1:8000';
   const token = localStorage.getItem('access');
 
-  // State management
-  const [appStatus, setAppStatus] = useState(current?.status || 'Application Send');
+  // State Management
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
-  const [interviewScheduled, setInterviewScheduled] = useState(
-    current?.status === 'Interview Scheduled'
-  );
-  const [interviewDate, setInterviewDate] = useState(null);
-  const [interviewAttended, setInterviewAttended] = useState(false);
-  const [questions, setQuestions] = useState(initialQuestions);
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [receiverId, setReceiverId] = useState(null);
   const [isCheckingSchedule, setIsCheckingSchedule] = useState(false);
+  const [interviewScheduled, setInterviewScheduled] = useState(false);
+  const [interviewData, setInterviewData] = useState(null);
+  const [appStatus, setAppStatus] = useState(current?.status || '');
+  const [receiverId, setReceiverId] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [activeSection, setActiveSection] = useState('personal');
 
-  // Update states when current prop changes
-  useEffect(() => {
-    if (!current) return;
-     console.log('CandidateView line 42 - current=================:', current.status);
-    setAppStatus(current.status || 'Application Send');
-    setInterviewScheduled(current.status === 'Interview Scheduled');
-    setReceiverId(current.candidate?.user || null);
-    fetchInterviewDate();
-  }, [current]);
-  console.log('CandidateView line 42 - ##########################:',appStatus );
- 
-  // Fetch interview date and attended status
-  const fetchInterviewDate = async () => {
-    if (!current || !current.candidate?.id || !selectedJob?.id) {
-      setInterviewDate(null);
-      setInterviewScheduled(false);
-      setInterviewAttended(false);
-      return;
+  // Close modal handlers
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
     }
+  };
 
+  // Escape key handler to close modal
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => document.removeEventListener('keydown', handleEscapeKey);
+  }, [onClose]);
+
+  // Initialize candidate data when current changes
+  useEffect(() => {
+    if (current) {
+      setAppStatus(current.status || '');
+      checkInterviewStatus();
+    }
+  }, [current]);
+
+  // Use propQuestions if available, otherwise fetch questions
+  useEffect(() => {
+    if (propQuestions && propQuestions.length > 0) {
+      setQuestions(propQuestions);
+    } else {
+      const fetchQuestions = async () => {
+        if (!selectedJob?.id || !current) return;
+
+        setLoadingQuestions(true);
+        try {
+          // Check if questions are already available in answers
+          if (current?.answers?.some((answer) => answer.question_text)) {
+            const uniqueQuestions = current.answers.reduce((acc, answer) => {
+              if (answer.question_text && !acc.some((q) => q.id === answer.question)) {
+                acc.push({
+                  id: answer.question,
+                  text: answer.question_text,
+                  question_type: 'TEXT',
+                });
+              }
+              return acc;
+            }, []);
+            setQuestions(uniqueQuestions);
+            return;
+          }
+
+          // Fetch questions from API
+          const response = await axios.get(`${baseURL}/api/job/questions/${selectedJob.id}/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const questionsData = Array.isArray(response.data) ? response.data : response.data?.questions || [];
+          setQuestions(questionsData);
+        } catch (error) {
+          console.error('Error fetching questions:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.response?.data?.message || 'Failed to load questions.',
+            timer: 1500,
+          });
+        } finally {
+          setLoadingQuestions(false);
+        }
+      };
+
+      if (selectedJob?.id) {
+        fetchQuestions();
+      }
+    }
+  }, [selectedJob, token, current, propQuestions]);
+
+  // Utility Functions
+  const formatInterviewDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+  };
+
+  // Check if interview is already scheduled
+  const checkInterviewStatus = async () => {
     try {
       const response = await axios.get(`${baseURL}/api/interview/schedules/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+      
       const interviews = Array.isArray(response.data) ? response.data : response.data?.results || [];
-      const matchingInterview = interviews.find(
+      const existingInterviews = interviews.filter(
         (interview) =>
-          interview.candidate === current.candidate.id &&
+          interview.candidate === current.candidate?.id &&
           interview.job === selectedJob.id &&
           interview.active
       );
 
-      if (matchingInterview?.date) {
-        setInterviewDate(matchingInterview.date);
+      if (existingInterviews.length > 0) {
         setInterviewScheduled(true);
-        setInterviewAttended(matchingInterview.attended || false);
+        setInterviewData(existingInterviews[0]);
         setAppStatus('Interview Scheduled');
-      } else {
-        setInterviewDate(null);
-        setInterviewScheduled(current.status === 'Interview Scheduled');
-        setInterviewAttended(false);
       }
     } catch (error) {
-      console.error('Error fetching interview data:', error);
-      setInterviewDate(null);
-      setInterviewScheduled(current.status === 'Interview Scheduled');
-      setInterviewAttended(false);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to load interview details. Please try again.',
-        timer: 1500,
-      });
+      console.error('Error checking interview status:', error);
     }
   };
 
-  // Format date for display
-  const formatInterviewDate = (dateString) => {
-    if (!dateString) return 'Not scheduled';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
-
-  // Fetch questions
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      if (!selectedJob?.id || !current) return;
-
-      setLoadingQuestions(true);
-      try {
-        if (current?.answers?.some((answer) => answer.question_text)) {
-          const uniqueQuestions = current.answers.reduce((acc, answer) => {
-            if (answer.question_text && !acc.some((q) => q.id === answer.question)) {
-              acc.push({
-                id: answer.question,
-                text: answer.question_text,
-                question_type: 'TEXT',
-              });
-            }
-            return acc;
-          }, []);
-          setQuestions(uniqueQuestions);
-          return;
-        }
-
-        const response = await axios.get(`${baseURL}/api/job/questions/${selectedJob.id}/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const questionsData = Array.isArray(response.data) ? response.data : response.data?.questions || [];
-        setQuestions(questionsData);
-      } catch (error) {
-        console.error('Error fetching questions:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to load questions. Please try again.',
-          timer: 1500,
-        });
-      } finally {
-        setLoadingQuestions(false);
-      }
-    };
-
-    if (selectedJob?.id && (!initialQuestions || initialQuestions.length === 0)) {
-      fetchQuestions();
-    }
-  }, [selectedJob, initialQuestions, token, current]);
-
-  
-  // Change application status
-  const changeStatus = async (action) => {
+  // Update application status
+  const changeStatus = async (status) => {
     if (isButtonDisabled) return;
-
     setIsButtonDisabled(true);
 
     try {
-      Swal.fire({
-        title: 'Updating Status...',
-        text: 'Please wait',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-
-      const response = await axios.post(
+      await axios.post(
         `${baseURL}/api/empjob/applicationStatus/${current.id}/`,
-        { action, job_id: selectedJob.id },
+        {
+          candidate_id: current.candidate.id,
+          job_id: selectedJob.id,
+          status: status
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (response.status === 200) {
-        setAppStatus(action);
-        if (action === 'Interview Scheduled') {
-          setInterviewScheduled(true);
-          await fetchInterviewDate();
-        } else if (action === 'Accepted' || action === 'Rejected' || action === 'Interview Cancelled') {
-          setInterviewScheduled(false);
-          setInterviewDate(null);
-          setInterviewAttended(false);
-        } else {
-          setInterviewScheduled(false);
-          setInterviewDate(null);
-          setInterviewAttended(false);
-        }
-
-        try {
-          if (typeof fetchJobDetails === 'function') {
-            fetchJobDetails();
-          }
-        } catch (fetchError) {
-          console.error('Error refreshing job details:', fetchError);
-        }
-
+      setAppStatus(status);
+      fetchJobDetails();
+      
+      if (status === 'ShortListed') {
         Swal.fire({
           icon: 'success',
-          title: 'Status Updated',
-          text: `Application status changed to ${action}.`,
-          showConfirmButton: false,
+          title: 'Candidate Shortlisted!',
+          text: 'The candidate has been added to your shortlist.',
           timer: 1500,
         });
       }
@@ -207,16 +173,14 @@ const CandidateView = ({
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Failed to update status. Please try again.',
-        showConfirmButton: false,
-        timer: 1500,
+        text: error.response?.data?.message || 'Failed to update status',
       });
     } finally {
       setIsButtonDisabled(false);
     }
   };
 
-  // Check for existing interviews before showing schedule modal
+  // Open schedule interview modal
   const openScheduleModal = async () => {
     if (isCheckingSchedule || ['Accepted', 'Rejected'].includes(appStatus)) return;
 
@@ -243,8 +207,7 @@ const CandidateView = ({
           footer: `Scheduled for: ${formatInterviewDate(existingInterviews[0].date)}`,
         });
         setInterviewScheduled(true);
-        setInterviewDate(existingInterviews[0].date);
-        setInterviewAttended(existingInterviews[0].attended || false);
+        setInterviewData(existingInterviews[0]);
         setAppStatus('Interview Scheduled');
         return;
       }
@@ -258,17 +221,19 @@ const CandidateView = ({
     }
   };
 
+  // Open chat modal
   const openChatModal = () => {
     setShowChatModal(true);
   };
 
+  // Handle resume view and update status
   const handleResume = () => {
     changeStatus('Resume Viewed');
   };
 
-  // Cancel interview
+  // Cancel scheduled interview
   const cancelInterview = async () => {
-    if (isButtonDisabled || interviewAttended || ['Accepted', 'Rejected'].includes(appStatus)) {
+    if (isButtonDisabled || interviewData?.attended || ['Accepted', 'Rejected'].includes(appStatus)) {
       return;
     }
 
@@ -307,16 +272,8 @@ const CandidateView = ({
       if (response.status === 200) {
         setAppStatus('Interview Cancelled');
         setInterviewScheduled(false);
-        setInterviewDate(null);
-        setInterviewAttended(false);
-
-        try {
-          if (typeof fetchJobDetails === 'function') {
-            fetchJobDetails();
-          }
-        } catch (fetchError) {
-          console.error('Error refreshing job details:', fetchError);
-        }
+        setInterviewData(null);
+        fetchJobDetails();
 
         Swal.fire({
           icon: 'success',
@@ -328,12 +285,10 @@ const CandidateView = ({
       }
     } catch (error) {
       console.error('Error cancelling interview:', error);
-      const errorMessage =
-         'Failed to cancel interview. Please try again.';
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: errorMessage,
+        text: error.response?.data?.message || 'Failed to cancel interview.',
         showConfirmButton: true,
       });
     } finally {
@@ -341,7 +296,7 @@ const CandidateView = ({
     }
   };
 
-  // Prepare question-answer pairs for display
+  // Map questions to answers for display
   const getQuestionAnswerPairs = () => {
     if (!current || !current.answers) return [];
 
@@ -379,117 +334,7 @@ const CandidateView = ({
 
   const questionAnswerPairs = getQuestionAnswerPairs();
 
-  // Render action buttons based on interview status
-  const renderActionButtons = () => (
-    <div className="candidate-actions">
-      {['Accepted', 'Rejected'].includes(appStatus) ? (
-        <div className="status-info">
-          <span className={`interview-status status-${appStatus.toLowerCase()}`}>
-            {appStatus}
-          </span>
-          <button
-            className="action-button chat-button"
-            onClick={openChatModal}
-            disabled={isButtonDisabled}
-          >
-            Chat
-          </button>
-        </div>
-      ) : appStatus === 'Interview Cancelled' || !interviewScheduled ? (
-        <>
-          {appStatus === 'Interview Cancelled' && (
-            <div className="interview-cancelled-info">
-              <span className="interview-status">Interview Cancelled</span>
-            </div>
-          )}
-          <button
-            className={`action-button ${appStatus === 'Pending' ? 'pending-button active' : 'pending-button'}`}
-            onClick={() => changeStatus('Pending')}
-            disabled={isButtonDisabled}
-          >
-            Pending
-          </button>
-          <button
-            className={`action-button ${appStatus === 'ShortListed' ? 'accept-button active' : 'accept-button'}`}
-            onClick={() => changeStatus('ShortListed')}
-            disabled={isButtonDisabled}
-          >
-            ShortList
-          </button>
-          <button
-            className="action-button schedule-button"
-            onClick={openScheduleModal}
-            disabled={isButtonDisabled || isCheckingSchedule || ['Accepted', 'Rejected'].includes(appStatus)}
-            title={['Accepted', 'Rejected'].includes(appStatus) ? "Cannot schedule - Candidate already selected/rejected" : ""}
-          >
-            {isCheckingSchedule ? 'Checking...' : 'Schedule Interview'}
-          </button>
-          <button
-            className="action-button chat-button"
-            onClick={openChatModal}
-            disabled={isButtonDisabled}
-          >
-            Chat
-          </button>
-        </>
-      ) : (
-        <>
-          <div className="interview-scheduled-info">
-            <span className="interview-status">Interview Scheduled</span>
-            <span className="interview-date">{formatInterviewDate(interviewDate)}</span>
-            {interviewAttended && (
-              <span className="interview-attended">Attended</span>
-            )}
-          </div>
-          {current.status==="Application Send" || current.status=== 'Interview Scheduled' ? 
-          <><button
-                  className={`action-button ${current.status === 'Accepted' ? 'accept-button active' : 'accept-button'}`}
-                  onClick={() => changeStatus('Accepted')}
-                  disabled={isButtonDisabled}
-                >
-                  Accept
-                </button><button
-                  className={`action-button ${current.status === 'Rejected' ? 'reject-button active' : 'reject-button'}`}
-                  onClick={() => changeStatus('Rejected')}
-                  disabled={isButtonDisabled}
-                >
-                    Reject
-                  </button></>:
-          <p>{current.status}</p>
-}
-          <button
-            className="action-button cancel-button"
-            onClick={cancelInterview}
-            disabled={
-              isButtonDisabled || 
-              interviewAttended || 
-              ['Accepted', 'Rejected'].includes(appStatus)
-            }
-            title={
-              interviewAttended ? "Cannot cancel - Interview already attended" :
-              ['Accepted', 'Rejected'].includes(appStatus) ? "Cannot cancel - Candidate already selected/rejected" :
-              ""
-            }
-          >
-            Cancel Interview
-          </button>
-          <button
-            className="action-button chat-button"
-            onClick={openChatModal}
-            disabled={isButtonDisabled}
-          >
-            Chat
-          </button>
-        </>
-      )}
-    </div>
-  );
-
-  if (!current) {
-    return <div className="no-selection">Select an application to view details</div>;
-  }
-
-  // Prepare candidate data
+  // Candidate data
   const profilePic = current.candidate?.profile_pic ? `${baseURL}${current.candidate.profile_pic}` : '';
   const userName = current.candidate?.user_name || current.candidate_name || 'N/A';
   const candidateId = current.candidate?.id;
@@ -497,18 +342,402 @@ const CandidateView = ({
   const employerId = selectedJob?.employer_id || localStorage.getItem('user_id');
   const empName = selectedJob?.employer_name || 'Employer Name';
 
+  // Render action buttons based on application status
+  const renderActionButtons = () => (
+    <div className="cv-action-buttons">
+      {['Accepted', 'Rejected'].includes(appStatus) ? (
+        <div className="cv-status-info">
+          <span className={`cv-status-badge cv-status-${appStatus.toLowerCase()}`}>
+            {appStatus}
+          </span>
+          <button
+            className="cv-button cv-chat-button"
+            onClick={openChatModal}
+            disabled={isButtonDisabled}
+          >
+            Chat
+          </button>
+        </div>
+      ) : appStatus === 'Interview Cancelled' ? (
+        <div className="cv-status-info">
+          <span className="cv-status-badge cv-status-cancelled">Interview Cancelled</span>
+          <button
+            className="cv-button cv-schedule-button"
+            onClick={openScheduleModal}
+            disabled={isButtonDisabled || isCheckingSchedule}
+          >
+            {isCheckingSchedule ? 'Checking...' : 'Reschedule'}
+          </button>
+          <button
+            className="cv-button cv-chat-button"
+            onClick={openChatModal}
+            disabled={isButtonDisabled}
+          >
+            Chat
+          </button>
+        </div>
+      ) : interviewScheduled ? (
+        <div className="cv-interview-scheduled">
+          <div className="cv-interview-info">
+            <span className="cv-status-badge cv-status-scheduled">Interview Scheduled</span>
+            <span className="cv-interview-date">{formatInterviewDate(interviewData?.date)}</span>
+            {interviewData?.attended && (
+              <span className="cv-attended-badge">Attended</span>
+            )}
+          </div>
+          <button
+            className="cv-button cv-cancel-button"
+            onClick={cancelInterview}
+            disabled={isButtonDisabled || interviewData?.attended}
+          >
+            Cancel
+          </button>
+          <button
+            className="cv-button cv-chat-button"
+            onClick={openChatModal}
+            disabled={isButtonDisabled}
+          >
+            Chat
+          </button>
+        </div>
+      ) : (
+        <div className="cv-action-group">
+          {appStatus === 'Application Send' && (
+            <button
+              className="cv-button cv-view-button"
+              onClick={handleResume}
+              disabled={isButtonDisabled}
+            >
+              View Resume
+            </button>
+          )}
+          
+          {appStatus === 'ShortListed' ? (
+            <>
+              <span className="cv-status-badge cv-status-shortlisted">ShortListed</span>
+              <button
+                className="cv-button cv-accept-button"
+                onClick={() => changeStatus('Accepted')}
+                disabled={isButtonDisabled}
+              >
+                Accept
+              </button>
+              <button
+                className="cv-button cv-reject-button"
+                onClick={() => changeStatus('Rejected')}
+                disabled={isButtonDisabled}
+              >
+                Reject
+              </button>
+              <button
+                className="cv-button cv-schedule-button"
+                onClick={openScheduleModal}
+                disabled={isButtonDisabled || isCheckingSchedule}
+              >
+                {isCheckingSchedule ? 'Checking...' : 'Schedule'}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="cv-button cv-shortlist-button"
+                onClick={() => changeStatus('ShortListed')}
+                disabled={isButtonDisabled}
+              >
+                ShortList
+              </button>
+              <button
+                className="cv-button cv-accept-button"
+                onClick={() => changeStatus('Accepted')}
+                disabled={isButtonDisabled}
+              >
+                Accept
+              </button>
+              <button
+                className="cv-button cv-reject-button"
+                onClick={() => changeStatus('Rejected')}
+                disabled={isButtonDisabled}
+              >
+                Reject
+              </button>
+              {['Application Viewed', 'Resume Viewed'].includes(appStatus) && (
+                <button
+                  className="cv-button cv-schedule-button"
+                  onClick={openScheduleModal}
+                  disabled={isButtonDisabled || isCheckingSchedule}
+                >
+                  {isCheckingSchedule ? 'Checking...' : 'Schedule'}
+                </button>
+              )}
+            </>
+          )}
+          
+          <button
+            className="cv-button cv-chat-button"
+            onClick={openChatModal}
+            disabled={isButtonDisabled}
+          >
+            Chat
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
+  // Return null if no candidate selected
+  if (!current) {
+    return <div className="cv-no-selection">Select an application to view details</div>;
+  }
+
+  // Main Component Render
   return (
-    <div className="candidate-view-container">
+    <div className="cv-modal-overlay" onClick={handleOverlayClick}>
+      <div className="cv-modal-container" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Modal Header */}
+        <div className="cv-modal-header">
+          <h2>Candidate Details</h2>
+          <button className="cv-close-button" onClick={onClose}>×</button>
+        </div>
+        
+        {/* Navigation Tabs */}
+        <div className="cv-modal-tabs">
+          <button 
+            className={`cv-tab-button ${activeSection === 'personal' ? 'active' : ''}`}
+            onClick={() => setActiveSection('personal')}
+          >
+            Personal Info
+          </button>
+          <button 
+            className={`cv-tab-button ${activeSection === 'education' ? 'active' : ''}`}
+            onClick={() => setActiveSection('education')}
+          >
+            Education
+          </button>
+          <button 
+            className={`cv-tab-button ${activeSection === 'links' ? 'active' : ''}`}
+            onClick={() => setActiveSection('links')}
+          >
+            Links
+          </button>
+          <button 
+            className={`cv-tab-button ${activeSection === 'questions' ? 'active' : ''}`}
+            onClick={() => setActiveSection('questions')}
+          >
+            Q&A
+          </button>
+        </div>
+
+        {/* Modal Content */}
+        <div className="cv-modal-content">
+          {/* Action Buttons */}
+          {renderActionButtons()}
+
+          {/* Personal Information Section */}
+          {activeSection === 'personal' && (
+            <div className="cv-tab-content">
+              <div className="cv-profile-section">
+                <div className="cv-avatar-container">
+                  <img 
+                    src={profilePic || '/default-avatar.png'} 
+                    alt="Candidate Profile" 
+                    className="cv-avatar" 
+                  />
+                </div>
+                <h3 className="cv-candidate-name">{userName}</h3>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Email</label>
+                <div className="cv-info-value">{current.candidate?.email || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Phone</label>
+                <div className="cv-info-value">{current.candidate?.phone || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Gender</label>
+                <div className="cv-info-value">{current.candidate?.Gender || current.candidate?.gender || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Date of Birth</label>
+                <div className="cv-info-value">{current.candidate?.dob || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Applied On</label>
+                <div className="cv-info-value">
+                  {current.applyed_on ? new Date(current.applyed_on).toLocaleDateString() : 'N/A'}
+                </div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Status</label>
+                <div className={`cv-status-value cv-status-${appStatus.toLowerCase().replace(' ', '-')}`}>
+                  {appStatus}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Education Information Section */}
+          {activeSection === 'education' && current.candidate?.education?.length > 0 && (
+            <div className="cv-tab-content">
+              <div className="cv-form-group">
+                <label>Qualification</label>
+                <div className="cv-info-value">{current.candidate.education[0].education || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Specialization</label>
+                <div className="cv-info-value">{current.candidate.education[0].specilization || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Completed Year</label>
+                <div className="cv-info-value">{current.candidate.education[0].completed || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>College</label>
+                <div className="cv-info-value">{current.candidate.education[0].college || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Mark in CGPA</label>
+                <div className="cv-info-value">{current.candidate.education[0].mark || 'N/A'}</div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Skills</label>
+                <div className="cv-skills-container">
+                  {current.candidate.skills ? (
+                    current.candidate.skills.split(',').map((skill, index) => (
+                      <span key={index} className="cv-skill-tag">{skill.trim()}</span>
+                    ))
+                  ) : (
+                    <div className="cv-info-value">N/A</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Links Section */}
+          {activeSection === 'links' && (
+            <div className="cv-tab-content">
+              <div className="cv-form-group">
+                <label>LinkedIn</label>
+                <div className="cv-info-value">
+                  {current.candidate?.linkedin ? (
+                    <a href={current.candidate.linkedin} target="_blank" rel="noopener noreferrer" className="cv-link">
+                      {current.candidate.linkedin}
+                    </a>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>GitHub</label>
+                <div className="cv-info-value">
+                  {current.candidate?.github ? (
+                    <a href={current.candidate.github} target="_blank" rel="noopener noreferrer" className="cv-link">
+                      {current.candidate.github}
+                    </a>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+              </div>
+
+              <div className="cv-form-group">
+                <label>Resume</label>
+                <div className="cv-info-value">
+                  {current.candidate?.resume ? (
+                    <a
+                      href={`${baseURL}${current.candidate.resume}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cv-link"
+                      onClick={handleResume}
+                    >
+                      View Resume
+                    </a>
+                  ) : (
+                    'N/A'
+                  )}
+                </div>
+              </div>
+
+              {/* Additional Links */}
+              {current.candidate?.links?.length > 0 &&
+                current.candidate.links.map((link, index) => (
+                  <div className="cv-form-group" key={index}>
+                    <label>{link.name || `Link ${index + 1}`}</label>
+                    <div className="cv-info-value">
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="cv-link">
+                        {link.url}
+                      </a>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+
+          {/* Questions & Answers Section */}
+          {activeSection === 'questions' && (
+            <div className="cv-tab-content">
+              <div className="cv-questions-section">
+                <h3 className="cv-title">Interview Questions & Answers</h3>
+
+                {loadingQuestions ? (
+                  <div className="cv-loading">Loading questions...</div>
+                ) : questionAnswerPairs.length > 0 ? (
+                  <div className="cv-qa-container">
+                    {questionAnswerPairs.map(({ question, answer, key }) => (
+                      <div key={key} className="cv-qa-item">
+                        <div className="cv-question">
+                          <strong>Q: {question.text}</strong>
+                        </div>
+                        <div className="cv-answer">
+                          <p>A: {answer.answer_text || 'No answer provided'}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="cv-no-answers">No answers provided</div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer Actions */}
+        <div className="cv-modal-actions">
+          <button className="cv-button cv-close-action" onClick={onClose}>
+            Close
+          </button>
+        </div>
+      </div>
+
+      {/* Schedule Interview Modal */}
       {showScheduleModal && (
         <SheduleModal
           setModal={setShowScheduleModal}
           candidate_id={candidateId}
           job_id={selectedJob?.id}
           application_id={applicationId}
+          setAppStatus={setAppStatus}
+          setInterviewScheduled={setInterviewScheduled}
           onScheduleSuccess={(interviewData) => {
-            setInterviewDate(interviewData.date);
+            setInterviewData(interviewData);
             setInterviewScheduled(true);
-            setInterviewAttended(false);
             setAppStatus('Interview Scheduled');
             Swal.fire({
               icon: 'success',
@@ -516,9 +745,7 @@ const CandidateView = ({
               text: `Interview scheduled for ${formatInterviewDate(interviewData.date)}`,
               timer: 2000,
             });
-            if (typeof fetchJobDetails === 'function') {
-              fetchJobDetails();
-            }
+            fetchJobDetails();
           }}
           onScheduleError={(error) => {
             Swal.fire({
@@ -530,6 +757,7 @@ const CandidateView = ({
         />
       )}
 
+      {/* Chat Modal */}
       {showChatModal && (
         <ChatModal
           setChat={setShowChatModal}
@@ -543,175 +771,8 @@ const CandidateView = ({
           receiverId={receiverId}
         />
       )}
-
-      {renderActionButtons()}
-
-      
-
-
-
-      <div className="candidate-info-section">
-        <h2 className="section-title">Candidate Info</h2>
-        <div className="candidate-profile">
-          {profilePic && <img src={profilePic} alt="Candidate Profile" className="profile-image" />}
-          <p className="candidate-name">{userName}</p>
-        </div>
-        <div className="info-details">
-          <div className="info-item">
-            <span className="info-label">Email:</span>
-            <p className="info-value">{current.candidate?.email || 'N/A'}</p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Phone:</span>
-            <p className="info-value">{current.candidate?.phone || 'N/A'}</p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Gender:</span>
-            <p className="info-value">{current.candidate?.Gender || current.candidate?.gender || 'N/A'}</p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Date of Birth:</span>
-            <p className="info-value">{current.candidate?.dob || 'N/A'}</p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Applied On:</span>
-            <p className="info-value">
-              {current.applyed_on ? new Date(current.applyed_on).toLocaleDateString() : 'N/A'}
-            </p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Status:</span>
-            <p className={`info-value status-${appStatus.toLowerCase().replace(' ', '-')}`}>
-              {appStatus}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {current.candidate?.education?.length > 0 && (
-        <div className="education-info-section">
-          <h2 className="section-title">Education Info</h2>
-          <div className="info-details">
-            <div className="info-item">
-              <span className="info-label">Qualification:</span>
-              <p className="info-value">{current.candidate.education[0].education || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Specialisation:</span>
-              <p className="info-value">{current.candidate.education[0].specilization || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Completed Year:</span>
-              <p className="info-value">{current.candidate.education[0].completed || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <span className="info-label">College:</span>
-              <p className="info-value">{current.candidate.education[0].college || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Mark in CGPA:</span>
-              <p className="info-value">{current.candidate.education[0].mark || 'N/A'}</p>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Skills:</span>
-              <p className="info-value">{current.candidate.skills || 'N/A'}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="links-section">
-        <h2 className="section-title">Links</h2>
-        <div className="info-details">
-          <div className="info-item">
-            <span className="info-label">LinkedIn:</span>
-            <p className="info-value">
-              {current.candidate?.linkedin ? (
-                <a href={current.candidate.linkedin} target="_blank" rel="noopener noreferrer" className="link">
-                  {current.candidate.linkedin}
-                </a>
-              ) : (
-                'N/A'
-              )}
-            </p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">GitHub:</span>
-            <p className="info-value">
-              {current.candidate?.github ? (
-                <a href={current.candidate.github} target="_blank" rel="noopener noreferrer" className="link">
-                  {current.candidate.github}
-                </a>
-              ) : (
-                'N/A'
-              )}
-            </p>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Resume:</span>
-            <p className="info-value">
-              {current.candidate?.resume ? (
-                <a
-                  href={`${baseURL}${current.candidate.resume}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="link"
-                  onClick={handleResume}
-                >
-                  View Resume
-                </a>
-              ) : (
-                'N/A'
-              )}
-            </p>
-          </div>
-          {current.candidate?.links?.length > 0 &&
-            current.candidate.links.map((link, index) => (
-              <div className="info-item" key={index}>
-                <span className="info-label">{link.name || `Link ${index + 1}`}</span>
-                <p className="info-value">
-                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="link">
-                    {link.url}
-                  </a>
-                </p>
-              </div>
-            ))}
-        </div>
-      </div>
-
-      <div className="answers-section">
-        <h2 className="section-title">Interview Questions & Answers</h2>
-        {loadingQuestions ? (
-          <p className="loading-questions">Loading questions...</p>
-        ) : questionAnswerPairs.length > 0 ? (
-          <div className="qa-container">
-            {questionAnswerPairs.map(({ question, answer, key }) => (
-              <div key={key} className="qa-item">
-                <div className="question">
-                  <h3>{question.text}</h3>
-                </div>
-                <div className="answer">
-                  <pre>{answer.answer_text || 'No answer provided'}</pre>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-answers">No answers provided</p>
-        )}
-      </div>
-
-      {/* <div className="back-btn">
-        <button
-          className="back-button"
-          onClick={() => setChange(true)}
-          disabled={isButtonDisabled}
-        >
-          Back to Applications
-        </button>
-      </div> */}
     </div>
   );
 };
 
-export default CandidateView; 
+export default CandidateView;

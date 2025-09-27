@@ -9,9 +9,13 @@ const interviewCallSlice = createSlice({
     },
     reducers: {
       openInterviewModal: (state) => {
+        console.log("checkingggggggggggggggggopendddddddd",);
+        
         state.interviewModal = true;
       },
       closeInterviewModal: (state) => {
+        console.log("closedddddddddddddddddd");
+        
         state.interviewModal = false;
       },
       setInterviewDetails: (state, action) => {

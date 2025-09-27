@@ -1,0 +1,503 @@
+/* CandidateView.css */
+
+/* Modal Overlay */
+.cv-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* Modal Container */
+.cv-modal-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Modal Header */
+.cv-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 5;
+  border-radius: 8px 8px 0 0;
+}
+
+.cv-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.cv-close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.cv-close-button:hover {
+  color: #333;
+}
+
+/* Tab Navigation */
+.cv-modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 71px;
+  z-index: 4;
+  overflow-x: auto;
+}
+
+.cv-tab-button {
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.cv-tab-button:hover {
+  background-color: #f1f3f5;
+  color: #333;
+}
+
+.cv-tab-button.active {
+  border-bottom-color: #3f51b5;
+  color: #3f51b5;
+  background-color: #fff;
+}
+
+/* Modal Content */
+.cv-modal-content {
+  padding: 24px;
+}
+
+.cv-tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Action Buttons */
+.cv-action-buttons {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+.cv-action-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.cv-status-info, .cv-interview-scheduled {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.cv-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cv-status-accepted { background-color: #d4edda; color: #155724; }
+.cv-status-rejected { background-color: #f8d7da; color: #721c24; }
+.cv-status-shortlisted { background-color: #fff3cd; color: #856404; }
+.cv-status-scheduled { background-color: #d1ecf1; color: #0c5460; }
+.cv-status-cancelled { background-color: #e2e3e5; color: #383d41; }
+
+.cv-interview-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.cv-interview-date {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.cv-attended-badge {
+  padding: 4px 8px;
+  background-color: #28a745;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+/* Button Styles */
+.cv-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.cv-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cv-shortlist-button { background-color: #ffc107; color: #212529; }
+.cv-accept-button { background-color: #28a745; color: white; }
+.cv-reject-button { background-color: #dc3545; color: white; }
+.cv-schedule-button { background-color: #17a2b8; color: white; }
+.cv-cancel-button { background-color: #6c757d; color: white; }
+.cv-chat-button { background-color: #6f42c1; color: white; }
+.cv-view-button { background-color: #fd7e14; color: white; }
+.cv-close-action { 
+  background-color: #6c757d; 
+  color: white;
+  width: 100%;
+  padding: 12px;
+}
+
+.cv-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Profile Section */
+.cv-profile-section {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.cv-avatar-container {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 16px;
+  border: 3px solid #f0f0f0;
+}
+
+.cv-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cv-candidate-name {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Form Groups */
+.cv-form-group {
+  margin-bottom: 20px;
+}
+
+.cv-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.cv-info-value {
+  padding: 10px 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.cv-status-value {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Skills */
+.cv-skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cv-skill-tag {
+  background-color: #e8eaf6;
+  color: #3f51b5;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Links */
+.cv-link {
+  color: #3f51b5;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.cv-link:hover {
+  text-decoration: underline;
+}
+
+/* Questions & Answers */
+.cv-questions-section h3 {
+  margin-bottom: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.cv-qa-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cv-qa-item {
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #3f51b5;
+}
+
+.cv-question {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 1rem;
+}
+
+.cv-answer {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.cv-loading, .cv-no-answers {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Modal Actions */
+.cv-modal-actions {
+  padding: 20px 24px;
+  border-top: 1px solid #eaeaea;
+  background-color: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+/* No Selection State */
+.cv-no-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .cv-modal-overlay {
+    padding: 10px;
+  }
+  
+  .cv-modal-container {
+    max-height: 95vh;
+    border-radius: 4px;
+  }
+  
+  .cv-modal-header {
+    padding: 15px 20px;
+  }
+  
+  .cv-modal-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  
+  .cv-tab-button {
+    min-width: 100px;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .cv-modal-content {
+    padding: 20px;
+  }
+  
+  .cv-action-group, .cv-status-info, .cv-interview-scheduled {
+    justify-content: center;
+  }
+  
+  .cv-button {
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+  
+  .cv-avatar-container {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .cv-candidate-name {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cv-modal-overlay {
+    padding: 5px;
+  }
+  
+  .cv-modal-container {
+    max-height: 98vh;
+    border-radius: 0;
+  }
+  
+  .cv-modal-header {
+    padding: 12px 15px;
+  }
+  
+  .cv-modal-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .cv-modal-content {
+    padding: 15px;
+  }
+  
+  .cv-tab-button {
+    min-width: 90px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .cv-action-buttons {
+    padding: 12px;
+  }
+  
+  .cv-button {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .cv-form-group label {
+    font-size: 0.9rem;
+  }
+  
+  .cv-info-value {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+}
+
+.cv-tab-content {
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.cv-questions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+  word-wrap: break-word; /* Wrap long words */
+}
+
+.cv-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: left;
+  color: #1e293b;
+}
+
+.cv-qa-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cv-qa-item {
+  background: #f9fafb;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  word-break: break-word;   /* Handles long words/URLs */
+  overflow-wrap: break-word; /* Ensures responsiveness */
+}
+
+.cv-question {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #0f172a;
+}
+
+.cv-answer {
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.cv-no-answers,
+.cv-loading {
+  text-align: center;
+  font-size: 1rem;
+  color: #64748b;
+}

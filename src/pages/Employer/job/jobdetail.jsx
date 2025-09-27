@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import JobDetailModal from '../../../Components/Employer/Employjobdetail';
-import './style/Candidateview.css';
+
 
 function JobDetail() {
   const baseURL = import.meta.env.VITE_API_BASEURL || 'http://127.0.0.1:8000';
@@ -174,7 +174,7 @@ function JobDetail() {
         </div>
       )}
 
-      <div className="job-detail-content" style={{ marginLeft: isSmallScreen ? '0' : '250px' }}>
+      <div className="job-detail-content" style={{ marginLeft: isSmallScreen ? '0' : '' }}>
         {modal && <JobDetailModal setModal={setModal} jobData={jobData} onUpdate={handleModalUpdate} />}
       
         <div className="job-detail-card">

@@ -1,0 +1,452 @@
+/* Base Styles */
+.is-root-container.scheduled-interviews-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f7fa;
+}
+
+.is-content-wrapper {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 60px auto 80px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.main-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Loading and Error States */
+.loading,
+.no-interviews,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin: 2rem 0;
+}
+
+.error-message {
+  color: #e74c3c;
+  background: #fde8e8;
+  border-left: 4px solid #e74c3c;
+}
+
+.no-interviews {
+  color: #7f8c8d;
+}
+
+/* Table Styles */
+.is-table-wrapper {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  margin: 2rem 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.interviews-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* Allow columns to adjust based on content */
+}
+
+.interviews-table th,
+.interviews-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+  word-break: break-word; /* Break long words to prevent overflow */
+  white-space: normal; /* Allow wrapping */
+}
+
+.table-header {
+  background-color: #4aa8e0; /* Lighter blue for better contrast */
+  color: #2c3e50; /* Darker text for readability */
+}
+
+.table-header th {
+  font-weight: 500;
+  padding: 1rem;
+}
+
+.table-row:hover {
+  background-color: #f8f9fa;
+}
+
+/* Link Styles */
+.job-title-link {
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.job-title-link:hover {
+  color: #1a5276;
+  text-decoration: underline;
+}
+
+/* Status Badges */
+.status-cell {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-cell.scheduled {
+  background-color: #d4edff;
+  color: #2874a6;
+}
+
+.status-cell.completed {
+  background-color: #d5f5e3;
+  color: #1e8449;
+}
+
+.status-cell.cancelled {
+  background-color: #fadbd8;
+  color: #c0392b;
+}
+
+.status-cell.rescheduled {
+  background-color: #fdebd0;
+  color: #b7950b;
+}
+
+/* Footer Styles */
+.is-footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #2c3e50;
+  color: white;
+  margin-top: auto;
+}
+
+.is-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .is-content-wrapper {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    padding: 0 15px;
+  }
+
+  .main-heading {
+    font-size: 1.7rem;
+  }
+
+  .interviews-table th,
+  .interviews-table td {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .status-cell {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .is-content-wrapper {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    padding: 0 10px;
+    width: 95%;
+  }
+
+  .main-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .loading,
+  .no-interviews,
+  .error-message {
+    padding: 1.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .interviews-table th,
+  .interviews-table td {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .job-title-link {
+    font-size: 0.85rem;
+  }
+
+  .status-cell {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .is-footer {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .main-heading {
+    font-size: 1.3rem;
+  }
+
+  .interviews-table th,
+  .interviews-table td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .job-title-link {
+    font-size: 0.8rem;
+  }
+
+  .status-cell {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* interview.css */
+
+/* Base Styles */
+.is-root-container.scheduled-interviews-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f7fa;
+}
+
+.is-content-wrapper {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 60px auto 80px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.main-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Loading and Error States */
+.loading,
+.no-interviews,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin: 2rem 0;
+}
+
+.error-message {
+  color: #e74c3c;
+  background: #fde8e8;
+  border-left: 4px solid #e74c3c;
+}
+
+.no-interviews {
+  color: #7f8c8d;
+}
+
+/* Table Styles */
+.is-table-wrapper {
+  overflow-x: auto;
+  margin: 2rem 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.interviews-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.interviews-table th,
+.interviews-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.table-header {
+  background-color: #3498db;
+  color: white;
+}
+
+.table-header th {
+  font-weight: 500;
+  padding: 1rem;
+}
+
+.table-row:hover {
+  background-color: #f8f9fa;
+}
+
+/* Link Styles */
+.job-title-link {
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.job-title-link:hover {
+  color: #1a5276;
+  text-decoration: underline;
+}
+
+/* Status Badges */
+.status-cell {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-cell.scheduled {
+  background-color: #d4edff;
+  color: #2874a6;
+}
+
+.status-cell.completed {
+  background-color: #d5f5e3;
+  color: #1e8449;
+}
+
+.status-cell.cancelled {
+  background-color: #fadbd8;
+  color: #c0392b;
+}
+
+.status-cell.rescheduled {
+  background-color: #fdebd0;
+  color: #b7950b;
+}
+
+/* Footer Styles */
+.is-footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #2c3e50;
+  color: white;
+  margin-top: auto;
+}
+
+.is-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .is-content-wrapper {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    padding: 0 15px;
+  }
+
+  .main-heading {
+    font-size: 1.7rem;
+  }
+
+  .interviews-table th,
+  .interviews-table td {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .status-cell {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .is-content-wrapper {
+    margin-top: 30px;
+    margin-bottom: 50px;
+    padding: 0 10px;
+  width: 95%;
+  }
+
+  .main-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .loading,
+  .no-interviews,
+  .error-message {
+    padding: 1.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .interviews-table th,
+  .interviews-table td {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .is-footer {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 400px) {
+  .main-heading {
+    font-size: 1.3rem;
+  }
+
+  .interviews-table {
+    min-width: 100%;
+  }
+
+  .interviews-table th,
+  .interviews-table td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.8rem;
+  }
+
+  .job-title-link {
+    font-size: 0.85rem;
+  }
+}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { EmployerVerifyOtpApi, ResendOtpApi } from "../../Api/Employer_Api/Employer_Auth_Api";
-import "../../Styles/OTP.css";
+import '../../assets/Stylesheet/Otp.css';
+
 
 const OtpModal = ({ isOpen, closeModal, email, onOtpSuccess }) => {
   const [otp, setOtp] = useState("");

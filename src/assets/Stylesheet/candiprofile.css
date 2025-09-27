@@ -1,0 +1,963 @@
+/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!profile candidate!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+/* Add these styles to your Findjob.css file */
+
+/* Dropdown styles */
+.ep-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.ep-dropdown-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ep-dropdown-content {
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ep-dropdown-content button {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.ep-dropdown-content button:hover {
+  background-color: #f1f1f1;
+}
+
+/* Block header styles for edit buttons */
+.ep-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.ep-edit-button, .ep-add-button {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ep-add-button {
+  background-color: #2196F3;
+}
+
+/* Edit avatar button */
+.ep-avatar-wrapper {
+  position: relative;
+}
+
+.ep-edit-avatar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 4px;
+  padding: 4px;
+}
+
+
+
+
+
+
+/* EditProfileModal.css */
+
+/* Modal Overlay */
+.ep-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* Modal Container */
+.ep-modal-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 650px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Modal Header */
+.ep-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 5;
+  border-radius: 8px 8px 0 0;
+}
+
+.ep-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.ep-close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.ep-close-button:hover {
+  color: #333;
+}
+
+/* Tab Navigation */
+.ep-modal-tabs {
+  display: flex;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 71px;
+  z-index: 4;
+}
+
+.ep-tab-button {
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: #555;
+  transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+}
+
+.ep-tab-button:hover {
+  background-color: #f1f3f5;
+  color: #333;
+}
+
+.ep-tab-button.active {
+  border-bottom-color: #3f51b5;
+  color: #3f51b5;
+  background-color: #fff;
+}
+
+/* Form Content */
+.ep-modal-content {
+  padding: 24px;
+}
+
+.ep-tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Groups */
+.ep-form-group {
+  margin-bottom: 20px;
+}
+
+.ep-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #444;
+}
+
+.ep-form-group input[type="text"],
+.ep-form-group input[type="date"],
+.ep-form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.ep-form-group input[type="text"]:focus,
+.ep-form-group input[type="date"]:focus,
+.ep-form-group select:focus {
+  border-color: #3f51b5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+}
+
+.ep-form-group input[type="text"]:read-only {
+  background-color: #f8f9fa;
+  color: #666;
+}
+
+.ep-error-message {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* Profile Picture */
+.ep-profile-picture {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.ep-avatar-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #f0f0f0;
+}
+
+.ep-avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ep-avatar-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 8px 0;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.ep-avatar-container:hover .ep-avatar-overlay {
+  opacity: 1;
+}
+
+.ep-upload-label {
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.ep-file-input {
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+/* Resume Container */
+.ep-resume-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ep-current-resume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ep-current-resume a {
+  color: #3f51b5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.ep-current-resume a:hover {
+  text-decoration: underline;
+}
+
+/* Skills Section */
+.ep-skill-input {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.ep-skill-input input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.ep-skill-input input:focus {
+  border-color: #3f51b5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+}
+
+.ep-add-skill-btn {
+  flex: 0 0 auto;
+  padding: 10px 18px;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.ep-add-skill-btn:hover {
+  background-color: #303f9f;
+}
+
+.ep-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.ep-skill-item {
+  background-color: #e8eaf6;
+  color: #3f51b5;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ep-remove-skill {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #5c6bc0;
+  transition: color 0.2s;
+}
+
+.ep-remove-skill:hover {
+  color: #d32f2f;
+}
+
+/* Modal Actions */
+.ep-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #eaeaea;
+  gap: 12px; /* Add gap between buttons */
+}
+
+/* Save and Cancel Buttons Container */
+.ep-save-cancel {
+  display: flex;
+  gap: 12px; /* Space between buttons */
+}
+
+/* Button Styles */
+.ep-save-button,
+.ep-cancel-button,
+.ep-delete-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  flex: 1; /* Allow buttons to grow and fill available space */
+}
+
+.ep-save-button {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.ep-save-button:hover {
+  background-color: #303f9f;
+}
+
+.ep-save-button:disabled {
+  background-color: #c5cae9;
+  cursor: not-allowed;
+}
+
+.ep-cancel-button {
+  background-color: #f5f5f5;
+  color: #444;
+  border: 1px solid #ddd;
+}
+
+.ep-cancel-button:hover {
+  background-color: #eeeeee;
+}
+
+.ep-delete-button {
+  background-color: #f5f5f5;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}
+
+.ep-delete-button:hover {
+  background-color: #ffebee;
+}
+
+/* Responsive Styles for Mobile */
+@media (max-width: 768px) {
+  .ep-modal-actions {
+    flex-direction: column; /* Stack buttons vertically on mobile */
+    gap: 10px; /* Reduce gap between stacked buttons */
+  }
+
+  .ep-save-cancel {
+    width: 100%; /* Full width for save-cancel container */
+  }
+
+  .ep-save-button,
+  .ep-cancel-button,
+  .ep-delete-button {
+    width: 100%; /* Full width for buttons on mobile */
+    padding: 12px; /* Slightly larger padding for better touch targets */
+  }
+}
+
+/* Responsive styles for modal container */
+@media (max-width: 768px) {
+  .ep-modal-container {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .ep-modal-header {
+    border-radius: 0;
+  }
+
+  .ep-modal-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .ep-tab-button {
+    flex: 0 0 auto;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ep-modal-overlay {
+    padding: 0;
+  }
+
+  .ep-modal-header {
+    padding: 15px;
+  }
+
+  .ep-modal-content {
+    padding: 15px;
+  }
+
+  .ep-tab-button {
+    padding: 12px 15px;
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+
+  .ep-skill-input {
+    flex-direction: column;
+  }
+
+  .ep-add-skill-btn {
+    width: 100%;
+  }
+}
+  
+
+
+/* Profile Page Styles */
+.ep-main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.ep-content-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+/* Header Section */
+.ep-header-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+.ep-avatar-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #f0f2f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ep-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ep-company-title {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.ep-data-text {
+  margin: 0.5rem 0 0;
+  color: #4a5568;
+  font-size: 1rem;
+}
+
+.ep-edit-button-container {
+  margin-left: auto;
+  display: flex;
+  gap: 1rem;
+}
+
+.ep-edit-button {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ep-edit-button:hover {
+  background-color: #3182ce;
+  transform: translateY(-1px);
+}
+
+/* Info Blocks */
+.ep-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.ep-detail-block {
+  flex: 1;
+  min-width: 300px;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ep-full-width {
+  flex: 100%;
+  margin-bottom: 2rem;
+}
+
+.ep-block-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ep-block-heading {
+  font-size: 1.3rem;
+  color: #2d3748;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Detail Rows */
+.ep-detail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.ep-detail-row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.ep-icon {
+  margin-right: 1rem;
+  font-size: 1.1rem;
+  color: #4a5568;
+}
+
+.ep-data-text {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.ep-external-link {
+  color: #4299e1;
+  text-decoration: none;
+  margin-left: 0.5rem;
+  word-break: break-all;
+}
+
+.ep-external-link:hover {
+  text-decoration: underline;
+}
+
+/* Skills */
+.ep-skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ep-skill-tag {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Education Table */
+.ep-education-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.ep-education-table th,
+.ep-education-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ep-education-table th {
+  background: #f0f4f8;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.ep-education-table tr:hover {
+  background: #f8fafc;
+}
+
+.ep-no-data {
+  color: #a0aec0;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.error-button {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.error-button:hover {
+  background-color: #3182ce;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .ep-header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .ep-edit-button-container {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .ep-detail-block {
+    min-width: 100%;
+  }
+  
+  .ep-education-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .ep-content-wrapper {
+    padding: 1.5rem;
+  }
+  
+  .ep-avatar-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .ep-company-title {
+    font-size: 1.5rem;
+  }
+  
+  .ep-detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .ep-icon {
+    margin-right: 0;
+    margin-bottom: 0.3rem;
+  }
+  
+  .ep-edit-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+
+/* Enhanced Profile Page Styles */
+.ep-main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
+}
+
+/* Make text more prominent */
+.ep-data-text {
+  font-size: 1.05rem; /* Increased from 0.95rem */
+  line-height: 1.6;
+  color: #4a5568;
+}
+
+.ep-block-heading {
+  font-size: 1.4rem; /* Increased from 1.3rem */
+  color: #1a365d;
+}
+
+/* Highlight important details */
+.ep-detail-row strong {
+  color: #2d3748;
+  font-weight: 600;
+}
+
+/* Enhanced Education Table for Mobile */
+@media (max-width: 768px) {
+  .ep-education-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ep-education-table thead {
+    display: none; /* Hide headers on mobile */
+  }
+
+  .ep-education-table tr {
+    display: block;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .ep-education-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .ep-education-table td:last-child {
+    border-bottom: none;
+  }
+
+  .ep-education-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #4a5568;
+    margin-right: 1rem;
+    flex: 0 0 120px;
+  }
+
+  /* Add data labels for accessibility */
+  .ep-education-table td:nth-child(1)::before { content: "Education"; }
+  .ep-education-table td:nth-child(2)::before { content: "Specialization"; }
+  .ep-education-table td:nth-child(3)::before { content: "College"; }
+  .ep-education-table td:nth-child(4)::before { content: "Year"; }
+  .ep-education-table td:nth-child(5)::before { content: "Grade"; }
+}
+
+/* Make profile details more prominent on mobile */
+@media (max-width: 480px) {
+  .ep-content-wrapper {
+    padding: 1.25rem;
+  }
+
+  .ep-header-section {
+    gap: 1.25rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .ep-avatar-wrapper {
+    width: 100px;
+    height: 100px;
+    border-width: 3px;
+  }
+
+  .ep-company-title {
+    font-size: 1.6rem; /* Increased from 1.5rem */
+    line-height: 1.3;
+  }
+
+  .ep-data-text {
+    font-size: 1.1rem; /* Increased for better readability */
+  }
+
+  .ep-detail-block {
+    padding: 1.25rem;
+  }
+
+  .ep-detail-row {
+    flex-direction: row; /* Changed from column to keep inline */
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .ep-icon {
+    font-size: 1.2rem; /* Larger icons */
+    margin-right: 0.75rem;
+    margin-bottom: 0;
+  }
+
+  /* Highlight important fields */
+  .ep-detail-row:nth-child(-n+4) {
+    background-color: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Skills tags adjustments */
+  .ep-skill-tag {
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Additional highlight styles */
+.ep-highlight {
+  background-color: #ebf8ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: #2b6cb0;
+  font-weight: 500;
+}
+
+/* Important fields highlight */
+.ep-important-field {
+  font-weight: 600;
+  color: #2d3748;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.ep-important-field::before {
+  content: "•";
+  color: #4299e1;
+  position: absolute;
+  left: 0.5rem;
+  font-size: 1.2rem;
+}

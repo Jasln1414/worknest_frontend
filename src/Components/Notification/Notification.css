@@ -551,3 +551,68 @@ body {
   position: relative; /* or as per your design */
   z-index: 500; /* Lower than the notification dropdown */
 }
+
+
+.notification-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 350px;
+  max-height: 400px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.notification-title {
+  padding: 16px;
+  background-color: #1976d2;
+  color: white;
+  font-weight: bold;
+}
+
+.notification-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.notification-unread {
+  background-color: #e3f2fd;
+}
+
+.notification-read {
+  background-color: #f5f5f5;
+}
+
+.notification-unread:hover,
+.notification-read:hover {
+  background-color: #bbdefb;
+}
+
+.notification-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+  background-color: #f5f5f5;
+}
+
+.notification-item.unread {
+  background-color: #f0f7ff;
+}
+
+.notification-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+  background-color: #f5f5f5;
+}
+
+.notification-item.unread {
+  background-color: #f0f7ff;
+}

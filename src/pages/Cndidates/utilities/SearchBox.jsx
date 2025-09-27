@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { GrSearch, GoLocation, API_CONFIG, debounce, AuthService, CacheService } from './utilssearch';
-//import '../../../assets/component/Findjob.css';
-import './SearchBox.css';
+import '../../../assets/Stylesheet/Search.css';
 
 
 function SearchBox({ searchParams, handleSearchInputChange, handleSearch, isSearching }) {

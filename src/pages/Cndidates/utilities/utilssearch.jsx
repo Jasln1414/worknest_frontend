@@ -5,17 +5,27 @@
 export { GrSearch } from 'react-icons/gr';
 export { GoLocation } from 'react-icons/go';
 
-// Setup API configuration
+// // Setup API configuration
+// export const API_CONFIG = {
+// //   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+//    baseURL:  'http://127.0.0.1:8000',
+//   endpoints: {
+//     autocomplete: '/api/empjob/autocomplete/',
+//     search: '/api/empjob/search/',
+//     allJobs: '/api/empjob/getAlljobs/',
+  
+//   }
+// };
+
 export const API_CONFIG = {
-//   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
-   baseURL:  'http://127.0.0.1:8000',
+  baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000',
   endpoints: {
     autocomplete: '/api/empjob/autocomplete/',
     search: '/api/empjob/search/',
     allJobs: '/api/empjob/getAlljobs/',
-  
   }
 };
+
 
 // Helper functions
 export const debounce = (func, wait) => {

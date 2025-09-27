@@ -1,0 +1,292 @@
+/* Root Header Container */
+.wn-candidate-header {
+  background: #ffffff;
+  color: #1039af;
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Header Container */
+.wn-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+}
+
+/* Logo Section */
+.wn-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wn-logo-image {
+  width: 70px;
+  height: 70px;
+}
+
+.wn-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.wn-logo-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1039af;
+  margin: 0;
+}
+
+/* Navigation Links */
+.wn-nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.wn-nav-links a {
+  color: #1039af;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.wn-nav-links a:hover {
+  color: #1e40af;
+  transform: translateY(-2px);
+}
+
+/* Profile and Notifications Section */
+.wn-profile-notifications {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Notification Bell */
+.wn-notification-bell-container {
+  position: relative;
+}
+
+.wn-notification-bell {
+  font-size: 1.75rem;
+  color: #1039af;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.wn-notification-bell:hover {
+  color: #2563eb;
+  transform: scale(1.1);
+}
+
+.wn-notification-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 50%;
+  padding: 3px 8px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Dropdown */
+.wn-notification-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: wn-fade-in 0.3s ease;
+}
+
+.wn-notification-item {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+.wn-notification-item:hover {
+  background: #f0f9ff;
+}
+
+.wn-notification-item.unread {
+  background: #e0f2fe;
+  font-weight: 500;
+}
+
+.wn-notification-item .job-title {
+  font-weight: 600;
+  color: #2563eb;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.wn-notification-item .notification-text {
+  color: #4b5563;
+}
+
+.wn-notification-item .status {
+  display: inline-flex;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.wn-notification-item .status.upcoming { background: #fefcbf; color: #b45309; }
+.wn-notification-item .status.completed,
+.wn-notification-item .status.accepted { background: #d1fae5; color: #047857; }
+.wn-notification-item .status.you-missed,
+.wn-notification-item .status.rejected { background: #fee2e2; color: #b91c1c; }
+.wn-notification-item .status.canceled { background: #e5e7eb; color: #4b5563; }
+
+/* User Profile */
+.wn-user-profile {
+  position: relative;
+}
+
+.wn-profile-image {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wn-profile-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Ant Design Dropdown */
+.wn-profile-dropdown .ant-dropdown-menu {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0;
+  min-width: 200px;
+}
+
+.wn-profile-dropdown .ant-dropdown-menu-item {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.wn-profile-dropdown .ant-dropdown-menu-item:hover {
+  background: #f0f9ff;
+  color: #2563eb;
+}
+
+/* Hamburger */
+.wn-hamburger-menu {
+  display: none;
+  font-size: 1.75rem;
+  color: #1039af;
+  cursor: pointer;
+}
+
+.wn-mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: #1e40af;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: wn-slide-in 0.3s ease;
+  z-index: 999;
+}
+
+.wn-mobile-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 0.75rem;
+  transition: background 0.3s ease;
+}
+
+.wn-mobile-nav a:hover {
+  background: #2563eb;
+}
+
+/* Animations */
+@keyframes wn-fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wn-slide-in {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Queries */
+
+/* Tablet (<=1024px) */
+@media (max-width: 1024px) {
+  .wn-candidate-header { padding: 1rem; }
+  .wn-logo-title { font-size: 1.5rem; }
+  .wn-logo-image { width: 50px; height: 50px; }
+  .wn-nav-links { gap: 1.5rem; }
+  .wn-nav-links a { font-size: 0.875rem; }
+  .wn-profile-image { width: 45px !important; height: 45px !important; }
+}
+
+/* Mobile (<=768px) */
+@media (max-width: 768px) {
+  .wn-header-container { flex-wrap: wrap; }
+  .wn-nav-links { display: none; }
+  .wn-hamburger-menu { display: block; }
+  .wn-mobile-nav.active { display: flex; }
+  .wn-profile-notifications { gap: 1rem; }
+  .wn-notification-bell { font-size: 1.5rem; }
+  .wn-notification-dropdown {
+    min-width: 250px;
+    max-height: 350px;
+  }
+  .wn-notification-item {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+  .wn-profile-dropdown .ant-dropdown-menu {
+    min-width: 180px;
+  }
+  .wn-profile-dropdown .ant-dropdown-menu-item {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Small devices (<=480px) */
+@media (max-width: 480px) {
+  .wn-candidate-header { padding: 0.75rem; }
+  .wn-logo-title { font-size: 1.25rem; }
+  .wn-logo-image { width: 40px; height: 40px; }
+  .wn-profile-image { width: 40px !important; height: 40px !important; }
+}

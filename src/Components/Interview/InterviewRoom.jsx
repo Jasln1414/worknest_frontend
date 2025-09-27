@@ -1,3 +1,17 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -33,32 +47,110 @@ const InterviewRoom = () => {
   const authentication_user = useSelector((state) => state.authentication_user || { usertype: '', companyName: null });
   const roomID = getUrlParams().get('roomID') || randomID(5);
   const [isLoadingUserType, setIsLoadingUserType] = useState(false);
+  const token = localStorage.getItem('access');
+  const url = `${window.location.protocol}//${window.location.host}/interview/${id}?roomID=${roomID}`;
+
+  const interview_id=parseInt(id)
+  console.log('Token:', token);
 
   useEffect(() => {
-    const makeInterview = async () => {
-      const formData = new FormData();
-      formData.append("roomId", roomID);
-      formData.append("interviewId", id);
-      try {
-        const response = await axios.post(`${baseURL}/api/interview/interviewCall/`, formData);
-        console.log('Interview API response:', response.data);
-      } catch (error) {
-        console.error('Interview API error:', error.response || error.message);
+    interviewJoinStatus()
+
+  }, [token]);
+
+
+
+const interviewJoinStatus = async () => {
+  try {
+    const response = await axios.post(
+      `${baseURL}/api/interview/interviewjoinstatus/${interview_id}/`,
+      {}, // empty data object since you're not sending any data
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       }
-    };
-    makeInterview();
-  }, [id, roomID]);
+    );
+    console.log('Interview marked as Completed', response.data);
+  } catch (error) {
+    console.error('Error marking interview as Completed:', error.response || error.message);
+  }
+};
+
+// const interviewJoinStatus=async () => {
+//     try{
+      
+//       const response= await axios.post(
+//          `${baseURL}/api/interview/interviewjoinstatus/${interview_id}/`,
+      
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             'Content-Type': 'application/json',
+//           },
+
+//         }
+//       );
+//       console.log('Interview marked as Completeddddddddddddddddddddddddddddddddddd',response.data);
+//     } catch (error) {
+//       console.error('Error marking interview as Completed:', error.response || error.message);
+//     }
+//   };
+    
+  
+
+  
+
+
+  // Mark interview as completed
+  const markInterviewCompleted = async () => {
+    try {
+      await axios.post(
+        `${baseURL}/api/interview/status/${id}/`,
+        { action: 'Completed' },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log('Interview marked as Completed');
+    } catch (error) {
+      console.error('Error marking interview as Completed:', error.response || error.message);
+    }
+  };
+
+  // useEffect(() => {
+  //   const makeInterview = async () => {
+  //     const formData = new FormData();
+  //     formData.append('roomId', roomID);
+  //     formData.append('interviewId', id);
+  //     try {
+  //       const response = await axios.post(`${baseURL}/api/interview/interviewCall/`, formData, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           Accept: 'application/json',
+  //         },
+  //       });
+  //       console.log('Interview API response:', response.data);
+  //     } catch (error) {
+  //       console.error('Interview API error:', error.response || error.message);
+  //     }
+  //   };
+  //   makeInterview();
+  // }, [id, roomID, token]);
 
   useEffect(() => {
     const fetchUserType = async () => {
       if (!authentication_user.usertype) {
         setIsLoadingUserType(true);
         try {
-          const token = localStorage.getItem('access');
           const response = await axios.get(`${baseURL}/api/account/user/details`, {
             headers: {
-              'Authorization': `Bearer ${token}`,
-              'Accept': 'application/json',
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/json',
             },
           });
           if (response.status === 200) {
@@ -89,11 +181,43 @@ const InterviewRoom = () => {
       }
     };
     fetchUserType();
-  }, [authentication_user.usertype, dispatch, navigate]);
+  }, [authentication_user.usertype, dispatch, navigate, token]);
+
+  useEffect(() => {
+    const handleSend = async () => {
+      try {
+        const response = await axios.post(
+          `${baseURL}/api/interview/link/${id}/`,
+          { link: url },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        console.log('Link sent response:', response.data);
+      } catch (error) {
+        console.error('Error sending link:', error.response || error.message);
+      }
+    };
+
+    if (authentication_user.usertype === 'employer') {
+      handleSend();
+    }
+  }, [id, url, token, authentication_user.usertype]);
+
+  // Cleanup on component unmount (e.g., when leaving the interview)
+  useEffect(() => {
+    return () => {
+      markInterviewCompleted();
+    };
+  }, [id, token]);
 
   const myMeeting = async (element) => {
     const appID = 223232856;
-    const serverSecret = "15878ba5977a690019bcf7a287e24bca";
+    const serverSecret = '15878ba5977a690019bcf7a287e24bca';
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
 
     const zp = ZegoUIKitPrebuilt.create(kitToken);
@@ -102,8 +226,8 @@ const InterviewRoom = () => {
       container: element,
       sharedLinks: [
         {
-          name: 'Personal link',
-          url: window.location.protocol + '//' + window.location.host + window.location.pathname + '?roomID=' + roomID,
+          name: 'Interview Link',
+          url: url,
         },
       ],
       scenario: {
@@ -113,16 +237,12 @@ const InterviewRoom = () => {
   };
 
   const handleBackClick = () => {
-    console.log('Authentication state:', authentication_user);
-    console.log('User type:', authentication_user.usertype);
-    if (authentication_user.usertype === 'employer' || authentication_user.companyName) {
-      console.log('Redirecting to employer dashboard');
-      navigate('/employer/shedules');
+    markInterviewCompleted(); // Mark as completed when clicking Back
+    if (authentication_user.usertype === 'employer') {
+      navigate('/employer/EmpHome');
     } else if (authentication_user.usertype === 'candidate') {
-      console.log('Redirecting to candidate dashboard');
       navigate('/candidate/applyedjobs');
     } else {
-      console.warn('User type not set, falling back to root');
       navigate('/');
     }
   };

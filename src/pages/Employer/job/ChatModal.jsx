@@ -30,6 +30,19 @@ function ChatModal({
 
   const user_Id = useSelector((state) => state.authentication_user.userid);
 
+  console.log("ChatModal props.......................................:", {
+  setChat,
+  profile_pic,
+  userName,
+  emp_name,
+  candidate_id,
+  employer_id,
+  senderName,
+  currentUserId,
+   receiverId, 
+  });
+  
+
   // Resolve user_id
   const storedUserId = localStorage.getItem('user_id');
   const user_id = currentUserId || (storedUserId && storedUserId !== 'null' && storedUserId !== 'undefined' ? storedUserId : employer_id);
@@ -39,6 +52,12 @@ function ChatModal({
   const otherUserId = isEmployer ? candidate_id : employer_id;
   const actualSenderName = senderName || (isEmployer ? emp_name : userName);
   const otherUserName = isEmployer ? userName : emp_name;
+
+
+  console.log("userrrrrrrrrrrrrrr",{
+
+    
+  })
 
   const [chattApprove, setChatApprove] = useState(false);
   const [chatisRequested, setChatRequested] = useState(false);
@@ -180,6 +199,10 @@ function ChatModal({
 
       newClient.onmessage = (message) => {
         const data = JSON.parse(message.data);
+
+
+        console.log("onmesagggggggggggggggggg",message.data);
+        
 
         if (data.type === 'active_users') {
           handleActiveUsersUpdate(data.users);

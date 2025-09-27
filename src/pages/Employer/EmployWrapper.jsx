@@ -1,3 +1,107 @@
+// import React,{useEffect} from 'react'
+// import {Routes,Route,useNavigate} from 'react-router-dom'
+// import EmpHome from './EmployerHome'
+// import EmployerHeader from './EmployerHeader'
+// import { useDispatch,useSelector } from 'react-redux';
+// import isAuthUser from '../../utils/isAuthUser'
+// import { set_Authentication } from '../../Redux/Authentication/authenticationSlice'
+// import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetailsSlice'
+// import axios from 'axios'
+// import EmpProfileCreation from './EmployerProfile'
+// import PostJob from './PostJob'
+// import EmpProfile from './EmployerProfile';
+// import EmployerProfileView from './EmpProfileView';
+// import JobDetail from './job/jobdetail';
+// import Applications from './job/AppliedJobs';
+// //import Chat from '../Employer/utilities/Message/Chat';
+
+
+
+
+
+// function EmployerWrapper() {
+//   const navigate=useNavigate()
+//   const baseURL = 'http://127.0.0.1:8000';
+//   const token = localStorage.getItem('access'); 
+//   const dispatch =useDispatch()
+//   const authentication_user = useSelector(state => state.authentication_user);
+
+//   const checkAuth = async () =>{
+//     const isAuthenticated = await isAuthUser();
+//     if (isAuthenticated.name){
+//       try{
+//           const responce = await axios.get(baseURL+'api/account/user/details',{
+//             headers:{
+//               'authorization': `Bearer ${token}`,
+//               'Accept' : 'application/json',
+//               'Content-Type': 'application/json'
+//             }
+//           })
+//           if(responce.status == 200){
+//             dispatch(
+//               set_Authentication({
+//                 name:responce.data.data.full_name,
+//                 email:responce.data.data.email,
+//                 isAuthenticated:true,
+//                 usertype:responce.data.data.usertype,
+//               })
+//             )
+//             dispatch(
+//               set_user_basic_details({
+//                 profile_pic : responce.data.user_data.profile_pic,
+//                 user_type_id : responce.data.user_data.id,
+                
+//               })
+//             )
+            
+//           }
+//       }
+//       catch(error){
+//       }
+//     }
+//     else{
+//       navigate('/')
+//     }
+//   };
+
+
+//   useEffect(() => {
+    
+//       checkAuth();
+    
+    
+  
+//   }, [authentication_user])
+
+//   return (
+//     <div>
+//       <EmployerHeader/>
+//       <Routes>
+       
+//         <Route path='/EmpHome' element={<EmpHome/>}></Route>
+//         <Route path='/profile_creation' element={<EmpProfileCreation/>} ></Route>
+//         <Route path='/profile' element={<EmployerProfileView/>}></Route>
+//         <Route path='/postjob' element={<PostJob/>}></Route>
+//         <Route path='/jobdetail/:jobId' element={<JobDetail/>} ></Route>
+//         <Route path='/applications' element={<Applications/>}></Route>
+//         {/* <Route path='/chat' element={<Chat/>}></Route> */}
+       
+        
+        
+
+//       </Routes>
+      
+      
+//     </div>
+//   )
+// }
+
+// export default EmployerWrapper
+
+
+
+
+
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import EmpHome from './EmployerHome';
@@ -9,75 +113,53 @@ import { set_user_basic_details } from '../../Redux/UserDetails/userBasicDetails
 import axios from 'axios';
 import EmpProfileCreation from './EmployerProfile';
 import PostJob from './PostJob';
+import EmpProfile from './EmployerProfile';
 import EmployerProfileView from './EmpProfileView';
 import JobDetail from './job/jobdetail';
 import Applications from './job/AppliedJobs';
 import SubscriptionPlans from '../../Components/Subscription/SubscriptionPlans';
 import Schedules from '../../Components/Interview/EmployerInterviewSchedule';
-import { message } from 'antd';
-
-// Custom ProtectedRoute component
-const ProtectedRoute = ({ element, isProfileComplete }) => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!isProfileComplete) {
-      message.info({
-        content: 'Please complete your profile to access this feature.',
-        duration: 3,
-      });
-      navigate('/employer/profile_creation');
-    }
-  }, [isProfileComplete, navigate]);
-
-  return isProfileComplete ? element : null;
-};
 
 function EmployerWrapper() {
   const navigate = useNavigate();
   const baseURL = 'http://127.0.0.1:8000';
   const token = localStorage.getItem('access');
+
   const dispatch = useDispatch();
-  const authentication_user = useSelector((state) => state.authentication_user);
+  const authentication_user = useSelector(state => state.authentication_user);
 
   const checkAuth = async () => {
     const isAuthenticated = await isAuthUser();
     if (isAuthenticated.name) {
       try {
-        const response = await axios.get(`${baseURL}/api/account/user/details`, {
+        const responce = await axios.get(baseURL + 'api/account/user/details', {
           headers: {
-            authorization: `Bearer ${token}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
+            'authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
         });
-        if (response.status === 200) {
+        if (responce.status == 200) {
           dispatch(
             set_Authentication({
-              name: response.data.data.full_name,
-              userid: response.data.user_data.id,
-              email: response.data.data.email,
-              companyName: response.data.data.companyName || null,
+              name: responce.data.data.full_name,
+              email: responce.data.data.email,
               isAuthenticated: true,
-              isAdmin: response.data.data.isAdmin || false,
-              usertype: response.data.data.usertype,
-              profile_completed: response.data.user_data.profile_completed || !!response.data.data.companyName, // Fallback to companyName
+              usertype: responce.data.data.usertype,
             })
           );
           dispatch(
             set_user_basic_details({
-              name: response.data.data.full_name,
-              email: response.data.data.email,
-              phone: response.data.user_data.phone || null,
-              profile_pic: response.data.user_data.profile_pic || null,
-              user_type_id: response.data.user_data.id,
+              profile_pic: responce.data.user_data.profile_pic,
+              user_type_id: responce.data.user_data.id,
             })
           );
         }
-      } catch (error) {
-        console.error('Error checking auth:', error);
-        navigate('/');
       }
-    } else {
+      catch (error) {
+      }
+    }
+    else {
       navigate('/');
     }
   };
@@ -86,38 +168,23 @@ function EmployerWrapper() {
     checkAuth();
   }, [authentication_user]);
 
-  const isProfileComplete = authentication_user.profile_completed;
-
   return (
     <div>
       <EmployerHeader />
       <Routes>
-        <Route path="/EmpHome" element={<EmpHome />} />
-        <Route path="/profile_creation" element={<EmpProfileCreation />} />
-        <Route
-          path="/profile"
-          element={<ProtectedRoute element={<EmployerProfileView />} isProfileComplete={isProfileComplete} />}
-        />
-        <Route
-          path="/postjob"
-          element={<ProtectedRoute element={<PostJob />} isProfileComplete={isProfileComplete} />}
-        />
-        <Route
-          path="/jobdetail/:jobId"
-          element={<ProtectedRoute element={<JobDetail />} isProfileComplete={isProfileComplete} />}
-        />
-        <Route
-          path="/applications"
-          element={<ProtectedRoute element={<Applications />} isProfileComplete={isProfileComplete} />}
-        />
-        <Route
-          path="/shedules"
-          element={<ProtectedRoute element={<Schedules />} isProfileComplete={isProfileComplete} />}
-        />
-        <Route
-          path="/subscriptions"
-          element={<ProtectedRoute element={<SubscriptionPlans />} isProfileComplete={isProfileComplete} />}
-        />
+        <Route path='/EmpHome' element={<EmpHome />}></Route>
+        <Route path='/profile_creation' element={<EmpProfileCreation />}></Route>
+        <Route path='/profile' element={<EmployerProfileView />}></Route>
+        <Route path='/postjob' element={<PostJob />}></Route>
+        <Route path='/jobdetail/:jobId' element={<JobDetail />}></Route>
+        <Route path='/applications' element={<Applications />}></Route>
+        {/* <Route path='/appstatus' element={<AppliedCandidatevew />}></Route>
+        */}
+        <Route path='/shedules' element={<Schedules/>}></Route>
+        {/* <Route path='/chat' element={<Chat/>}></Route> */}
+        
+        {/* Add the new route for subscription plans */}
+        <Route path='/subscriptions' element={<SubscriptionPlans />}></Route>
       </Routes>
     </div>
   );

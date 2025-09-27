@@ -47,7 +47,7 @@ const Qmodal = ({ setModal, questions, setAnswers, answers, handleApply }) => {
         {questions.length > 0 ? (
           questions.map((question, index) => (
             <div key={index} className="question-item">
-              <label className="block text-lg font-semibold text-gray-800 rounded-md px-3 py-1 mb-2 shadow-sm">
+              <label className="">
                 {question.text}
               </label>
               {question.question_type === 'TEXT' && (
@@ -87,7 +87,8 @@ const Qmodal = ({ setModal, questions, setAnswers, answers, handleApply }) => {
         <div className="modal-buttons flex justify-end gap-6 p-6">
           <button
             onClick={() => setModal(false)}
-            className="w-32 h-12 bg-gradient-to-br from-teal-900 to-teal-900 text-teal-100 rounded-xl hover:from-teal-900 hover:to-teal-900 transition-all duration-300 shadow-sm text-base font-semibold"
+           className="cancel-btn"
+
             aria-label="Cancel application"
           >
             Cancel
@@ -95,7 +96,9 @@ const Qmodal = ({ setModal, questions, setAnswers, answers, handleApply }) => {
           <button
             onClick={handleSubmit}
             disabled={Object.keys(answers).length !== questions.length}
-            className="w-48 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 disabled:from-gray-300 disabled:to-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed shadow-sm text-base font-semibold"
+           
+             className="submit-btn"
+
             aria-label="Submit application"
           >
             Submit Application

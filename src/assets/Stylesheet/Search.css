@@ -1,0 +1,232 @@
+/* Search Form Container */
+.search-form {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 8px solid #0f63bd;
+  border-radius: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+ 
+  
+  
+  
+}
+
+
+
+/* Input Container */
+.search-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  height: 9vh;
+  color: rgb(70, 70, 70);
+  
+  cursor: pointer;
+  background: #F0F0F0;  /* <-- Same background */
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+}
+
+/* Input Group */
+.search-input-group {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-width: 250px;
+  position: relative;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  height: 9vh;
+  color: rgb(70, 70, 70);
+  
+  cursor: pointer;
+  background: #F0F0F0;  /* <-- Same background */
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+}
+
+/* Icon Wrapper */
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: none;
+  padding: 0 12px;
+  height: 9vh;
+  color: rgb(70, 70, 70);
+  
+  cursor: pointer;
+  background: #F0F0F0;  /* <-- Same background */
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+}
+
+/* Icons */
+.search-icon,
+.location-icon {
+  font-size: 20px;
+  color: #000;
+  color: rgb(70, 70, 70);
+  
+  
+}
+
+/* Autocomplete Wrapper */
+.autocomplete-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+/* Search Input */
+.search-input {
+  width: 100%;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  padding: 0 14px;
+  background: #ffffff;
+  height: 9vh;
+  color: rgb(70, 70, 70);
+  
+  cursor: pointer;
+  background: #F0F0F0;  /* <-- Same background */
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;
+}
+
+/* Suggestions List */
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f8ff;
+}
+
+.suggestion-type {
+  font-weight: 500;
+  color: #007bff;
+}
+
+.search-button-search {
+  background: #154d88;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-left: 1px solid #cccccc;
+  cursor: pointer;
+  padding: 8px 32px; /* wider button */
+  height: 9vh;
+  min-width: 160px; /* 👈 increased width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+
+.search-button-search:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.search-button-search:disabled {
+  background-color: #a1c4fd;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Remove Divider */
+.search-divider {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-input-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .search-input-group {
+    width: 100%;
+    height: 9vh;
+  }
+
+  .search-button-search {
+    width: 100%;
+    border-radius: 0;
+    padding: 0 14px;
+    height: 9vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-form {
+    border-width: 6px;
+  }
+
+  .search-input {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  .search-icon,
+  .location-icon {
+    font-size: 18px;
+  }
+
+  .suggestion-item {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .search-button-search {
+    font-size: 15px;
+    height: 9vh;
+  }
+
+  .icon-wrapper {
+    height: 9vh;
+  }
+}
+
+/* Optional: subtle highlight for the location input */
+.highlight-location .search-input {
+  background-color: #f0f8ff; /* Light blue tint */
+  border: 1px solid #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.highlight-location .search-input:focus {
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
+  background-color: #e6f2ff;
+}
+

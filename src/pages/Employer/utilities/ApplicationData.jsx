@@ -1,141 +1,114 @@
-import React, { useState } from "react";
-import '../../../Styles/Job/StatusJob.css';
+// src/components/job/ApplicationData.js
+import React, { useState } from 'react';
+import '../job/style/AppliedjobCandidate.css';
+import Pagination from './paginations';
 
 function ApplicationData({ jobData, handleJobClick, toggleApplication }) {
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  
-  // Calculate total number of pages
-  const totalPages = Math.ceil(jobData.length / itemsPerPage);
-  
-  // Get current page data
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentJobs = jobData.slice(indexOfFirstItem, indexOfLastItem);
-  
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
-  // Navigate to previous and next page
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-  
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  const itemsPerPage = 6;
 
   const formatDate = (dateTimeString) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateTimeString).toLocaleDateString(undefined, options);
   };
 
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentJobs = jobData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(jobData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="app-data-container">
-      <div className="app-data-card">
-        <div className="app-data-header">
-          <span className="app-data-title">Applications</span>
-        </div>
-        <div className="app-data-list">
-          {currentJobs.map((job) => (
-            <div
-              key={job.id}
-              onClick={() => handleJobClick(job)}
-              className="app-data-job-item"
-            >
-              <div className="app-data-expiry">
-                Expiry: {job.applyBefore}
-              </div>
-              <div className="app-data-applications-count">
-                <span className="app-data-count-badge">
-                  {job.applications.length}
-                </span>
-              </div>
-              
-              <div className="app-data-job-header">
-                <div className="app-data-job-title-section">
-                  <p className="app-data-job-title">{job.title}</p>
-                  <p className="app-data-employer">{job.employer_name}</p>
-                </div>
-              </div>
-              
-              <div className="app-data-job-details">
-                <div className="app-data-job-info">
-                  <div className="app-data-info-item">
-                    Job Posted:
-                    <span className="app-data-badge app-data-badge-green">
-                      {formatDate(job.posteDate)}
-                    </span>
-                  </div>
-                  <div className="app-data-info-item">
-                    Location:
-                    <span className="app-data-badge app-data-badge-yellow">
-                      {job.location}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="app-data-job-info">
-                  <div className="app-data-info-item">
-                    Experience:
-                    <span className="app-data-badge app-data-badge-pink">
-                      {job.experience}
-                    </span>
-                  </div>
-                  <div className="app-data-info-item">
-                    Salary:
-                    <span className="app-data-badge app-data-badge-blue">
-                      {job.lpa} lpa
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="app-data-pagination">
-            <button 
-              onClick={goToPreviousPage} 
-              className={`app-data-pagination-button ${currentPage === 1 ? 'app-data-pagination-disabled' : ''}`}
-              disabled={currentPage === 1}
-            >
-               Prev
-            </button>
-            
-            <div className="app-data-pagination-numbers">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i + 1}
-                  onClick={() => paginate(i + 1)}
-                  className={`app-data-pagination-number ${currentPage === i + 1 ? 'app-data-pagination-active' : ''}`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-            
-            <button 
-              onClick={goToNextPage} 
-              className={`app-data-pagination-button ${currentPage === totalPages ? 'app-data-pagination-disabled' : ''}`}
-              disabled={currentPage === totalPages}
-            >
-              Next 
-            </button>
-          </div>
+    <div className="job-applications-wrapper">
+      <div className="job-applications-header-section"> 
+        <span className="job-applications-main-title">Applications</span>
+        {jobData.length > 0 && (
+          <span className="job-applications-count-display">
+            Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, jobData.length)} of {jobData.length} jobs
+          </span>
         )}
-        
-        {/* <div className="app-data-pagination-info">
-          Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, jobData.length)} of {jobData.length} applications
-        </div> */}
       </div>
+      
+      {jobData.length === 0 ? (
+        <div className="no-job-applications-message">
+          No job applications found
+        </div>
+      ) : (
+        <>
+          <div className="job-applications-list-container">
+            {currentJobs.map((job) => (
+              <div
+                key={job.id}
+                onClick={() => {
+                  handleJobClick(job);
+                  toggleApplication();
+                }}
+                className="job-application-card-item"
+              >
+                <div className="job-application-expiry-badge">
+                  Expiry: {job.applyBefore}
+                </div>
+                <div className="job-application-count-section">
+                  <span className="job-application-count-indicator">
+                    {job.applications.length}
+                  </span>
+                </div>
+                <div className="job-application-header-content">
+                  <div className="job-application-title-wrapper">
+                    <p className="job-application-position-title">{job.title}</p>
+                    <p className="job-application-company-name">{job.employer_name}</p>
+                  </div>
+                </div>
+                <div className="job-application-details-grid">
+                  <div className="job-application-info-section">
+                    <div className="job-application-detail-item">
+                      Job Posted:
+                      <span className="job-application-info-badge job-application-badge-success">
+                        {formatDate(job.posteDate)}
+                      </span>
+                    </div>
+                    <div className="job-application-detail-item">
+                      Location:
+                      <span className="job-application-info-badge job-application-badge-warning">
+                        {job.location}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="job-application-info-section">
+                    <div className="job-application-detail-item">
+                      Experience:
+                      <span className="job-application-info-badge job-application-badge-danger">
+                        {job.experience}
+                      </span>
+                    </div>
+                    <div className="job-application-detail-item">
+                      Salary:
+                      <span className="job-application-info-badge job-application-badge-info">
+                        {job.lpa} lpa
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {totalPages > 1 && (
+            <div className="pagination-controls">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

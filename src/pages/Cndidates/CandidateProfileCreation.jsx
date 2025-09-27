@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { CiCircleRemove } from "react-icons/ci";
 import { IoMdCheckmarkCircle } from "react-icons/io";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { set_Authentication } from "../../Redux/Authentication/authenticationSlice";
 import { set_user_basic_details } from "../../Redux/UserDetails/userBasicDetailsSlice";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
@@ -115,10 +115,21 @@ function CandidateProfileCreation() {
         },
       });
       if (response.status === 200 || response.status === 201) {
-        dispatch(set_user_basic_details({ profile_pic: response.data.data?.profile_pic || "" }));
+        // Update Redux state
+        dispatch(set_user_basic_details({ 
+          profile_pic: response.data.data?.profile_pic || "",
+          user_type_id: response.data.data?.id || authentication_user.userid,
+        }));
+        dispatch(set_Authentication({
+          ...authentication_user,
+          profile_completed: true,
+        }));
+        console.log("Profile creation success, dispatched profile_completed: true");
+
         setIsSpinner(false);
         toast.success("Profile created successfully!", { position: "top-center" });
-        navigate("/candidate/profile");
+        console.log("Navigating to /candidate/profile");
+        navigate("/candidate/profile", { replace: true });
       }
     } catch (error) {
       console.error("Profile Creation Error:", error);
@@ -283,7 +294,6 @@ function CandidateProfileCreation() {
                             <input type="text" value={skill || ""} onChange={handleSkill} placeholder="Type here" />
                             <br></br>
                             <br></br>
-                            
                             <button type="button" onClick={handleAddSkill}>Add</button>
                           </div>
                           <div className="skills-list">

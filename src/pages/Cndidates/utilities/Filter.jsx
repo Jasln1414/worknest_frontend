@@ -575,7 +575,6 @@ const parseDate = (dateStr) => {
     return isValid(parsed) ? parsed : null;
   }
 };
-
 const applyAdvancedFilters = (currentFilters = {}, jobData = []) => {
   let filteredResults = [...jobData];
 
@@ -596,21 +595,30 @@ const applyAdvancedFilters = (currentFilters = {}, jobData = []) => {
       default:
         startDate = null;
     }
+
     if (startDate) {
       filteredResults = filteredResults.filter((job) => {
-        const postedDate = parseDate(job.postedDate); // Adjust field name if needed
-        if (!postedDate) {
-          console.warn(`Invalid or missing postedDate for job "${job.title || 'Unknown'}":`, job.postedDate);
-          return false; // Exclude jobs with invalid/missing dates
+        // Try multiple possible date field names
+        const dateStr = job.postedDate || job.posteDate || job.datePosted || job.createdAt;
+        if (!dateStr) {
+          console.warn(`Missing date field for job "${job.title || 'Unknown'}"`);
+          return false; // Exclude jobs with no date
         }
-        const passes = postedDate >= startDate;
-        console.log(
-          `Job "${job.title || 'Unknown'}": postedDate=${postedDate}, startDate=${startDate}, passes=${passes}`
-        );
-        return passes;
+
+        const postedDate = parseDate(dateStr);
+        if (!postedDate) {
+          console.warn(`Invalid date format for job "${job.title || 'Unknown'}":`, dateStr);
+          return false; // Exclude jobs with invalid dates
+        }
+
+        return postedDate >= startDate;
       });
     }
   }
+
+
+
+
 
   // Job Type filtering
   if (currentFilters.jobtype) {
